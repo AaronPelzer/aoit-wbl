@@ -1,0 +1,88 @@
+<% include ../header.ejs %>
+
+
+<style>
+</style>
+
+
+<div class="row">
+        <div class="col-sm-8 col-md-1 col-lg-1">
+
+        </div>
+        <div class="col-sm-8 col-md-3 col-lg-5">
+            <div class="form-group">
+                <label for="tbTech">Skill</label>
+                <input class="form-control" name="tbTech" type="text" placeholder="Enter skill you have learned and/or applied." required />
+            </div>
+        </div>
+        <div class="col-sm-8 col-md-2 col-lg-2">
+            <div class="form-group">
+                <label for="ddlGrade">Grade</label>
+                <select name="ddlGrade" class="form-control" required>
+                    <option>Select Grade</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-8 col-md-2 col-lg-1">
+            <div class="form-group">
+                <label for="ddlScale">Scale</label>
+                <select name="ddlScale" class="form-control" required>
+                    <option></option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-1 col-md-1 col-lg-1" style="padding-top: 30px;">
+            <button class="btn btn-default btnAdd" style="float: right !important;">+</button>
+        </div>
+
+    </div>
+
+
+    <div class="dvResults">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <h2>List</h2>
+        </div>
+    </div>
+
+
+<br /><br />
+<div class="row">
+    <div class="col-md-5 col-lg-7"></div>
+    <div class="col-md-4 col-lg-4">
+        <button class="btn btn-default">Back</button>
+        <div style="float: right !important;">
+            <button class="btn btn-default">Save</button>
+            <button class="btn btn-default">Next</button>
+        </div>
+    </div>
+</div>
+
+<script src="/js/utilities.js"></script>
+<script>
+
+    var row = 0,
+        skills = [];
+    
+    addListener(".btnAdd", "click", function(){
+        var arr = addNewItem(["[name=tbTech]", "[name=ddlGrade]", "[name=ddlScale]"],
+            { 
+                skill: "", 
+                grade: "", 
+                scale: 0
+            }, skills);
+
+        var cols = createCol( skills[ skills.length - 1 ].skill );
+
+        el(".dvResults").insertAdjacentHTML("beforeEnd", createRow(cols));    
+    });
+</script>
+
+<% include ../footer.ejs %>

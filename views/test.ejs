@@ -1,0 +1,46 @@
+<% include ./header.ejs %>
+
+<ul>
+
+</ul>
+
+<select>
+
+</select>
+    
+<script>
+    var tag = "</div>";
+    var schools = [
+        "Academy of Innovative Technology", 
+        "Urban Assembly",
+        "Cypress Hills High School"
+    ];
+
+    function el(name){
+        return document.querySelector(name);
+    }
+    
+    function opener(t){
+        return t.replace("/", "");
+    }
+
+    function createMenu(arr, tag){
+        var html = "";
+
+        arr.forEach((item, idx) => {
+            html += opener(tag) + item + tag;
+        });
+        console.log(html);
+        return html;
+    }
+
+    function updateHTML(name, content){
+        el(name).innerHTML = content;
+    }
+
+    updateHTML("ul", createMenu(schools, "</li>"));
+
+    updateHTML("select", createMenu(schools, "</option>"));
+</script>
+
+<% include ./footer.ejs %>

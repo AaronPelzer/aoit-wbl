@@ -1,0 +1,128 @@
+<% include ../header.ejs %>
+
+
+<!-- Work-Based Learning Activities													
+Date	WBL Type		Organization		Hours	Comments							-->
+<style>
+    div {
+        border: solid 1px;
+    }
+    th {
+        text-align: center;
+    }
+</style>
+
+
+<div class="row">
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Date</th>
+            <th>WBL Type</th>
+            <th>Organization</th>
+            <th>Hours</th>
+            <th>Comments</th>
+            <th></th>
+        </tr>
+
+        
+        <tr>
+            <td></td>
+            <td>
+                <input class="form-control" name="tbDate" type="text" placeholder="01/01/2001" required />
+            </td>
+            <td>
+                <select class="form-control" name="ddlWblType" required>
+                <% for(var i = 0; i < results.length; i++) { %>
+                    <option value="<%= results[i].ID %>"> <%= results[i].type %> </option>
+                <% } %>
+                </select>
+            </td>
+            <td>
+                <input class="form-control" name="tbWOrg" type="text" placeholder="" required />
+            </td>
+            <td>
+                <input class="form-control" name="tbHours" type="number" placeholder="" required />
+            </td>
+            <td>
+                <textarea class="form-control" name="tbComments" type="text" placeholder=""></textarea>
+            </td>
+            <td>
+                <button class="btn btn-default btnAdd">+</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<br /><br />
+<div class="row">
+    <div class="col-md-5 col-lg-7"></div>
+    <div class="col-md-4 col-lg-4">
+        <button class="btn btn-default">Back</button>
+        <button class="btn btn-default">Save</button>
+        <button class="btn btn-default">Next</button>
+    </div>
+</div>
+
+<script src="/js/utilities.js"></script>
+<script>
+
+    var row = 0,
+        activities = [];
+
+    // UPDATED .V2
+    function addNewItem2(arr, obj = {}){
+        var f = [];
+
+        // console.log(arr);
+        arr.forEach((itm, idx) => {
+
+            
+            // CHECK FOR SELECT
+            // GET SELECTED INDEX
+            if(itm.type === "select-one"){
+                console.log("Drop Down Menu");
+                f.push( itm.options[itm.selectedIndex].value );
+            } else {
+                f.push(itm.value);
+            }
+            obj[Object.keys(obj)[idx]] = f[idx];
+        });
+
+        activities.push(obj);
+        return f;
+    }
+
+    function reset(args){
+
+        args.forEach(function(elem){
+            if(el(elem).type === "text"){
+                el(elem).value = "";
+            } else if(el(elem).type === "select-one"){
+                var e = el(elem);
+                e.selectedIndex = 0;
+            }
+        });
+    }
+
+    function getNames(){
+        var names = el("[name]", 1);
+        names.forEach((itm) => {
+            console.log(itm.getAttribute("name"));
+        });
+    }
+
+    addListener(".btnAdd", "click", function(){
+        var html = "";
+
+        var arr = addNewItem2(el("[name]", 1), { date: "", wblType: 0, org: "", hours: 0, comments: "" });
+
+        arr.forEach((item, idx) => {
+            html += createCol(item);
+        });
+
+        el("table").insertAdjacentHTML("beforeEnd", createRow(html));    
+    });
+</script>
+
+<% include ../footer.ejs %>

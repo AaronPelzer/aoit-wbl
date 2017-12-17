@@ -1,0 +1,109 @@
+<% include ../header.ejs %>
+
+
+<h1><%= title %></h1>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="tbCourses">Course</label>
+            <input class="form-control" type="text" name="tbCourses" placeholder="Enter Course / Section Name" />
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+            <label for="">Term</label>
+            <select class="form-control" name="ddlTerm">
+                <option>Select Term</option>
+                <option value="1">Spring</option>
+                <option value="2">Summer</option>
+                <option value="3">Fall</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-2">
+        <div class="form-group">
+            <label>Year</label>
+            <select class="form-control" name="ddlYear">
+                <option value="">Select Year</option>
+                <% 
+                    var d = new Date();  
+                    for(var x = d.getFullYear(); x > d.getFullYear() -5; --x ){
+                %>
+                    <option value="<%= x %>"><%= x %></option>
+                <%
+                    }
+                %>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+        <div class="form-group">
+            <label for="tbHours">Hours</label>
+            <input class="form-control" name="tbHours" type="number" placeholder="123" />
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="form-group">
+            <label for="tbComment">Comment(s)</label>
+            <textarea class="form-control" type="text" row="3" name="tbComment" placeholder="Enter description about course load"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+        <div class="form-group" style="padding-top: 40px;">
+            <div style="float: right; !important;">
+                <button class="btn btn-danger"> x </button>
+                <button class="btn btn-success btnAdd"> + </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dvEntered"></div>
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+        <button class="btn btn-danger btnBack">Back</button>
+        <div class="" style="float: right; !important"> 
+            <button class="btn btn-default">Save</button>
+            <button class="btn btn-success" disabled>Next</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/utilities.js"></script>
+<script>
+
+    var row = 0;
+    var courses = [];
+
+    addListener(".btnAdd", "click", function(){
+        var html = "";
+
+        addNewItem(["[name=tbCourses]", "[name=ddlTerm]", "[name=ddlYear]", "[name=tbHours]", "[name=tbComment]"],
+            {   title: "",
+                term: 0,
+                year: 0,
+                hours: 0,
+                comments: ""}, courses);
+
+        var cols = createCol( courses[ courses.length - 1].title )
+        el(".dvEntered").insertAdjacentHTML("beforeEnd", createRow(cols));
+    });
+</script>
+
+<% include ../footer.ejs %>

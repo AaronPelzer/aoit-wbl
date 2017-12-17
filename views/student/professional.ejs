@@ -1,0 +1,76 @@
+<% include ../header.ejs %>
+
+<form>
+    <div class="row">
+        <table class="table">
+            <tr>
+                <th></th><th>Professional Skills</th><th>Grade</th><th>Scale</th>
+            </tr>
+            <% 
+                var c = 0;
+                for(var i = 0; i < results.length; i++) { 
+            %>
+                <tr>
+                    <td>
+                        <%= c += 1 %>. 
+                    </td>
+                    <td>
+                        <%= results[i].title %> <br/>
+                        <%= results[i].desc %>
+                    </td>
+                    <td>
+                        <select name="ddlGrade" class="form-control" required>
+                            <option></option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="ddlScale" class="form-control" required>
+                            <option></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </td>
+                </tr>
+            <% } %>
+        </table>
+
+        <div class="col-sm-8 col-md-8 col-lg-10">
+        </div>
+        <div class="">
+            <button class="btn btn-default">Back</button>
+            <button class="btn btn-default">Save</button>
+            <button class="btn btn-default">Next</button>
+        </div>
+    </div>
+</form>
+<!--
+    <% for(var i = 0; i < results.length; i++) { %>
+        <div class="row">
+            <div style="border-bottom: solid 1px;" class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                <%= i++ %>. <%= results[i].title %> <br/>
+                <%= results[i].desc %>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                <label class="form-control">
+                    Scale
+                    <select name="ddlScale" class="form-control">
+                        <option></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+    <% } %>
+    
+-->
+
+<% include ../footer.ejs %>

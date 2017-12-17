@@ -1,0 +1,66 @@
+<% include ../header.ejs %>
+
+<style>
+    
+</style>
+
+
+<!-- ACCOUNT -->
+<div class="row">
+<label>Personal</label>
+    <div class="col-lg-12">
+        <input class="form-control" name="tbOSIS" type="text" placeholder="OSIS" />
+    </div>
+    <div class="col-lg-12">
+        <input class="form-control" name="tbirst" type="text" placeholder="First Name" />
+    </div>
+    <div class="col-lg-12">
+        <input class="form-control" name="tbMiddle" type="text" placeholder="Middle Name" />
+    </div>
+    <div class="col-lg-12">
+        <input class="form-control" name="tbLast" type="text" placeholder="Last Name" />
+    </div>
+    <div class="col-lg-12">
+            <label>Select Grade
+            <select name="ddlGrade" class="form-control" required>
+                <option></option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+            </label>
+        </div>
+<label>Account</label>
+    <div class="col-lg-12">
+        <input class="form-control" name="tbEmail" type="text" placeholder="Email" />
+    </div>
+    <div class="col-lg-12">
+        <input class="form-control" name="tbPassA" type="password" placeholder="Password" />
+    </div>
+    <div class="col-lg-12">
+        <input class="form-control" name="tbPassB" type="password" placeholder="Confirm Password" />
+    </div>
+    <br /><br />
+
+    <div class="col-lg-12">
+        <input class="form-control" name="tbCounselor" type="text" placeholder="SSC Counselor Name" />
+    </div>
+
+    <br />
+    <div class="col-lg-12">        
+        <button class="pull-right btn btn-default">Register</button>
+    </div>
+</div>
+
+
+<script>
+    function el(name){
+        return document.querySelector(name);
+    }
+
+    el("button").click(function(){
+         window.location.href ="/evaluation"
+    });
+</script>
+<% include ../footer.ejs %>

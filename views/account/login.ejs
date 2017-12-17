@@ -1,0 +1,38 @@
+<% include ../header.ejs %>
+
+<style>
+    .row {
+        margin-bottom: 10px;
+    }
+
+    form {
+        width: 400px;
+    }
+    div.col {
+        margin-bottom: 10px;
+    }
+</style>
+
+<form method="POST" action="/Account/Login">
+    <div class="row">
+        <div class="col col-sm-12 col-md-12 col-lg-12">
+            <input name="tbEmail" class="form-control" type="email" placeholder="Email" required/>
+        </div>
+        <div class="col col-sm-12 col-md-12 col-lg-12">
+            <input name="tbPassword" class="form-control" type="password" placeholder="Password" required />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+                <button class="btn btn-default pull-right">Login</button>
+        </div>
+    </div>
+</form>
+
+
+
+<script src="/js/utilities.js"></script>
+<script>
+
+</script>
+<% include ../footer.ejs %>
