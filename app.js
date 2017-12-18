@@ -37,6 +37,11 @@ app.use('/Account', require(route + 'account.js'));
 app.use('/Administrator', require(route + 'admin.js'));
 app.use('/Student', require(route + 'student.js'));
 
+//EVALUATOR
+app.use("/Evaluator", function(req, res) {
+
+});
+
 // DEBUGGING
 app.use("/Test", function(req, res) {
     var Engine = require("./model/connection.js");

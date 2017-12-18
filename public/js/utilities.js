@@ -1,3 +1,5 @@
+"use strict";
+
 function el(name, all) {
     if (all) {
         return document.querySelectorAll(name);
@@ -6,7 +8,7 @@ function el(name, all) {
 }
 
 function isChecked(name, get) {
-    el(name, get).forEach((e) => {
+    el(name, get).forEach(function(e) {
         if (e.checked) {
             console.log(e.value);
         }
@@ -45,7 +47,7 @@ function updateHTML(name, content) {
 
 function createSelectMenuFromArray(arr, starterText) {
     var html = "<option>" + starterText + "</option>";
-    arr.forEach((item, idx) => {
+    arr.forEach(function(item, idx) {
         html += "<option value='" + idx + "'>" + item + "</option>";
     });
     return html;
@@ -53,22 +55,23 @@ function createSelectMenuFromArray(arr, starterText) {
 
 function addNewItem(arr, obj = {}, model) {
     var f = [];
-    arr.forEach((itm, idx) => {
-
-        console.log(itm.type);
+    arr.forEach(function(itm, idx) {
 
         if (el(itm).type === "select-one") {
             console.log("Drop Down Menu");
-            var e = el(itm);
-
-            f.push(parseInt(e.options[e.selectedIndex].value));
+            var e = el(itm),
+                val = e.options[e.selectedIndex].value;
+            if (val === "") {
+                f.push(0);
+            } else {
+                f.push(parseInt(val));
+            }
         } else {
             f.push(el(itm).value);
         }
 
         obj[Object.keys(obj)[idx]] = f[idx];
     });
-
     model.push(obj);
 }
 

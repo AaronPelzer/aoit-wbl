@@ -1,97 +1,80 @@
 <% include ../header.ejs %>
 
-
-<!-- Work-Based Learning Activities													
-Date	WBL Type		Organization		Hours	Comments							-->
-<style>
-    div {
-        border: solid 1px;
-    }
-    th {
-        text-align: center;
-    }
-</style>
-
-
 <div class="row">
-    <table class="table">
-        <tr>
-            <th></th>
-            <th>Date</th>
-            <th>WBL Type</th>
-            <th>Organization</th>
-            <th>Hours</th>
-            <th>Comments</th>
-            <th></th>
-        </tr>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+            <label for="tbDate">Date</label>
+            <input class="form-control" name="tbDate" type="text" placeholder="01/01/2001" required />
+        </div>
+    </div>
 
-        
-        <tr>
-            <td></td>
-            <td>
-                <input class="form-control" name="tbDate" type="text" placeholder="01/01/2001" required />
-            </td>
-            <td>
-                <select class="form-control" name="ddlWblType" required>
+    <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+            <label for="ddlWblType">Work Based Learning</label>
+            <select class="form-control" name="ddlWblType" required>
+                <option></option>
                 <% for(var i = 0; i < results.length; i++) { %>
                     <option value="<%= results[i].ID %>"> <%= results[i].type %> </option>
                 <% } %>
-                </select>
-            </td>
-            <td>
-                <input class="form-control" name="tbWOrg" type="text" placeholder="" required />
-            </td>
-            <td>
-                <input class="form-control" name="tbHours" type="number" placeholder="" required />
-            </td>
-            <td>
-                <textarea class="form-control" name="tbComments" type="text" placeholder=""></textarea>
-            </td>
-            <td>
-                <button class="btn btn-default btnAdd">+</button>
-            </td>
-        </tr>
-    </table>
+            </select>
+        </div>
+    </div>
+    
+
+    <div class="col-sm-12 col-md-4 col-lg-3">
+        <div class="form-group">
+            <label for="tbOrg">Organization</label>
+            <input class="form-control" name="tbOrg" type="text" placeholder="" required />
+        </div>
+    </div>
+
+
+    <div class="col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group">
+            <label for="tbHours">Hours</label>
+            <input class="form-control" name="tbHours" type="text" placeholder="" required />
+        </div>
+    </div>
+
 </div>
 
-<br /><br />
+
 <div class="row">
-    <div class="col-md-5 col-lg-7"></div>
-    <div class="col-md-4 col-lg-4">
-        <button class="btn btn-default">Back</button>
-        <button class="btn btn-default">Save</button>
-        <button class="btn btn-default">Next</button>
+    <div class="col-sm-12 col-md-9 col-lg-9">
+        <div class="form-group">
+            <label for="tbComment">Comment(s)</label>
+            <textarea class="form-control" name="tbComments" type="text" placeholder=""></textarea>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-1 col-lg-1">
+        <div class="form-group">
+            <button class="btn btn-default btnAdd">+</button>
+        </div>
     </div>
 </div>
+
+
+
+    <div class="dvEntered">
+
+    </div>
+    <br /><br />
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <button class="btn btn-default">Back</button>
+            <div class="pull-right">
+                <button class="btn btn-default">Save</button>
+                <button class="btn btn-default">Next</button>
+            </div>
+        </div>
+    </div>
 
 <script src="/js/utilities.js"></script>
 <script>
 
     var row = 0,
         activities = [];
-
-    // UPDATED .V2
-    function addNewItem2(arr, obj = {}){
-        var f = [];
-
-        // console.log(arr);
-        arr.forEach((itm, idx) => {
-
-            
-            // CHECK FOR SELECT
-            // GET SELECTED INDEX
-            if(itm.type === "select-one"){
-                console.log("Drop Down Menu");
-                f.push( itm.options[itm.selectedIndex].value );
-            } else {
-                f.push(itm.value);
-            }
-            obj[Object.keys(obj)[idx]] = f[idx];
-        });
-
-        activities.push(obj);
-        return f;
-    }
 
     function reset(args){
 
@@ -115,13 +98,13 @@ Date	WBL Type		Organization		Hours	Comments							-->
     addListener(".btnAdd", "click", function(){
         var html = "";
 
-        var arr = addNewItem2(el("[name]", 1), { date: "", wblType: 0, org: "", hours: 0, comments: "" });
+        addNewItem(["[name=tbDate]", "[name=ddlWblType]", "[name=tbOrg]", "[name=tbHours]", "[name=tbComments]"], { 
+            date: "", wblType: 0, org: "", hours: 0, comments: "" 
+            }, activities);
 
-        arr.forEach((item, idx) => {
-            html += createCol(item);
-        });
+        var cols = createCol( el("[name=ddlWblType]").options[activities[ activities.length - 1].wblType].text );
 
-        el("table").insertAdjacentHTML("beforeEnd", createRow(html));    
+        el(".dvEntered").insertAdjacentHTML("beforeEnd", createRow(cols));    
     });
 </script>
 
