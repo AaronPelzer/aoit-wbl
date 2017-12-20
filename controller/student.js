@@ -1,6 +1,7 @@
 var router = require("express")(),
     sqlite = require('sqlite3').verbose(),
-    db = new sqlite.Database('./data');
+    db = new sqlite.Database('./data'),
+    uploadUtil = require('../config/upload.js');
 
 var commands = {
     createTable: "INSERT INTO profile (firstName, mI, lastName, genderId, genderOther, dob)",
@@ -127,6 +128,19 @@ router.get("/Activities", function(req, res) {
         });
     });
 
+});
+
+router.get("/upload", function(req, res){
+    res.render("student/upload", {
+        title: "Upload Documents"
+    });
+})
+
+router.post('/upload', function(req, res){
+    // console.log('-----------------------------');
+    uploadUtil.setDestination(1234567890);
+    uploadUtil.upload("myFile", "resume", req, res);
+    res.status(204).end();
 });
 
 module.exports = router;
