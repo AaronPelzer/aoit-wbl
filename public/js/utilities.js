@@ -75,7 +75,15 @@ function addNewItem(arr, obj = {}, model) {
     model.push(obj);
 }
 
-
+function other(name, inputName){
+    addListener(name, "change", function(){
+        if(this.selectedIndex === this.length - 1 && typeof(this.selectedIndex) === "number"){
+            el(inputName).style.display = "block";
+        } else {
+            el(inputName).style.display = "none";
+        }
+    });
+}
 
 // TESTING
 function reset(args) {

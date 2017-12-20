@@ -8,6 +8,10 @@ body {
     display: none;
 }
 
+.dvRace {
+    display: none;
+}
+
 .pull-right {
     float: right !important;
 }

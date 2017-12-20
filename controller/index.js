@@ -1,5 +1,6 @@
 var express = require("express"),
-    router = express();
+    router = express(),
+    upload = require('../config/upload.js');
 
 router.get("/", function(req, res) {
     res.render("main/index", {
@@ -14,7 +15,11 @@ router.get("/contact", function(req, res) {
     });
 });
 
-
-
+router.post('/upload', upload.single('myFile'), function(req, res, next){
+    // upload.single('myFile');
+    console.log(req.body);
+    console.log(req.file);
+    res.status(204).end();
+});
 
 module.exports = router;

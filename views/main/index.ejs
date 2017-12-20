@@ -1,19 +1,22 @@
-<!-- 
 
 <% include ../header.ejs %>
-
+<form method="POST" action="/upload" encType="multipart/form-data">
+<input name="myFile" type="file">
+<button type="submit">Submit</button>
+</form>
+<!--
 <style>
-    
+
 </style>
 
 <form method="POST" action="Student/Register">
 <div class="row loginForm" style="max-width: 400px;">
-    
-    
+
+
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <label>Personal</label>
     </div>
-    
+
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
         <label>OSIS</label>
     </div>
@@ -26,7 +29,7 @@
     <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
         <input class="form-control" name="tbFirst" type="text"  required />
     </div>
-    
+
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
         <label>Middle Name </label>
     </div>
@@ -40,9 +43,9 @@
     <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
         <input class="form-control" name="tbLast" type="text"  required />
     </div>
-    
+
     <br />
-    
+
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <label>Account</label>
     </div>
@@ -74,6 +77,5 @@
 </div>
 
 </form>
-<% include ../footer.ejs %>
-
 -->
+<% include ../footer.ejs %>

@@ -5,14 +5,14 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <h4>Personal</h4>
     </div>
-    
+
     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
         <div class="form-group">
             <label for="tbFirst">First Name </label>
                 <input class="form-control" name="tbFirst" type="text"  required />
         </div>
     </div>
-    
+
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
         <div class="form-group">
             <label for="tbMiddle">Middle Name </label>
@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    
+
 </div>
 
 <div class="row">
@@ -49,7 +49,7 @@
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 dvGender">
         <div class="form-group">
             <label>&nbsp;</label>
-            <input class="form-control" name="tbOther" 
+            <input class="form-control" name="tbOther"
                    type="text" placeholder="Please write your gender" />
         </div>
     </div>
@@ -71,11 +71,17 @@
             </select>
         </div>
     </div>
-    
 
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 dvRace">
+        <div class="form-group">
+            <label>&nbsp;</label>
+            <input class="form-control" name="tbOther"
+                   type="text" placeholder="Please enter your gender" />
+        </div>
+    </div>
 
     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-        <label for="">Hispanic</label> 
+        <label for="">Hispanic</label>
         <br />
         <!-- div class="form-check form-check-inline" -->
         <label class="btn btn-default">
@@ -88,10 +94,10 @@
 
 
 </div>
- 
 
 
-<div class="row"> 
+
+<div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
         <div class="form-group">
             <label for="ddlCluster">CTE Cluster</label>
@@ -141,15 +147,8 @@
         updateHTML("[name=ddlGender]", createSelectMenuFromArray(gender, "Select Gender"));
     })();
 
-    addListener("[name=ddlGender]", "change", function(){
-        if(this.selectedIndex === 3 && typeof(this.selectedIndex) === "number"){
-            el(".dvGender").style.display = "block";
-        } else {
-            el(".dvGender").style.display = "none";
-        }
-    });
-
-
+    other("[name=ddlGender]", ".dvGender");
+    other("[name=ddlRace]", ".dvRace");
 
     // WORKS
     // sChecked('[name=rdHis]', 1);
@@ -184,7 +183,7 @@
         return f;
     }
 
-    
+
     addListener(".btnNext", "click", function(){
         var html = "";
 

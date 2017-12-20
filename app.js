@@ -21,7 +21,6 @@ app.use(bodyParser.urlencoded({ 'extended': 'true' }));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vdn.api+json' }));
 
-
 app.use(session({
     secret: 'ihatecats',
     resave: true,
