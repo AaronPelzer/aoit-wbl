@@ -1,3 +1,4 @@
+.vscode
 public/uploads/
 node_modules
 .DS_Store
