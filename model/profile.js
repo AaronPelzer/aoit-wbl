@@ -12,7 +12,6 @@ var profile = {
 
 
 var Profile = function() {
-
     return {
 
     }
