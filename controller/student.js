@@ -130,7 +130,7 @@ router.get("/Activities", function(req, res) {
 
 });
 
-router.get("/upload", function(req, res){
+router.get("/upload", function(req, res) {
     res.render("student/upload", {
         title: "Upload Documents"
     });
