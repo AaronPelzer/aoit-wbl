@@ -19,7 +19,6 @@ router.post("/evaluator", function(req, res) {
 
 });
 
-
 router.get("/schools", function(req, res) {
     res.render("school/index", {
         title: "School Management"
