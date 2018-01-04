@@ -136,8 +136,7 @@ router.get("/upload", function(req, res) {
     });
 })
 
-router.post('/upload', function(req, res) {
-    // console.log('-----------------------------');
+router.post('/upload', function(req, res){
     uploadUtil.setDestination(1234567890);
     uploadUtil.upload("myFile", "resume", req, res);
     res.status(204).end();
