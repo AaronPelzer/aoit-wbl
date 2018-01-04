@@ -1,18 +1,33 @@
-var Connection = require("connection.js");
-
-var profile = {
-    ID: 0,
-    firstName: "",
-    mI: "",
-    lastName: "",
-    genderId: 0,
-    genderOther: "",
-    dob: 0
-};
+//var Connection = require("connection.js");
 
 
-var Profile = function() {
-    return {
+module.exports = class Profile {
 
+    constructor(person) {
+
+        var model = {
+            ID: 0,
+            firstName: "",
+            midName: "",
+            lastName: "",
+            genderId: 0,
+            genderOther: "",
+            dob: 0
+        };
+
+        function setProperty(obj){
+            for(var p in Object(model) ) {
+    
+                //console.log( `${p} = ${obj}`);
+    
+                model[p] = obj[p];
+            }
+        }
+
+        setProperty(person);
+
+        this.model = model;
     }
-}
+
+    
+};
