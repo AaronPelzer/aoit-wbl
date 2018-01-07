@@ -88,20 +88,44 @@ router.get("/Register", csrfProtection,  function(req, res) {
 
 router.post("/Register", csrfProtection, function(req, res) {
 
-
     console.log("HIT");
     console.log(req.body);
 
-    var d = new Date();
-    
-    //
+    var post = req.body;
 
-    res.send("Being Processed");
+    var d = new Date();
+
+    let p = new Profile({
+        firstName: post.tbFirst.trim(),
+        midName: post.tbMiddle.trim(),
+        lastName: post.tbLast.trim(),
+        genderId: 0,
+        dob: "2018/01/10"
+    });
+
+    let a = new Account({
+        osis: post.tbOsis.trim(),
+        email: post.tbEmail.trim() + "@aoiths.org",
+        password: post.tbPass,
+        dateCreated: d.getDate(),
+        profileID: 0,
+        accountTypeId: 1,
+        lastLogin: "",
+        lastUpdate: ""
+    }, p.model);
+
+    a.save();
+    
+    res.render("/Confirmation", {
+       title: "Confirm Account",
+    });
 });
 
+router.get("/Confirmation", function(req, res){
+    res.send("Check Email for Code");
+});
 
-
-router.get("/Login", function(req, res) {
+router.get("/Login", csrfProtection, function(req, res) {
 
     res.render("account/login", {
         title: "Login"
