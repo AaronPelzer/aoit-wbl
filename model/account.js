@@ -5,8 +5,13 @@ var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
 
 
 module.exports = class Account {
+<<<<<<< HEAD
+
+    constructor(account, profile){
+=======
     
     constructor(account = {}, profile = {}){
+>>>>>>> ede7f23d18a70c0e627f18c641f17efcf82225cd
         var model = {
             ID: 0,
             osis: "",
@@ -58,30 +63,18 @@ module.exports = class Account {
         });
     }
 
-    update(obj){
-        let whereClause = "";
-        let len = Object.keys(obj).length;
-        let i = 0;
-        for(var key in obj){
-            whereClause += `${key}=?`;
-            i++;
-            if(i < len){
-                whereClause += " AND ";
-            }
-        }
-        db.update("account", whereClause, util.getValues(obj), this.model, (err) => {
+    update(id, obj){
+        db.updateById("account", id, obj, (err) => {
             if(err){
-                console.log("----------------");
                 console.log(err);
             }
         })
     }
 
-    remove(){
-        db.remove("account", "osis=?", this.model.osis, (err) => {
+    remove(id){
+        db.removeById("account", this.model.id, (err) => {
             if(err){
-                console.log("-------------------");
-                console.log(err);
+                throw(err);
             }
         })
     }
@@ -94,6 +87,16 @@ module.exports = class Account {
             }
 
             callback(data);
+        });
+    }
+
+    getOne(id, cb){
+        db.find("account", id, (err, data) => {
+            if(err){
+                throw err;
+            }
+
+            cb(data);
         });
     }
 };
