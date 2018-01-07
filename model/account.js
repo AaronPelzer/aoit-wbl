@@ -5,9 +5,8 @@ var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
 
 
 module.exports = class Account {
+    
     constructor(account = {}, profile = {}){
-
-    constructor(account, profile){
         var model = {
             ID: 0,
             osis: "",
@@ -40,7 +39,7 @@ module.exports = class Account {
     save(){
         // STORE IN PRIVATE VALUE BEFORE CHANGE IN CALLBACK
         var m = this.model;
-        console.log("HERE");
+
         db.insert("profile", this.profile, function(err){
             if(err){
                 throw err;
