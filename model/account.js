@@ -86,9 +86,11 @@ module.exports = class Account {
     }
 
     getOne(arr, cb){
-        db.selectOne('account', null, null, 'email=? AND password=?', arr, (err) => {
-            if(err)
+        db.selectOne('account', null, null, 'email=? AND password=?', arr, (err, data) => {
+            if(err) {
                 throw err;
+            }
+            cb(data);
         })
     }
 };
