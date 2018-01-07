@@ -1,7 +1,10 @@
 var router = require("express")(),
     Account = require("../model/account.js"),
     Profile = require("../model/profile.js"),
-    csrf = require("csurf");
+    csrf = require("csurf"),
+    bcrypt = require("bcryptjs"),
+    util = require("../lib/s_scripts.js");
+ 
 
 var csrfProtection = csrf({cookie: true}); 
 
@@ -16,6 +19,7 @@ router.get("/Register", csrfProtection,  function(req, res) {
 });
 
 router.post("/Register", csrfProtection, function(req, res) {
+
 
     console.log("HIT");
     console.log(req.body);
@@ -32,22 +36,38 @@ router.post("/Register", csrfProtection, function(req, res) {
         dob: "2018/01/10"
     });
 
-    let a = new Account({
-        osis: post.tbOsis.trim(),
-        email: post.tbEmail.trim() + "@aoiths.org",
-        password: post.tbPass,
-        dateCreated: d.getDate(),
-        profileID: 0,
-        accountTypeId: 1,
-        lastLogin: "",
-        lastUpdate: ""
-    }, p.model);
+    var pass = post.tbOsis.trim() + "" + util.generateRandomNum();
 
-    a.save();
+    console.log(pass);
     
-    res.render("/Confirmation", {
-       title: "Confirm Account",
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(pass, salt, function(err, hash) {
+            
+
+            let a = new Account({
+                osis: post.tbOsis.trim(),
+                email: post.tbEmail.trim() + "@aoiths.org",
+                password: hash,
+                dateCreated: d.getDate(),
+                profileID: 0,
+                accountTypeId: 1,
+                lastLogin: "",
+                lastUpdate: ""
+            }, p.model);
+
+
+            a.save(function(status){
+                if(status){
+                    res.render("/Confirmation", {
+                        title: "Confirm Account",
+                     });
+                }
+            });
+
+        });
     });
+
+
 });
 
 router.get("/Confirmation", function(req, res){
