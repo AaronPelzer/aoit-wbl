@@ -69,8 +69,8 @@ router.post("/login", csrfProtection, function(req, res){
     var post = req.body;
 
     let a = new Account();
-    
-    a.getOne([post.email, post.password], function(data){
+
+    a.getOne([post.tbEmail + "@aoiths.org", post.tbPassword], function(data){
         console.log(data);
     });
 });
