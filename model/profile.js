@@ -1,9 +1,10 @@
-//var Connection = require("connection.js");
+var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+    tableName = "Profile";
 
 
 module.exports = class Profile {
 
-    constructor(person) {
+    constructor(person = {}) {
 
         var model = {
             ID: 0,
@@ -17,17 +18,48 @@ module.exports = class Profile {
 
         function setProperty(obj){
             for(var p in Object(model) ) {
-    
-                //console.log( `${p} = ${obj}`);
-    
                 model[p] = obj[p];
             }
         }
-
-        setProperty(person);
-
+        // if(Object.keys(profile).length){
+            setProperty(person);
+        //}
         this.model = model;
     }
 
-    
+
+    save(){
+        db.insert(tableName, this.model, function(err){
+            if(err){
+                throw err;
+            }
+        });
+    }
+
+    update(id, items, cb){
+
+    }
+
+    get(callback){
+
+        db.list(tableName, function(err, data){
+            if(err){
+                throw err;
+            }
+            callback(data);
+        });
+    }
+
+    getOne(id, cb){
+        db.find(tableName, id, function(err, data){
+            if(err){
+                throw err;
+            }
+            cb(data);
+        });
+    }
+
+    remove(id, cb){
+        db.removeById(tableName, id, cb);
+    }
 };

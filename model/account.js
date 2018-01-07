@@ -4,7 +4,8 @@ var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
 
 
 
-module.exports =  class Account {
+module.exports = class Account {
+    constructor(account = {}, profile = {}){
 
     constructor(account, profile){
         var model = {
@@ -19,7 +20,18 @@ module.exports =  class Account {
             lastUpdate: ""
         };
 
-        util.setProperty(model, account);
+        function setProperty(obj){
+            for(var p in Object(model) ) {
+    
+                console.log( `${p} = ${obj}`);
+    
+                model[p] = obj[p];
+            }
+        }
+
+        //if(Object.keys(account).length > 0 && Object.keys(profile).length ){
+            setProperty(account);
+        //}
 
         this.model = model;
         this.profile = profile;
@@ -73,5 +85,16 @@ module.exports =  class Account {
                 console.log(err);
             }
         })
+    }
+
+    get(callback){
+
+        db.list("Account", function(err, data){
+            if(err){
+                throw err;
+            }
+
+            callback(data);
+        });
     }
 };

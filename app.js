@@ -7,7 +7,8 @@ var express = require("express"),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     methodOverride = require('method-override'),
-    session = require('express-session');
+    session = require('express-session'),
+    csrf = require("csurf");
 
 
 app.use(express.static(__dirname + '/public'));
@@ -27,6 +28,8 @@ app.use(session({
     saveUninitialized: false
 }));
 
+
+app.use(cookieParser());
 
 // ROUTES
 const route = "./controller/";
