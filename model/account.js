@@ -1,11 +1,12 @@
 var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-    Profile = require("./profile.js");
+    Profile = require("./profile.js"),
+    util = require("../util/commands");
 
 
 
 module.exports =  class Account {
-    constructor(account, profile){
 
+    constructor(account, profile){
         var model = {
             ID: 0,
             osis: "",
@@ -18,34 +19,25 @@ module.exports =  class Account {
             lastUpdate: ""
         };
 
-        function setProperty(obj){
-            for(var p in Object(model) ) {
-    
-                console.log( `${p} = ${obj}`);
-    
-                model[p] = obj[p];
-            }
-        }
-
-        setProperty(account);
+        util.setProperty(model, account);
 
         this.model = model;
         this.profile = profile;
     }
 
     save(){
-        // STORE IN PRIVATE VALUE BEFORE CHANGE IN CALLBACK 
+        // STORE IN PRIVATE VALUE BEFORE CHANGE IN CALLBACK
         var m = this.model;
-
+        console.log("HERE");
         db.insert("profile", this.profile, function(err){
             if(err){
                 throw err;
             }
-            
+
             console.log("Profile Inserted ID " + this.lastID);
-            
+
             m.profileID = this.lastID;
-            
+
             db.insert("account", m, function(err){
                 if(err){
                     throw err;
@@ -53,124 +45,33 @@ module.exports =  class Account {
                 console.log("Account Inserted ID " + this.lastID);
             });
         });
-        
-        /*
-        db.insert("profile", {
-            firstName: p.model.firstName,
-            midName: p.model.mI,
-            lastName: p.model.lastName,
-            genderId: p.model.genderId,
-            genderOther: p.model.genderOther,
-            dob: p.model.dob
-        }, function(err){
-            if(err){
-                throw err;
-            }
-            console.log("Profile Inserted ID " + this.lastID);
-            p.model.ID = this.lastID;
+    }
 
-            db.insert("account", {
-                osis: 12312321,
-                email: "user@aoit.org",
-                password: "somepasswordthatishash",
-                dateCreated: d.getDate(),
-                profileID: p.model.ID,
-                accountTypeId: 1,
-                lastLogin: "",
-                lastUpdate: ""
-            }, function(){
-                if(err){
-                    throw err;
-                }
-                console.log("Account Inserted ID " + this.lastID);
-                p.model.ID = this.lastID;
-            });
-        });
-        */
+    update(obj){
+        let whereClause = "";
+        let len = Object.keys(obj).length;
+        let i = 0;
+        for(var key in obj){
+            whereClause += `${key}=?`;
+            i++;
+            if(i < len){
+                whereClause += " AND ";
+            }
+        }
+        db.update("account", whereClause, util.getValues(obj), this.model, (err) => {
+            if(err){
+                console.log("----------------");
+                console.log(err);
+            }
+        })
+    }
+
+    remove(){
+        db.remove("account", "osis=?", this.model.osis, (err) => {
+            if(err){
+                console.log("-------------------");
+                console.log(err);
+            }
+        })
     }
 };
-
-/*
-function(){
-
-    var tableName = "account";
-
-    var account = {
-        ID: 0,
-        osis: "",
-        email: "",
-        password: "",
-        dateCreated: "",
-        profileID: 0,
-        accountTypeId: 0,
-        lastLogin: "",
-        lastUpdate: ""
-    };
-
-    return {
-        add: function(obj){
-
-            let p = new Profile({
-                firstName: "Aaron",
-                mI: "M",
-                lastName: "Pelzer",
-                genderId: 2,
-                dob: "10/10/2017"
-            });
-
-            var d = new Date();
-            
-            
-            db.insert("profile", {
-                firstName: p.model.firstName,
-                midName: p.model.mI,
-                lastName: p.model.lastName,
-                genderId: p.model.genderId,
-                genderOther: p.model.genderOther,
-                dob: p.model.dob
-            }, function(err){
-                if(err){
-                    throw err;
-                }
-                console.log("Profile Inserted ID " + this.lastID);
-                p.model.ID = this.lastID;
-
-                db.insert("account", {
-                    osis: 12312321,
-                    email: "user@aoit.org",
-                    password: "somepasswordthatishash",
-                    dateCreated: d.getDate(),
-                    profileID: p.model.ID,
-                    accountTypeId: 1,
-                    lastLogin: "",
-                    lastUpdate: ""
-                }, function(){
-                    if(err){
-                        throw err;
-                    }
-                    console.log("Account Inserted ID " + this.lastID);
-                    p.model.ID = this.lastID;
-                });
-            });
-
-
-
-            //db.insert()
-            /*
-            db.insert(tableName, {
-                osis: 1111,
-                email: "someStudent@aoit.edu",
-                password: 1231231,
-                dateCreated: d.getDate(),
-                accountTypeId: 1
-            }, function(err){
-                if(err){
-                    throw err;
-                }
-                console.log("Inserted ID " + this.lastID);
-            });
-            /
-        }
-    };
-}
-*/

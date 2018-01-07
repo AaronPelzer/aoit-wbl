@@ -36,9 +36,10 @@ router.get("/Register", function(req, res) {
         lastUpdate: ""
     }, p.model);
 
-    a.save();
 
-
+    var changes = {
+        osis: 123456987
+    };
 
     res.render("account/register", {
         title: "Register Account"

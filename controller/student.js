@@ -1,7 +1,7 @@
 var router = require("express")(),
     sqlite = require('sqlite3').verbose(),
     db = new sqlite.Database('./data'),
-    uploadUtil = require('../config/upload.js');
+    uploadUtil = require('../util/upload.js');
 
 var commands = {
     createTable: "INSERT INTO profile (firstName, mI, lastName, genderId, genderOther, dob)",
