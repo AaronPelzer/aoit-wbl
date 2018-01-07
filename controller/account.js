@@ -95,9 +95,32 @@ router.post("/Register", csrfProtection, function(req, res) {
     console.log("HIT");
     console.log(req.body);
 
+    var post = req.body;
+
     var d = new Date();
     
-    //
+
+    let p = new Profile({
+        firstName: post.tbFirst,
+        midName: post.tbMiddle,
+        lastName: post.tbLast,
+        genderId: 0
+    });
+
+    let a = new Account({
+        osis: post.tbOsis,
+        email: post.tbEmail + "@aoiths.org",
+        password: post.tbPass,
+        dateCreated: d.getDate(),
+        profileID: 0,
+        accountTypeId: 1,
+        lastLogin: "",
+        lastUpdate: ""
+    }, p.model);
+
+    a.save();
+    
+    console.log(a);
 
     res.send("Being Processed");
 });
