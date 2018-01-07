@@ -80,12 +80,6 @@ router.get("/Register", csrfProtection,  function(req, res) {
 
     */
 
-
-
-    var changes = {
-        osis: 123456987
-    };
-
     res.render("account/register", {
         title: "Register Account",
         csrfToken: req.csrfToken() 
