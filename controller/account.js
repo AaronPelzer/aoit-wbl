@@ -1,19 +1,12 @@
 var router = require("express")(),
     Account = require("../model/account.js"),
-    Profile = require("../model/profile.js");
-/*
-    sqlite = require('sqlite3').verbose(),
-    db = new sqlite.Database('./wbl');
+    Profile = require("../model/profile.js"),
+    csrf = require("csurf");
 
-var commands = {
-    insertProfile: "INSERT INTO profile(firstName, mI, lastName, genderId, genderOther, dob) VALUES(?,?,?,?,?,?)",
-    insertAccount: "INSERT INTO account(OSIS, email, profileID) VALUES(?,?,?)"
-}
-*/
-
+var csrfProtection = csrf({cookie: true}); 
 
 // SELF CONTAINED MVC DESIGN
-router.get("/Register", function(req, res) {
+router.get("/Register", csrfProtection,  function(req, res) {
 
 
     // INSERT 
@@ -91,40 +84,22 @@ router.get("/Register", function(req, res) {
 
 
     res.render("account/register", {
-        title: "Register Account"
+        title: "Register Account",
+        csrfToken: req.csrfToken() 
     });
 });
 
-router.post("/Register", function(req, res) {
+router.post("/Register", csrfProtection, function(req, res) {
+
+
     console.log("HIT");
     console.log(req.body);
 
-
     var d = new Date();
+    
+    //
 
-    // TEST DATA
-    let p = new Profile({
-        firstName: "Aaron",
-        midName: "M",
-        lastName: "Pelzer",
-        genderId: 2,
-        dob: "10/10/2017"
-    });
-
-    let a = new Account({
-        osis: 12312321,
-        email: "user@aoit.org",
-        password: "somepasswordthatishash",
-        dateCreated: d.getDate(),
-        profileID: 0,
-        accountTypeId: 1,
-        lastLogin: "",
-        lastUpdate: ""
-    }, p.model);
-
-    a.save();
-
-    // 
+    res.send("Being Processed");
 });
 
 
