@@ -1,8 +1,5 @@
 var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-    Profile = require("./profile.js"),
-    util = require("../util/commands");
-
-
+    Profile = require("./profile.js");
 
 module.exports = class Account {
     
@@ -36,8 +33,7 @@ module.exports = class Account {
         this.profile = profile;
     }
 
-    save(){
-        // STORE IN PRIVATE VALUE BEFORE CHANGE IN CALLBACK
+    save(cb){
         var m = this.model;
 
         db.insert("profile", this.profile, function(err){
@@ -54,6 +50,7 @@ module.exports = class Account {
                     throw err;
                 }
                 console.log("Account Inserted ID " + this.lastID);
+                cb({status: 1});
             });
         });
     }
