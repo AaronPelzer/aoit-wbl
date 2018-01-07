@@ -1,8 +1,7 @@
 var router = require("express")(),
     Account = require("../model/account.js"),
     Profile = require("../model/profile.js"),
-    csrf = require("csurf"),
-    util = require("../lib/s_scripts.js");
+    csrf = require("csurf");
 
 var csrfProtection = csrf({cookie: true}); 
 
@@ -17,11 +16,13 @@ router.get("/Register", csrfProtection,  function(req, res) {
 });
 
 router.post("/Register", csrfProtection, function(req, res) {
+
+    console.log("HIT");
+    console.log(req.body);
+
     var post = req.body;
 
     var d = new Date();
-
-    var code = util.generateRandomNum();
 
     let p = new Profile({
         firstName: post.tbFirst.trim(),
@@ -31,11 +32,10 @@ router.post("/Register", csrfProtection, function(req, res) {
         dob: "2018/01/10"
     });
 
-    
     let a = new Account({
         osis: post.tbOsis.trim(),
         email: post.tbEmail.trim() + "@aoiths.org",
-        password: post.tbPass + code,
+        password: post.tbPass,
         dateCreated: d.getDate(),
         profileID: 0,
         accountTypeId: 1,
@@ -60,18 +60,18 @@ router.get("/Login", csrfProtection, function(req, res) {
 
     res.render("account/login", {
         title: "Login",
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken() 
     });
+
 });
 
+router.post("/login", csrfProtection, function(req, res){
+    var post = req.body;
 
-router.post("/Login", csrfProtection, function(req, res) {
-
-    console.log(req.body);
-
-    res.render("account/login", {
-        title: "Login",
-        csrfToken: req.csrfToken()
+    let a = new Account();
+    
+    a.getOne([post.email, post.password], function(data){
+        console.log(data);
     });
 });
 

@@ -7,7 +7,6 @@ var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
 module.exports = class Account {
     
     constructor(account = {}, profile = {}){
-
         var model = {
             ID: 0,
             osis: "",
@@ -86,13 +85,10 @@ module.exports = class Account {
         });
     }
 
-    getOne(id, cb){
-        db.find("account", id, (err, data) => {
-            if(err){
+    getOne(arr, cb){
+        db.selectOne('account', null, null, 'email=? AND password=?', arr, (err) => {
+            if(err)
                 throw err;
-            }
-
-            cb(data);
-        });
+        })
     }
 };
