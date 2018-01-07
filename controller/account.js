@@ -89,10 +89,6 @@ router.get("/Register", csrfProtection,  function(req, res) {
 });
 
 router.post("/Register", csrfProtection, function(req, res) {
-
-    console.log("HIT");
-    console.log(req.body);
-
     var post = req.body;
 
     var d = new Date();
@@ -138,5 +134,15 @@ router.get("/Login", csrfProtection, function(req, res) {
     });
 });
 
+
+router.post("/Login", csrfProtection, function(req, res) {
+
+    console.log(req.body);
+
+    res.render("account/login", {
+        title: "Login",
+        csrfToken: req.csrfToken()
+    });
+});
 
 module.exports = router;
