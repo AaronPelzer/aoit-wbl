@@ -1,6 +1,6 @@
 var express = require("express"),
     router = express(),
-    uploadUtil = require('../config/upload.js');
+    uploadUtil = require('../util/upload.js');
 
 router.get("/", function(req, res) {
     res.render("main/index", {
