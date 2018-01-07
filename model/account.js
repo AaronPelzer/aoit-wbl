@@ -5,13 +5,9 @@ var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
 
 
 module.exports = class Account {
-<<<<<<< HEAD
-
-    constructor(account, profile){
-=======
     
     constructor(account = {}, profile = {}){
->>>>>>> ede7f23d18a70c0e627f18c641f17efcf82225cd
+
         var model = {
             ID: 0,
             osis: "",
