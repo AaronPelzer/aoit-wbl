@@ -13,30 +13,13 @@
     }
 </style>
 
-
-
-<% include ../controls/form_login.ejs %>
-<!-- form method="POST" action="/Account/Login">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-    <div class="row">
-        <div class="col col-sm-12 col-md-12 col-lg-12">
-            <input name="tbEmail" class="form-control" type="email" placeholder="Email" required/>
-        </div>
-        <div class="col col-sm-12 col-md-12 col-lg-12">
-            <input name="tbPassword" class="form-control" type="password" placeholder="Password" required />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12 col-md-12 col-lg-12">
-                <button class="btn btn-default pull-right">Login</button>
-        </div>
-    </div>
-</form -->
-
+<% if(!user) { %>
+    <% include ../controls/form_login.ejs %>
+<% } else { %>
+    <div class="alert alert-success">Already Signed In</div>
+<% } %>
 
 
 <script src="/js/utilities.js"></script>
-<script>
 
-</script>
 <% include ../footer.ejs %>

@@ -1,6 +1,6 @@
 "use strict";
 
-var express = require("express"),
+const express = require("express"),
     app = express(),
     port = process.env.port || 8081,
     morgan = require('morgan'),
@@ -8,7 +8,17 @@ var express = require("express"),
     cookieParser = require('cookie-parser'),
     methodOverride = require('method-override'),
     session = require('express-session'),
-    csrf = require("csurf");
+    csrf = require("csurf"),
+    expressValidator = require("express-validator"),
+    flash = require("connect-flash"),
+    passport = require("passport"),
+    LocalStrategy = require("passport-local").Strategy;
+
+app.use(morgan('combined'));
+app.use(bodyParser.urlencoded({ 'extended': 'true' }));
+app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/vdn.api+json' }));
+app.use(cookieParser());
 
 
 app.use(express.static(__dirname + '/public'));
@@ -17,19 +27,44 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
-app.use(morgan('combined'));
-app.use(bodyParser.urlencoded({ 'extended': 'true' }));
-app.use(bodyParser.json());
-app.use(bodyParser.json({ type: 'application/vdn.api+json' }));
 
 app.use(session({
-    secret: 'ihatecats',
+    secret: 'franklinklaneaoit',
     resave: true,
     saveUninitialized: false
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use(cookieParser());
+
+
+app.use(expressValidator({
+    errorFormatter: function(param, msg, value) {
+        var   namespace = param.split('.'),
+              root      = namespace.shift(),
+              formParam = root;
+ 
+      while(namespace.length) {
+        formParam += '[' + namespace.shift() + ']';
+      }
+      return {
+        param : formParam,
+        msg   : msg,
+        value : value
+      };
+    }
+  }));
+
+  app.use(flash());
+
+  app.use(function(req, res, next){
+      res.locals.success_msg = req.flash("success_msg");
+      res.locals.error_msg = req.flash("error_msg");
+      res.locals.error = req.flash("error");
+      res.locals.user = req.user || null;
+      next();
+  });
 
 // ROUTES
 const route = "./controller/";
@@ -45,6 +80,7 @@ app.use("/Evaluator", function(req, res) {
 });
 
 // DEBUGGING
+/*
 app.use("/Test", function(req, res) {
     var Engine = require("./model/connection.js");
 
@@ -74,7 +110,7 @@ app.use("/SSC/evaluation", function(req, res) {
         title: "Self Evaluation"
     });
 });
-
+*/
 app.listen(port, function() {
     console.log("Server started on " + port);
 });

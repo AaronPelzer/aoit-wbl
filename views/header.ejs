@@ -37,17 +37,27 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Welcome &lt;user name&gt;
-                            <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Services</a>
-                    </li>
+                    
+                    <% if(user) { %>
+                        <li class="nav-item active">
+                                <a class="nav-link" href="#">Welcome, <%= user.email %>
+                                    <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account">Account</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Logout">Logout</a>
+                        </li>
+                    <% } else if(!user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Login">Login</a>
+                        </li>
+                    <% } %>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contact</a>
                     </li>

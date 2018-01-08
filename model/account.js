@@ -1,5 +1,7 @@
 var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-    Profile = require("./profile.js");
+    Profile = require("./profile.js"),
+    tableName = "account",
+    bcrypt = require("bcryptjs");
 
 module.exports = class Account {
     
@@ -18,9 +20,7 @@ module.exports = class Account {
 
         function setProperty(obj){
             for(var p in Object(model) ) {
-    
                 console.log( `${p} = ${obj}`);
-    
                 model[p] = obj[p];
             }
         }
@@ -56,7 +56,7 @@ module.exports = class Account {
     }
 
     update(id, obj){
-        db.updateById("account", id, obj, (err) => {
+        db.updateById(tableName, id, obj, (err) => {
             if(err){
                 console.log(err);
             }
@@ -64,7 +64,7 @@ module.exports = class Account {
     }
 
     remove(id){
-        db.removeById("account", this.model.id, (err) => {
+        db.removeById(tableName, this.model.id, (err) => {
             if(err){
                 throw(err);
             }
@@ -73,7 +73,7 @@ module.exports = class Account {
 
     get(callback){
 
-        db.list("Account", function(err, data){
+        db.list(tableName, function(err, data){
             if(err){
                 throw err;
             }
@@ -82,12 +82,22 @@ module.exports = class Account {
         });
     }
 
-    getOne(arr, cb){
-        db.selectOne('account', null, null, 'email=? AND password=?', arr, (err, data) => {
-            if(err) {
-                throw err;
-            }
-            cb(data);
-        })
+    // GENERIC VERSION
+    getOne(where, vals, cb){
+        db.selectOne(tableName, null, null, where, vals, cb);
+    }
+
+    getAccountById(id, cb){
+        db.selectOne(tableName, null, null, 'id=?', id, cb);
+    }
+    getAccountByEmail(email, cb){
+        db.selectOne(tableName, null, null, 'email=?', email, cb);
+    }
+    
+    comparePassword(userPassword, hash, cb){
+        bcrypt.compare(userPassword, hash, function(err, isMatch) {
+            if(err) throw err;
+            cb(null, isMatch);
+        });
     }
 };
