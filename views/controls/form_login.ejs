@@ -1,13 +1,13 @@
 
 
-
 <form method="POST" action="Login">
     <div class="dvLogin panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">Sign In</h1>
+        </div>
         <div class="panel-body">
             <img class="img-responsive" 
                 src="https://pbs.twimg.com/profile_images/572161594142887936/j3bpsg6C_400x400.jpeg" />
-                
-            <h1 class="panel-title">Sign In</h1>
 
             <% if(success_msg.length > 0) { %>
                 <div class="alert alert-danger"><%= success_msg %> </div>
@@ -18,15 +18,19 @@
             <% } %>
 
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            <input class="form-control" name="username" type="text" placeholder="Email" />
-            <br />
-            <input class="form-control" name="password" type="password" placeholder="Password" />
-            <br />
-            <div class="pull-left">
-            <button class="btn btn-default">Create Account / Register</button>
+            <div class="input-group">
+                <input class="form-control" name="username" type="text" placeholder="Email" />
+                <span class="input-group-addon" id="basic-addon2">@aoiths.org</span>
             </div>
+            <br />
+            <input class="form-control" name="password" type="password" placeholder="Password (OSIS + Code)" />
+            <br />
+            <div >
+                <button class="btn btn-lg btn-success" style="width: 100%">Sign In</button>
+            </div>
+            <br />
             <div class="pull-right">
-            <button class="btn btn-default">Login</button>
+                Don't have an account? <a href="/Account/Register">Create An Account</a>
             </div>
         </div>
     </div>
