@@ -64,7 +64,7 @@ module.exports = class Account {
     }
 
     remove(id){
-        db.removeById(tableName, this.model.id, (err) => {
+        db.removeById(tableName, id, (err) => {
             if(err){
                 throw(err);
             }

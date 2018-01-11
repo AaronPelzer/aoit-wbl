@@ -7,7 +7,8 @@ module.exports = class School {
         var model = {
             ID: 0,
             name: "",
-            addressId: 0
+            addressId: 0,
+            contactId: 0
         };
 
         function setProperty(obj){
@@ -33,7 +34,7 @@ module.exports = class School {
             console.log("Address inserted ID " + this.lastID);
 
             m.addressId = this.lastID;
-
+            
             db.insert(tableName, m, (err) => {
                 if(err){
                     throw err;
@@ -45,8 +46,8 @@ module.exports = class School {
         })
     }
 
-    selectOne(id, columns, cb){
-        db.selectOne(tableName, null, columns, 'id=?', [id], (err, data) => {
+    selectOne(columns, where, val, cb){
+        db.selectOne(tableName, null, columns, `${where}=?`, [val], (err, data) => {
             if(err){
                 throw err;
             }
@@ -61,6 +62,33 @@ module.exports = class School {
             }
             cb();
         });
+    }
+
+    remove(id){
+        db.removeById(tableName, id, (err) => {
+            if(err){
+                throw err;
+            }
+        })
+    }
+
+    get(cb){
+        db.list(tableName, (err, data) => {
+            if(err){
+                throw err;
+            }
+
+            cb(data);
+        });
+    }
+
+    getOne(id, cb){
+        db.find(tableName, id, (err, data) => {
+            if(err){
+                throw err;
+            }
+            cb(data);
+        })
     }
 }
     
