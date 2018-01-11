@@ -107,7 +107,7 @@ router.post("/Register", csrfProtection, function(req, res) {
 
 router.get("/Confirmation", function(req, res){
 
-    res.render("Account/Confirm", {
+    res.render("account/confirm", {
         title: "Confirm Account"
     });
 

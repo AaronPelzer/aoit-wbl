@@ -8,76 +8,7 @@
     <body>
         <div class="container">
             <form method="POST" action="edit">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group">
-                        <label for="name">School Name</label>
-                        <input type="text" class="form-control" name="tbName" placeholder="Enter School Name">
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control" name="tbAddress" placeholder="Enter School Address">
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group">
-                        <label for="address2">Address 2</label>
-                        <input type="text" class="form-control" name="tbAddress2" placeholder="Enter School Address2">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        <div class="form-group">
-                            <label for="city">City</label>
-                            <input type="text" class="form-control" name="tbCity" placeholder="City">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        <div class="form-group">
-                            <label for="state">State</label>
-                            <input type="text" class="form-control" name="tbState" placeholder="State">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4   ">
-                        <div class="form-group">
-                            <label for="zip">Zip</label>
-                            <input type="text" class="form-control" name="tbZip" placeholder="Zip">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="text" class="form-control" name="tbPhone" placeholder="Enter Phone Number">
-                    </div>
-                </div>
-                
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group">
-                        <label for="fax">Fax</label>
-                        <input type="text" class="form-control" name="tbFax" placeholder="Enter Fax">
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group">
-                        <label for="website">Website</label>
-                        <input type="text" class="form-control" name="tbWebsite" placeholder="Enter School Website">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <input type="file" name="tbImage" />
-                </div>
-            
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <% include ./form.ejs %>
             </form>
         </div>
     </body>
