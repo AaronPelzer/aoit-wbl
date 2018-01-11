@@ -45,12 +45,21 @@ module.exports = class School {
         })
     }
 
-    update(id, items, cb){
-        db.updateById(tableName, id, items, (err, data) => {
+    selectOne(id, columns, cb){
+        db.selectOne(tableName, null, columns, 'id=?', [id], (err, data) => {
             if(err){
                 throw err;
             }
             cb(data);
+        })
+    }
+
+    update(id, items, cb){
+        db.updateById(tableName, id, items, (err) => {
+            if(err){
+                throw err;
+            }
+            cb();
         });
     }
 }

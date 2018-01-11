@@ -67,7 +67,39 @@ router.post("/schools/new", function(req, res) {
             }
         });
     }
+});
 
+router.get("/schools/:id/edit", (req, res) => {
+    res.render("admin/school/edit", {
+        title: "Edit school"
+    });
+});
+
+router.post("/schools/:id/edit", (req, res) => {
+    let s = new School();
+    let schoolData = req.body.tbName;
+    let addressData = {
+        address: req.body.tbAddress.trim(),
+        address2: req.body.tbAddress2.trim(),
+        city: req.body.tbCity.trim(),
+        state: req.body.tbState.trim(),
+        zip: req.body.tbZip.trim()
+    }
+
+    for(var key in addressData){
+        if(addressData[key] == '' || addressData[key] == null){
+            delete addressData[key];
+        }
+    }
+
+    s.update(req.params.id, {name: schoolData}, () => {
+        s.selectOne(req.params.id, { 'addressId': 'id' }, (data) => {
+            let a = new Address(); 
+            a.update(data.id, addressData, () => {
+                res.send("success!");
+            });
+        })
+    });
 });
 
 module.exports = router;

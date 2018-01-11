@@ -36,12 +36,11 @@ module.exports = class Profile {
         });
     }
 
-    update(id, items, cb){
-        db.updateById(tableName, id, items, (err, data) => {
+    update(id, items){
+        db.updateById(tableName, id, items, (err) => {
             if(err){
                 throw err;
             }
-            cb(data);
         })
     }
 

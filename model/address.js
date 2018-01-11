@@ -31,15 +31,14 @@ module.exports = class Address {
         });
     }
 
-    update(id, items, cb){
-        db.updateById(tableName, id, items, (err, data) => {
+    update(id, items){
+        db.updateById(tableName, id, items, (err) => {
             if(err){
                 throw err;
             }
-            cb(data);
         });
     }
-
+    
     get(cb){
         db.list(tableName, (err, data) => {
             if(err){
