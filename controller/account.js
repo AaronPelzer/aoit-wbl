@@ -45,7 +45,7 @@ router.post("/Register", csrfProtection, function(req, res) {
     if(err){
         console.log(err);
         
-        res.render("Account/Register", {
+        res.render("account/register", {
             title: "Register Account",
             csrfToken: req.csrfToken(),
             errors: err
