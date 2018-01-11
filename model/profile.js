@@ -37,7 +37,12 @@ module.exports = class Profile {
     }
 
     update(id, items, cb){
-
+        db.updateById(tableName, id, items, (err, data) => {
+            if(err){
+                throw err;
+            }
+            cb(data);
+        })
     }
 
     get(callback){
