@@ -3,6 +3,17 @@
 <style>
 </style>
 
+
+
+<% 
+    if(errors){ 
+        errors.forEach(function(e){
+    %>
+        <div class="alert alert-danger"><%= e.msg %></div>
+    <%
+        });    
+    }
+%>
 <form method="POST" action="Register">
 <div class="row loginForm">
 
@@ -10,18 +21,45 @@
 <!--
 <hr style="clear: both; display: block; width: 96%; background-color: grey; height: 1px;">
 -->
+    
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label>Profile</label>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <div class="form-group">
+            <label for="tbFirst">First Name *</label>
+            <input class="form-control" name="tbFirst" type="text" placeholder="First"   />
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="tbOsis">Middle</label>
+            <input class="form-control" name="tbMiddle" type="text" placeholder="Middle"  />
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="tbOsis">Last Name *</label>
+            <input class="form-control" name="tbLast" type="text" placeholder="Last"   />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
         <div class="form-group">
             <label for="tbOsis">OSIS</label>
-            <input class="form-control" name="tbOsis" type="text" placeholder="OSIS"  required />
+            <input class="form-control" name="tbOsis" type="text" placeholder="OSIS" value="123456789"   />
         </div>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
         <div class="form-group">
             <label for="tbOsis">Confirm OSIS</label>
-            <input class="form-control" name="tbCOsis" type="text" placeholder="OSIS"  required />
+            <input class="form-control" name="tbCOsis" type="text" placeholder="OSIS" value="123456789"  />
         </div>
     </div>
     
@@ -47,7 +85,7 @@
         <div class="form-group">
             <label for="tbEmail">School Email</label>
             <div class="input-group">
-                <input class="form-control" name="tbEmail" type="text" placeholder="user"  required />
+                <input class="form-control" name="tbEmail" type="text" placeholder="user"   />
                 <spaN class="input-group-addon">@aoiths.org</span>
             </div>
         </div>
@@ -57,14 +95,14 @@
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
         <div class="form-group">
             <label for="tbPass">Password</label>
-            <input class="form-control" name="tbPass" type="password" placeholder="******" required />
+            <input class="form-control" name="tbPass" type="password" placeholder="******"  />
         </div>
     </div>
 
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
         <div class="form-group">
             <label for="tbCPass">Confirm Password</label>
-            <input class="form-control" name="tbCPass" type="password" placeholder="******" required />
+            <input class="form-control" name="tbCPass" type="password" placeholder="******"  />
         </div>
     </div>
 </div>
