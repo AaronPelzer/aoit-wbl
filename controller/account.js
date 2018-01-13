@@ -107,6 +107,9 @@ router.post("/Register", csrfProtection, function(req, res) {
 
 router.get("/Confirmation", function(req, res){
 
+    var mail = require('../lib/nodeMailer');
+    mail.sendConfirmationLink('mr.pelzer@aoiths.org', 'Aaron', 'google.com')
+
     res.render("account/confirm", {
         title: "Confirm Account"
     });
