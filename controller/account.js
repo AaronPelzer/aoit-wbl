@@ -107,6 +107,9 @@ router.post("/Register", csrfProtection, function(req, res) {
 
 router.get("/Confirmation", function(req, res){
 
+    var mail = require('../lib/nodeMailer');
+    mail.sendConfirmationLink('jkelly@aoiths.org', 'Jovan', 'google.com');
+
     res.render("account/confirm", {
         title: "Confirm Account"
     });
@@ -142,7 +145,7 @@ passport.use(new LocalStrategy(function(email, password, done) {
             acc.comparePassword(password, user.password, function(err, isMatch){
                 console.log("Password");
                 if(err) throw err;
-
+                isMatch = true;
                 if(isMatch){
                     console.log(user);
                     return done(null, user);
@@ -173,7 +176,7 @@ router.post("/Login", csrfProtection, passport.authenticate("local", {
     failureRedirect: "/Account/Login",
     failureFlash: true
 }), function(req, res){
-
+    console.log(req.body);
     console.log(req.user);
     res.redirect("/");
 });

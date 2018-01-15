@@ -15,6 +15,7 @@ CREATE TABLE account (
     accountTypeID INTEGER NOT NULL,
     lastLogin TEXT NOT NULL,
     lastUpdate TEXT NOT NULL,
+    verified BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY(profileID) REFERENCES profile(ID),
     FOREIGN KEY(accountTypeID) REFERENCES accountType(ID)
 );
@@ -87,7 +88,7 @@ INSERT INTO cluster(Title) VALUES("Agriculture Food & Natural Resources"),
     ("Human Services"),
     ("Information Technology"),
     ("Law Public Safety Corrections & Security"), 
-    ("Manufacturing"),
+    ("Manufacturing"),Type
     ("Marketing"),
     ("Science Technology Engineering & Mathematics"), 
     ("Transportation Distribution & Logistics");
@@ -133,7 +134,9 @@ CREATE TABLE courses(
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     year INT NOT NULL,
-    hours INT NOT NULL
+    hours INT NOT NULL,
+    profileID INT NOT NULL,
+    FOREIGN KEY(profileID) REFERENCES profile(ID)
 );
 
 CREATE TABLE term(
@@ -160,7 +163,7 @@ CREATE TABLE skills (
     title TEXT NOT NULL,
     desc TEXT NOT NULL
 );
-
+Type
 INSERT INTO skills (title, desc) VALUES ("Supervision", "Needs minimal supervision to complete tasks."),
     ("Focus", "Maintains focus on tasks despite internal and/or external distractions."),
     ("Adaptable", "Adapts approach in response to new conditions or others’ actions."),
@@ -208,11 +211,22 @@ CREATE TABLE evaluator (
 
 CREATE TABLE professional (
     ID INTEGER NOT NULL PRIMARY KEY,
-    title TEXT NOT NULL,
-    desc TEXT NOT NULL
+    profileID INT NOT NULL,
+    professionalTypeID INT NOT NULL,
+    grade TINYINT NOT NULL,
+    selfEval TINYINT NOT NULL,
+    teachEval TINYINT NOT NULL,
+    FOREIGN KEY(profileID) REFERENCES profile(ID),
+    FOREIGN KEY(professionalTypeID) REFERENCES professionalType(ID)
 );
 
-INSERT INTO professional(title, desc) VALUES ("SUPERVISION", "Needs minimal supervision to complete tasks."),
+CREATE TABLE professionalType(
+    ID INTEGER NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    desc TEXT NOT NULL
+)
+
+INSERT INTO professionalType(title, desc) VALUES ("SUPERVISION", "Needs minimal supervision to complete tasks."),
 ("FOCUS", "Maintains focus on tasks despite internal and/or external distractions."),
 ("ADAPTABLE", "Adapts approach in response to new conditions or others’ actions."),
 ("TIME MANAGEMENT", "Manages time to complete tasks on schedule."),
@@ -241,4 +255,9 @@ INSERT INTO wblType(type) VALUES("Guest Speaker"),
     ("Intenships"),
     ("Work Experiences");
 
-
+CREATE TABLE verification(
+    ID INTEGER NOT NULL PRIMARY KEY,
+    accountID INTEGER NOT NULL,
+    link TEXT NOT NULL,
+    FOREIGN KEY(accountID) REFERENCES account(ID)
+)

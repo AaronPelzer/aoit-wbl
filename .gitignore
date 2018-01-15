@@ -1,7 +1,10 @@
-.vscode/
+.vscode/*
 public/uploads/
+public/uploads/*
 node_modules/
+node_modules/*
 .DS_Store
 Thumbs.db
 *.log
 .notes
+config.js

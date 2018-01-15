@@ -24,7 +24,47 @@
       
     }
   </style>
-    
 
+  <div class="container">
+    <br>
+    <div class="row" id="grid">
+      
+    </div>
+  </div>  
+
+  <script>
+      var data = [{
+        title: "Basic Information",
+        link: "Student/Info"
+      }, {
+        title: "Courses",
+        link: "Student/Courses"
+      }, {
+        title: "Professional Skills",
+        link: ""
+      }, {
+        title: "Technical Skills",
+        link: ""
+      }, {
+        title: "Work-Based Learning Activities",
+        link: ""
+      }, {
+        title: "Industry-Based Assessments [Certifications]",
+        link: ""
+      }]
   
+      console.log("Reach");
+
+      var html = "";
+
+      for(var i = 0; i < data.length; i++){
+        html += `<div style="border: solid black 1px; height: 100px" class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+            <center><a href="${data[i].link}">${data[i].title}</a></center>
+          </div>`
+      }
+
+
+      document.querySelector("#grid").innerHTML = html;
+  
+    </script>
 <% include ../footer.ejs %>

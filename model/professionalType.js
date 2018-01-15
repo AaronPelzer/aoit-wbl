@@ -1,11 +1,12 @@
 const db = require('../lib/sqlite-wrapper'),
-      tableName = "wblType";
+      tableName = 'professionalType';
 
-module.exports = class wblType {
-    constructor(wblType = {}){
-        let model = {
+module.exports = class ProfessionalType {
+    constructor(professionalType = {}){
+        var model = {
             ID: 0,
-            type: ""
+            skill: "",
+            desc: ""
         }
 
         function setProperty(obj){
@@ -14,18 +15,13 @@ module.exports = class wblType {
             }
         }
 
-        setProperty(model);
+        setProperty(professionalType);
 
         this.model = model;
     }
 
     save(cb){
-        db.insert(tableName, this.model, (err) => {
-            if(err){
-                throw err;
-            }
-            cb();
-        })
+        db.insert(tableName, this.model, cb);
     }
 
     update(id, items){
@@ -34,6 +30,10 @@ module.exports = class wblType {
                 throw err;
             }
         });
+    }
+
+    get(cb){
+        db.list(tableName, cb);
     }
 
     remove(id, cb){

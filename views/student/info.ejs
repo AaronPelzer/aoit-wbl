@@ -1,0 +1,75 @@
+<% include ../header.ejs %>
+
+    <!-- >Student Name ( First Middle Last) ID / OSIS CTE Cluster: Agriculture Food & Natural Resources Architecture & Construction Arts A/V Technology & Communications Business Management & Administration Education & Training Finance Government & Public Administration
+Health Science Hospitality & Tourism Human Services Information Technology Law Public Safety Corrections & Security Manufacturing Marketing Science Technology Engineering & Mathematics Transportation Distribution & Logistics DOB Gender Male Female Other
+* Race White Black Asian Native American Alaska Native Native Hawaiian Pacific Islander Multi-Racial Other Hispanic Yes No IDEA Status Service Required No Service -->
+
+    <div class="container">
+        <form> 
+            <div class="row">
+                <div class="">
+                    <input class="form-control" name="tbDOB" type="text" placeholder="Date of Birth" />
+                </div>
+            </div>
+            
+            <div class="row tech">
+                <div class="col-md-5">
+                    <input class="form-control" name="tbTechSkills" type="text" placeholder="Technical Skills" />
+                </div>
+                <label>Grade Level</label>
+                <div class="col-md-3">
+                    <select class="ddlGrade"></select>
+                </div>
+                <div class="col-md-3">
+                    <label>Scale</label>
+                    <select class="ddlScale">
+                </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+
+    <script>
+        function el(name, all) {
+            if (all) {
+                return document.querySelectorAll(name);
+            } else {
+                return document.querySelector(name);
+            }
+        }
+
+
+        function createNumericSelectMenu(min, max, newCounter) {
+            var html = "";
+            var counter = 0;
+
+
+            for (var i = min; i < max; i++) {
+                if (newCounter) {
+                    html += "<option value='" + counter + "'>" + i + "</div>";
+                    counter++;
+                } else {
+                    html += "<option value='" + i + "'>" + i + "</div>";
+                }
+            }
+            return html;
+        }
+
+
+        function updateHTML(name, content) {
+            el(name).innerHTML = content;
+        }
+
+        function init() {
+            updateHTML(".ddlGrade", createNumericSelectMenu(9, 13, true));
+            updateHTML(".ddlScale", createNumericSelectMenu(0, 5));
+        }
+
+
+
+
+        init();
+    </script>
+
+    <% include ../footer.ejs %>
