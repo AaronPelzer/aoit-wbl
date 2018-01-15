@@ -1,0 +1,8 @@
+{
+    "host": "mysql1008.ixwebhosting.com",
+    "port": "3306",
+    "user": "C4394_aoit",
+    "password": "aoitAOIT999!",
+    "database": "C4394_aoit",
+    "insecureAuth": true
+}

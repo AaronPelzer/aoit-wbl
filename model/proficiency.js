@@ -1,20 +1,21 @@
 const db = require('../lib/sqlite-wrapper'),
-      tableName = "wblType";
+      tableName = "proficiency";
 
-module.exports = class wblType {
-    constructor(wblType = {}){
+module.exports = class Proficiency {
+    constructor(proficiency = {}){
         let model = {
             ID: 0,
-            type: ""
+            level: 0,
+            desc: ""
         }
 
         function setProperty(obj){
-            for(var p in model){
+            for(var p in Object(model)){
                 model[p] = obj[p];
             }
         }
 
-        setProperty(model);
+        setProperty(proficiency);
 
         this.model = model;
     }
@@ -33,10 +34,19 @@ module.exports = class wblType {
             if(err){
                 throw err;
             }
-        });
+        })
     }
 
-    remove(id, cb){
-        db.removeById(tableName, id, cb);
+    get(cb){
+        db.list(tableName, (err, data) => {
+            if(err){
+                throw err;
+            }
+            cb(data);
+        })
+    }
+
+    remove(db){
+        db.removeById(tableName, id, cb)
     }
 }

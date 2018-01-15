@@ -6,11 +6,11 @@ module.exports = class Courses {
         let model = {
             ID: 0,
             title: "",
-            terms: "",
             year: 0,
             hours: 0,
             comments: "",
-            profileID: 0
+            profileID: 0,
+            termTypeID: 0
         }
 
         function setProperty(obj){
