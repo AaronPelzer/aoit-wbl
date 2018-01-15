@@ -3,6 +3,11 @@ var express = require("express"),
     uploadUtil = require('../util/upload.js');
 
 router.get("/", function(req, res) {
+    if(!req.user){
+        res.redirect('account/login');
+    }
+
+
     res.render("main/index", {
         title: "Index"
     });

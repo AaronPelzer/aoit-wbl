@@ -46,10 +46,7 @@
             <input class="form-control" name="tbHours" type="number" placeholder="123" />
         </div>
     </div>
-
 </div>
-
-
 
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -78,7 +75,7 @@
     <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
         <button class="btn btn-danger btnBack">Back</button>
         <div class="" style="float: right; !important"> 
-            <button class="btn btn-default">Save</button>
+            <button class="btn btn-default" id="save">Save</button>
             <button class="btn btn-success" disabled>Next</button>
         </div>
     </div>
@@ -104,6 +101,10 @@
         var cols = createCol( courses[ courses.length - 1].title );
         el(".dvEntered").insertAdjacentHTML("beforeEnd", createRow(cols));
     });
+
+    addListener("#save", "click", () => {
+        
+    })
 </script>
 
 <% include ../footer.ejs %>

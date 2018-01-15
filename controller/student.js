@@ -77,7 +77,13 @@ router.get("/Profile", isAuthenticated, function(req, res) {
         */
 });
 
+router.get('/Info', function(req, res){
+    console.log("Info");
 
+    res.render("student/info", {
+        title: "Basic Information"
+    })
+})
 
 router.get("/Courses", function(req, res) {
     console.log("Courses");
@@ -87,6 +93,10 @@ router.get("/Courses", function(req, res) {
     });
 });
 
+router.post("/updateCourses", function(req, res){
+    var data = req.body;
+    console.log(data);
+})
 
 router.get("/Technical", function(req, res) {
     console.log("Technical");
