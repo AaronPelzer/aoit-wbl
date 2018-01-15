@@ -1,5 +1,5 @@
 const mysql = require('mysql'),
-    settings = require('./settings.json');
+    settings = require('../config').db;
 
 let db;
 
