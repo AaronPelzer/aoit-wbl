@@ -1,11 +1,12 @@
 const db = require('../lib/sqlite-wrapper'),
-      tableName = 'race';
+      tableName = 'comment';
 
-    module.exports = class Race {
-    constructor(race = {}){
+module.exports = class Comment {
+    constructor(comment = {}){
         let model = {
             ID: 0,
-            race: ""
+            courseId: 0,
+            message: ""
         }
     
         function setProperty(obj){

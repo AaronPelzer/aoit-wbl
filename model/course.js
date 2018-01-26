@@ -1,22 +1,27 @@
 const db = require('../lib/sqlite-wrapper'),
-      tableName = 'race';
+    tableName = 'course';
 
-    module.exports = class Race {
-    constructor(race = {}){
+module.exports = class Course { 
+    constructor(course = {}, profileID){
         let model = {
             ID: 0,
-            race: ""
+            title: "",
+            year: 0,
+            hours: 0,
+            profileID: 0,
+            termTypeID: 0
         }
-    
+
         function setProperty(obj){
             for(var p in Object(model)){
                 model[p] = obj[p];
             }
         }
 
-        setProperty(contactType);
+        setProperty(course);
 
         this.model = model;
+        this.model.profileID = profileID;
     }
 
     save(cb){
@@ -25,7 +30,7 @@ const db = require('../lib/sqlite-wrapper'),
                 throw err;
             }
             cb();
-        })
+        });
     }
 
     update(id, items){
@@ -37,11 +42,12 @@ const db = require('../lib/sqlite-wrapper'),
     }
 
     get(profileId, cb){
-        db.list(tableName, cb);
-    }
-
-    getOneById(id, cb){
-        db.selectOne(tableName, null, null, 'id=?', id, cb);
+        db.select(tableName, null, null, 'profileID=?', [profileId], (err, data) => {
+            if(err){
+                throw err;
+            }
+            cb(data);
+        });
     }
 
     remove(id, cb){
