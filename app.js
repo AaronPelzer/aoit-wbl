@@ -112,6 +112,7 @@ app.use("/SSC/evaluation", function(req, res) {
 });
 */
 
+// const db = require('./db.js');
 app.listen(port, function() {
     console.log("Server started on " + port);
 });

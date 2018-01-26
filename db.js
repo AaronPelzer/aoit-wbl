@@ -1,5 +1,5 @@
 const mysql = require('mysql'),
-    settings = require('../config').db;
+    settings = require('./config').db;
 
 let db;
 
