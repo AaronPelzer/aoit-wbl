@@ -5,12 +5,11 @@ var express = require("express"),
 router.get("/", function(req, res) {
     if(!req.user){
         res.redirect('account/login');
+    } else {
+        res.render("main/index", {
+            title: "Index"
+        });
     }
-
-
-    res.render("main/index", {
-        title: "Index"
-    });
 });
 
 router.get("/contact", function(req, res) {
