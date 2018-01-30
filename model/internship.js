@@ -1,31 +1,32 @@
 const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-      tableName = 'hispanic';
+      tableName = 'internship';
 
-module.exports = class Hispanic {
-    constructor(hispanic = {}){
+module.exports = class Internship {
+    constructor(internship = {}, profileID){
         let model = {
-            ID: 0,
-            selected: 0
+            desc: "",
+            date: "",
+            length: 0,
+            company: "",
+            skillsLearned: "",
+            profileID: 0
         }
 
         function setProperty(obj){
-            for(var p in Object(model)){
+            for(var p in Object(model) ) {
                 model[p] = obj[p];
             }
         }
 
-        setProperty(hispanic);
-
+        setProperty(internship);
         this.model = model;
-        this.model.profileId = profileId;
     }
 
-    save(cb){
-        db.insert(tableName, this.model, (err) => {
+    save(){
+        db.insert(tableName, this.model, function(err){
             if(err){
                 throw err;
             }
-            cb();
         });
     }
 
@@ -34,11 +35,21 @@ module.exports = class Hispanic {
             if(err){
                 throw err;
             }
+        })
+    }
+
+    get(callback){
+
+        db.list(tableName, function(err, data){
+            if(err){
+                throw err;
+            }
+            callback(data);
         });
     }
 
-    get(cb){
-        db.list(tableName, function(err, data){
+    getOne(id, cb){
+        db.find(tableName, id, function(err, data){
             if(err){
                 throw err;
             }

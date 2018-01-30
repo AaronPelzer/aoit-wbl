@@ -1,11 +1,11 @@
-var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-    Profile = require("./profile.js"),
-    tableName = "account",
-    bcrypt = require("bcryptjs");
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+      Profile = require("./profile.js"),
+      tableName = "account",
+      bcrypt = require("bcryptjs");
 
 module.exports = class Account {
     
-    constructor(account = {}, profile = {}){
+    constructor(account = {}, profileID){
         var model = {
             ID: 0,
             osis: "",
@@ -15,7 +15,7 @@ module.exports = class Account {
             profileID: 0,
             accountTypeId: 0,
             lastLogin: "",
-            lastUpdate: ""
+            lastUpdated: ""
         };
 
         function setProperty(obj){
@@ -25,61 +25,27 @@ module.exports = class Account {
             }
         }
 
-        //if(Object.keys(account).length > 0 && Object.keys(profile).length ){
-            setProperty(account);
-        //}
+        setProperty(account);
 
         this.model = model;
-        this.profile = profile;
+        this.model.profileID = profileID;
     }
 
     save(cb){
-        var m = this.model;
-
-        db.insert("profile", this.profile, function(err){
-            if(err){
-                throw err;
-            }
-
-            console.log("Profile Inserted ID " + this.lastID);
-
-            m.profileID = this.lastID;
-
-            db.insert("account", m, function(err){
-                if(err){
-                    throw err;
-                }
-                console.log("Account Inserted ID " + this.lastID);
-                cb({status: 1});
-            });
-        });
+        db.insert(tableName, this.model, cb);
     }
 
-    update(id, obj){
-        db.updateById(tableName, id, obj, (err) => {
-            if(err){
-                console.log(err);
-            }
-        })
+    update(id, items, cb){
+        db.updateById(tableName, id, items, cb);
     }
 
     remove(id){
-        db.removeById(tableName, id, (err) => {
-            if(err){
-                throw(err);
-            }
-        })
+        db.removeById(tableName, id, cb);
     }
 
-    get(callback){
+    get(cb){
 
-        db.list(tableName, function(err, data){
-            if(err){
-                throw err;
-            }
-
-            callback(data);
-        });
+        db.list(tableName, cb);
     }
 
     // GENERIC VERSION

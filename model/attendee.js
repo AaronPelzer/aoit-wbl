@@ -1,42 +1,41 @@
 const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-      tableName = 'cluster';
+      tableName = "attendee";
 
-module.exports = class Cluster {
-    constructor(cluster = {}){
+module.exports = class Attendee {
+    constructor(attendee = {}){
         let model = {
-            ID: 0,
-            type: ""
+            eventID: 0,
+            profileID: 0
         }
 
         function setProperty(obj){
-            for(var p in Object(model)){
+            for(var p in Object(model) ) {
+                console.log( `${p} = ${obj}`);
                 model[p] = obj[p];
             }
         }
 
-        setProperty(cluster);
-
+        setProperty(attendee);
         this.model = model;
     }
 
-    save(cb){
+    save(){
         db.insert(tableName, this.model, cb);
     }
 
     update(id, items){
-        db.updateById(tableName, id, items, cb);
+        db.updateById(tableName, id, items, cb)
     }
 
-    get(profileId, cb){
+    get(callback){
         db.list(tableName, cb);
     }
 
-    getOneById(id, cb){
-        db.selectOne(tableName, null, null, 'id=?', id, cb);
+    getOne(id, cb){
+        db.find(tableName, id, cb);
     }
 
     remove(id, cb){
         db.removeById(tableName, id, cb);
     }
-    
 }

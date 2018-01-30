@@ -56,9 +56,9 @@ router.post("/Register", csrfProtection, function(req, res) {
         var d = new Date();
 
         let p = new Profile({
-            firstName: post.tbFirst.trim(),
-            midName: post.tbMiddle.trim(),
-            lastName: post.tbLast.trim(),
+            fName: post.tbFirst.trim(),
+            mName: post.tbMiddle.trim(),
+            lName: post.tbLast.trim(),
             genderId: 0,
             dob: "2018/01/10"
         });
@@ -70,32 +70,31 @@ router.post("/Register", csrfProtection, function(req, res) {
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(pass, salt, function(err, hash) {
                 
+                p.save((err, data) => {
+                    let a = new Account({
+                        osis: post.tbOsis.trim(),
+                        email: post.tbEmail.trim() + "@aoiths.org",
+                        password: hash,
+                        dateCreated: d.getDate(),
+                        profileID: 0,
+                        accountTypeId: 1,
+                        lastLogin: "",
+                        lastUpdated: ""
+                    }, data['MAX(ID)']);
 
-                let a = new Account({
-                    osis: post.tbOsis.trim(),
-                    email: post.tbEmail.trim() + "@aoiths.org",
-                    password: hash,
-                    dateCreated: d.getDate(),
-                    profileID: 0,
-                    accountTypeId: 1,
-                    lastLogin: "",
-                    lastUpdate: ""
-                }, p.model);
-
-                console.log(a.model);
-                
-                // COMMENTED OUT FOR PRIOR TESTING
-                a.save(function(status){
-                    if(status){
-                        res.render("/Confirmation", {
-                            title: "Confirm Account",
-                        });
-                    }
-                });
-
-
-                req.flash("success_msg", "Please check your email to validate your account");
-                res.redirect("Confirmation");
+                    // COMMENTED OUT FOR PRIOR TESTING
+                    a.save((err, status) => {
+                        if(err){
+                            res.send("error");
+                        } else {
+                            res.render("/Confirmation", {
+                                title: "Confirm Account",
+                            });
+                        }
+                    });
+                    req.flash("success_msg", "Please check your email to validate your account");
+                    res.redirect("Confirmation");
+                })
             });
         });
     
@@ -107,8 +106,8 @@ router.post("/Register", csrfProtection, function(req, res) {
 
 router.get("/Confirmation", function(req, res){
 
-    var mail = require('../lib/nodeMailer');
-    mail.sendConfirmationLink('jkelly@aoiths.org', 'Jovan', 'google.com');
+    // var mail = require('../lib/nodeMailer');
+    // mail.sendConfirmationLink('jkelly@aoiths.org', 'Jovan', 'google.com');
 
     res.render("account/confirm", {
         title: "Confirm Account"

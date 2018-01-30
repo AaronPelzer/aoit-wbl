@@ -1,4 +1,4 @@
-const db = require('../lib/sqlite-wrapper'),
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
       tableName = 'race';
 
     module.exports = class Race {

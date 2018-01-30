@@ -72,6 +72,7 @@ function addNewItem(arr, obj = {}, model) {
 
         obj[Object.keys(obj)[idx]] = f[idx];
     });
+    // JSON.stringify(obj);
     model.push(obj);
 }
 

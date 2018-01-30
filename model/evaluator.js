@@ -1,15 +1,15 @@
-const db = require('../lib/sqlite-wrapper'),
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
       tableName = "evaluator";
 
 module.exports = class Evaluator {
-    constructor(evaluator = {}, profileID){
+    constructor(evaluator = {}, comment = {}, profileID){
         var model = {
             ID: 0,
-            firstName: "",
-            lastName: "",
+            fName: "",
+            lName: "",
             title: "",
             grade: 0,
-            comment: "",
+            commentID: 0,
             profileID: 0
         }
 

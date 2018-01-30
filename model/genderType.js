@@ -1,11 +1,11 @@
-const db = require('../lib/sqlite-wrapper'),
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
       tableName = 'genderType';
 
 module.exports = class genderType {
     constructor(genderType = {}){
         let model = {
             ID: 0,
-            type: ""
+            gender: ""
         }
     
         function setProperty(obj){

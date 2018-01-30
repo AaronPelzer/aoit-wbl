@@ -1,7 +1,10 @@
-var router = require("express")(),
-    sqlite = require('sqlite3').verbose(),
-    db = new sqlite.Database('./data'),
-    uploadUtil = require('../util/upload.js');
+const router = require("express")(),
+      async = require('async'),
+      Course = require('../model/course'),
+      Comment = require('../model/comment'),
+      Student = require('../model/profile'),
+      TechSkill = require('../model/technical'),
+      Assessment = require('../model/assessment');
 
 
 
@@ -14,36 +17,6 @@ function isAuthenticated(req, res, next){
         res.redirect("/Account/Login");
     }
 }
-
-function processData() {
-
-}
-
-function getCluster() {
-    var q = 'SELECT * FROM cluster';
-    var cluster = [];
-
-    execute(q, [], function(err, data) {
-
-        for (var x = 0; x < data.length; x++) {
-
-            cluster.push(data[x]);
-        }
-
-        return data;
-    });
-
-    return cluster;
-}
-
-// console.log(getCluster());
-
-// CALLBACK(ERR)
-// CALLBACK(ERR, DATA)
-function execute(query, params, callback) {
-    db.prepare(query).all(params, callback);
-}
-
 
 router.get("/Profile", isAuthenticated, function(req, res) {
 
@@ -65,33 +38,58 @@ router.get("/Profile", isAuthenticated, function(req, res) {
 
         });
     });
-
-
-    /*
-        execute('SELECT * FROM cluster', [], function(err, data) {
-            res.render("student/profile", {
-                title: "Profile",
-                results: payload
-            });
-        });
-        */
 });
 
 router.get('/Info', function(req, res){
-    console.log("Info");
-
-    res.render("student/info", {
-        title: "Basic Information"
-    })
+    let student = new Student();
+    student.getOne(req.user.profileID, (err, data) => {
+        res.render("student/info", {
+            title: "Basic Information",
+            info: data[0]
+        })
+    });
 })
 
 router.get("/Courses", function(req, res) {
-    console.log("Courses");
-
-    res.render("student/courses", {
-        title: "CTE Courses"
+    let course = new Course();
+    course.get(req.user.profileID, (err, data) => {
+        res.render("student/courses", {
+            title: "Student Courses",
+            courses: data
+        });
     });
 });
+
+router.post("/newCourse", function(req, res){
+    let p = req.body;
+    for(var i in p){
+        let c = new Comment({
+            comment: p[i].comment
+        });
+
+        async.waterfall([
+            (cb) => {
+                c.save((err, data) => {
+                    cb(err, data['MAX(ID)']);
+                });
+            }, (commentID, cb) => {
+                let course = new Course({
+                    title: p[i].title,
+                    year: p[i].year,
+                    hours: p[i].hours,
+                    termID: p[i].term   
+                }, commentID, req.user.profileID);    
+
+                course.save((err) => {
+                    cb(err, "done");
+                });
+            }
+        ], (err, result) => {
+            if(err) throw err;
+            res.redirect('/courses');
+        });
+    }
+})
 
 router.post("/updateCourses", function(req, res){
     var data = req.body;
@@ -99,16 +97,44 @@ router.post("/updateCourses", function(req, res){
 })
 
 router.get("/Technical", function(req, res) {
-    console.log("Technical");
-
-    res.render("student/technical", {
-        title: "Technical Skills"
+    let t = new TechSkill();
+    t.get(req.user.profileID, (err, data) => {
+        res.render("student/technical", {
+            title: "Technical Skills",
+            techSkills: data 
+        });
     });
 });
 
-router.post("/Technical", (req, res) => {
-    console.log("HIT");
-    console.log(req.body);
+router.post("/newTech", (req, res) => {
+    console.log('-----------------reached');
+    let p = req.body;
+    for(var i in p){
+        let a = new Assessment({
+            selfEval: p[i].scale,
+            grade: p[i].grade
+        });
+
+        async.waterfall([
+            (cb) => {
+                a.save((err, data) => {
+                    cb(err, data['MAX(ID)']);
+                    console.log(data);
+                });
+            }, (assessmentID, cb) => {
+                let techSkill = new TechSkill({
+                    skill: p[i].skill   
+                }, assessmentID, req.user.profileID);    
+
+                techSkill.save((err) => {
+                    cb(err, "done");
+                });
+            }
+        ], (err, result) => {
+            if(err) throw err;
+            res.redirect('/technical');
+        });
+    }
 });
 
 
