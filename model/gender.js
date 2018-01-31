@@ -1,7 +1,7 @@
 const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-      tableName = 'genderType';
+      tableName = 'gender';
 
-module.exports = class genderType {
+module.exports = class gender {
     constructor(genderType = {}){
         let model = {
             ID: 0,
@@ -14,29 +14,19 @@ module.exports = class genderType {
             }
         }
 
-        setProperty(contactType);
-
+        setProperty(genderType);
         this.model = model;
     }
 
     save(cb){
-        db.insert(tableName, this.model, (err) => {
-            if(err){
-                throw err;
-            }
-            cb();
-        })
+        db.insert(tableName, this.model, cb);
     }
 
     update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        });
+        db.updateById(tableName, id, items, cb);
     }
 
-    get(profileId, cb){
+    get(cb){
         db.list(tableName, cb);
     }
 

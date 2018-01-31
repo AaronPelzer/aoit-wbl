@@ -27,7 +27,7 @@ module.exports = class Cluster {
         db.updateById(tableName, id, items, cb);
     }
 
-    get(profileId, cb){
+    get(cb){
         db.list(tableName, cb);
     }
 

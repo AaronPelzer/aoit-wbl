@@ -87,7 +87,7 @@ INSERT INTO cluster(title) VALUES("Agriculture Food & Natural Resources"),
     ("Human Services"),
     ("Information Technology"),
     ("Law Public Safety Corrections & Security"), 
-    ("Manufacturing"),Type
+    ("Manufacturing"),
     ("Marketing"),
     ("Science Technology Engineering & Mathematics"), 
     ("Transportation Distribution & Logistics");
@@ -207,7 +207,7 @@ CREATE TABLE ideaStatus (
     status TEXT NOT NULL
 );
 
-INSERT INTO ideaStatusTypes(title) VALUES("Service Required"),
+INSERT INTO ideaStatus(status) VALUES("Service Required"),
     ("No Service");
 
 -- WBL Activities

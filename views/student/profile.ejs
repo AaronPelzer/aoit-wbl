@@ -1,126 +1,124 @@
 <% include ../header.ejs %>
 
 
+<form method="POST" action="/student/info/edit">
+    <div class="row">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="form-group">
+                <label for="tbDOB">Date of Birth</label>
+                <input class="form-control" name="tbDOB" type="date" placeholder="MM/DD/YYYY" />
+            </div>
+        </div>
 
-<div class="row">
-
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        <div class="form-group">
-            <label for="tbDOB">Date of Birth</label>
-            <input class="form-control" name="tbDOB" type="text" placeholder="MM/DD/YYYY" />
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="form-group">
+                <label for="ddlGender">Gender</label>
+                <select class="form-control" name="tbGender" >
+                    <option></option>
+                    <% for(var i=0; i<results.gender.length; i++) { %>
+                        <% if(results.gender[i].ID == results.student.genderID) { %>
+                            <option value="<%= results.gender[i].ID %>" selected><%= results.gender[i].gender %></option>
+                        <% } else {%>
+                            <option value="<%= results.gender[i].ID %>"><%= results.gender[i].gender %></option>
+                        <% }%>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+    
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 dvGender">
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <input class="form-control" name="tbGOther"
+                       type="text" placeholder="Please write your gender" />
+            </div>
         </div>
     </div>
 
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        <div class="form-group">
-            <label for="ddlGender">Gender</label>
-            <select class="form-control" name="ddlGender"></select>
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-4">
+            <div class="form-group">
+                <label for="ddlRace">Ethnicity</label>
+                <select class="form-control" name="tbRace">
+                    <option></option>
+                    <% for(var i=0; i<results.race.length; i++) { %>
+                            <option value="<%= results.race[i].ID %>">
+                            <%= results.race[i].race %></option>
+                    <% } %>
+                </select>
+            </div>
         </div>
-    </div>
-
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 dvGender">
-        <div class="form-group">
-            <label>&nbsp;</label>
-            <input class="form-control" name="tbOther"
-                   type="text" placeholder="Please write your gender" />
+    
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 dvRace">
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <input class="form-control" name="tbROther"
+                       type="text" placeholder="Please enter your gender" />
+            </div>
         </div>
-    </div>
-</div>
-
-
-
-<div class="row">
-
-    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-4">
-        <div class="form-group">
-            <label for="ddlRace">Ethnicity</label>
-            <select class="form-control" name="ddlRace">
-                <option></option>
-                <% for(var i=0; i<results.race.length; i++) { %>
-                        <option value="<%= results.race[i].ID %>">
-                        <%= results.race[i].type %></option>
-                <% } %>
-            </select>
+    
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <label for="">Hispanic</label>
+            <br />
+            <!-- div class="form-check form-check-inline" -->
+            <label class="btn btn-default">
+                <input name="rdHis" type="radio" class="" autocomplete="off" value="1"> Yes
+            </label>
+            <label class="btn btn-default" style="margin-left: 10px;">
+                <input name="rdHis" type="radio" class="" autocomplete="off" value="0"> No
+            <label>
         </div>
+    
+    
     </div>
-
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 dvRace">
-        <div class="form-group">
-            <label>&nbsp;</label>
-            <input class="form-control" name="tbOther"
-                   type="text" placeholder="Please enter your gender" />
+    
+    
+    
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
+            <div class="form-group">
+                <label for="ddlCluster">CTE Cluster</label>
+                <select name="ddlCluster" class="form-control">
+                    <option></option>
+                    <% for(var i=0; i<results.cluster.length; i++) { %>
+                            <option value="<%= results.cluster[i].ID %>">
+                                <%= results.cluster[i].title %>
+                            </option>
+                    <% }  %>
+                </select>
+            </div>
         </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-        <label for="">Hispanic</label>
-        <br />
-        <!-- div class="form-check form-check-inline" -->
-        <label class="btn btn-default">
-            <input name="rdHis" type="radio" class="" autocomplete="off" value="1"> Yes
-        </label>
-        <label class="btn btn-default" style="margin-left: 10px;">
-            <input name="rdHis" type="radio" class="" autocomplete="off" value="0"> No
-        <label>
-    </div>
-
-
-</div>
-
-
-
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
-        <div class="form-group">
-            <label for="ddlCluster">CTE Cluster</label>
-            <select name="ddlCluster" class="form-control">
-                <option></option>
-                <% for(var i=0; i<results.cluster.length; i++) { %>
-                        <option value="<%= results.cluster[i].ID %>">
-                            <%= results.cluster[i].Title %>
+    
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
+            <div class="form-group">
+                <label for="ddlIdeaStatus">IDEA Status</label>
+                <select name="ddlIdeaStatus" class="form-control">
+                    <option></option>
+                    <% for(var i = 0; i < results.ideaStatus.length; i++) { %>
+                        <option value="<%= results.ideaStatus[i].ID %>">
+                            <%= results.ideaStatus[i].status %>
                         </option>
-                <% }  %>
-            </select>
+                    <% } %>
+                </select>
+            </div>
         </div>
     </div>
-
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
-        <div class="form-group">
-            <label for="ddlIdeaStatus">IDEA Status</label>
-            <select name="ddlIdeaStatus" class="form-control">
-                <option></option>
-            </select>
+    
+    
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <button class="btn btn-default">Back</button>
+            <div class="pull-right">
+                <button class="btn btn-default">Save</button>
+                <button class="btn btn-default btnNext">Next</button>
+            </div>
         </div>
     </div>
-</div>
-
-
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <button class="btn btn-default">Back</button>
-        <div class="pull-right">
-            <button class="btn btn-default">Save</button>
-            <button class="btn btn-default btnNext">Next</button>
-        </div>
-    </div>
-</div>
-
-
-
-
-
+</form>
 
 <script src="/js/utilities.js"></script>
 <script>
-
-    var gender = ["Female", "Male", "Other"];
-
-    (function(){
-        updateHTML("[name=ddlGender]", createSelectMenuFromArray(gender, "Select Gender"));
-    })();
-
-    other("[name=ddlGender]", ".dvGender");
-    other("[name=ddlRace]", ".dvRace");
 
     // WORKS
     // sChecked('[name=rdHis]', 1);

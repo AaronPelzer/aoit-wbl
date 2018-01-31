@@ -14,29 +14,20 @@ const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
             }
         }
 
-        setProperty(contactType);
+        setProperty(race);
 
         this.model = model;
     }
 
     save(cb){
-        db.insert(tableName, this.model, (err) => {
-            if(err){
-                throw err;
-            }
-            cb();
-        })
+        db.insert(tableName, this.model, cb);
     }
 
     update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        });
+        db.updateById(tableName, id, items, cb);
     }
 
-    get(profileId, cb){
+    get(cb){
         db.list(tableName, cb);
     }
 

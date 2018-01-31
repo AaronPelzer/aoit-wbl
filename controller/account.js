@@ -177,7 +177,7 @@ router.post("/Login", csrfProtection, passport.authenticate("local", {
 }), function(req, res){
     console.log(req.body);
     console.log(req.user);
-    res.redirect("/");
+    res.redirect("/Student/Profile");
 });
 
 
