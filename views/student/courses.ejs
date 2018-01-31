@@ -86,12 +86,12 @@
 <br>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-        <ul class="list-group">
-            <% for(var c in courses){ %>
-            <li class="list-group-item"><%= courses[c].title %></li>
-            <%}%>
-        </ul>
+    <div class="list-group col-xs-12 col-sm-12 col-md-10 col-lg-10">
+        <% for(var c in courses){ %>        
+            <a href="courses/<%= courses[c].ID %>/update" class="list-group-item list-group-item-action">
+                <%= courses[c].title %> - <%= courses[c].year %> - <%= courses[c].hours %>
+            </a>
+        <% } %>
     </div>
 </div>
 

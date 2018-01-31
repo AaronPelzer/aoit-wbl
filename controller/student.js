@@ -67,7 +67,7 @@ router.get("/Info/Edit", isAuthenticated, (req, res) => {
         payload.ideaStatus = r.ideaStatus;
         payload.gender = r.gender;
         payload.student = r.student;
-        
+
         res.render("student/profile", {
             title: "Profile",
             results: payload
@@ -102,6 +102,7 @@ router.post("/Info/Edit", isAuthenticated, (req, res) => {
 router.get("/Courses", isAuthenticated, function(req, res) {
     let course = new Course();
     course.get(req.user.profileID, (err, data) => {
+        console.log(data);
         res.render("student/courses", {
             title: "Student Courses",
             courses: data
@@ -140,9 +141,61 @@ router.post("/newCourse", isAuthenticated, function(req, res){
     }
 })
 
-router.post("/updateCourses", isAuthenticated, function(req, res){
-    var data = req.body;
-    console.log(data);
+router.get("/courses/:id/update", isAuthenticated, (req, res) => {
+    let c = new Course();
+    let payload = {};
+    async.waterfall([
+        (cb) => {
+            c.getOne(req.params.id, (err, data) => {
+                payload.course = data;
+                cb(err, data.ID);
+            });
+        }, (courseID, cb) => {
+            let comment = new Comment();
+            comment.getOne(courseID, (err, data) => {
+                payload.comment = data;
+                cb(err, "done");
+            });
+        }
+    ], (err, results) => {
+        if(err) throw err;
+
+        res.render('student/updateCourse', {
+            title: "Edit course",
+            results: payload
+        })
+    })
+});
+
+router.post("/courses/:id/update", isAuthenticated, function(req, res){
+    let p = req.body,
+        courseItems = {
+            title: p.tbTitle,
+            year: p.tbYear,
+            hours: p.tbHour,
+        };
+
+    async.parallel({
+        course: (cb) => {
+            let course = new Course();
+            course.update(req.params.id, courseItems, (err) => {
+                cb(err);
+            });
+        },
+        comment: (cb) => {
+            let comment = new Comment(),
+                c = new Course();
+
+            c.select(req.params.id, ["commentID"], (err, data) => {
+                comment.update(data[0].commentID, {comment: p.tbComment}, (err) => {
+                    cb(err);
+                })
+            });
+        }
+    }, (err) => {
+        if(err) throw err;
+        res.redirect('/student/courses');
+    })
 })
 
 router.get("/Technical", isAuthenticated, function(req, res) {

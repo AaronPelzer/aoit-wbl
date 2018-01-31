@@ -38,6 +38,10 @@ module.exports = class Course {
         db.select(tableName, null, null, 'profileID=?', [profileId], cb);
     }
 
+    getOne(id, cb){
+        db.selectOne(tableName, null, null, 'id=?', [id], cb);
+    }
+
     remove(id, cb){
         db.removeById(tableName, id, cb);
     }

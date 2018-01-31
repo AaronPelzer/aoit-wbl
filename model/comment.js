@@ -37,7 +37,7 @@ module.exports = class Comment {
     }
 
     getOne(id, cb){
-        db.selectOne(tableName, null, null, 'id=?', id, cb);
+        db.selectOne(tableName, null, null, 'id=?', [id], cb);
     }
 
     remove(id, cb){
