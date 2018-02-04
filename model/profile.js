@@ -35,6 +35,7 @@ module.exports = class Profile {
     }
 
     update(id, items, cb){
+        console.log('reached');
         db.updateById(tableName, id, items, cb)
     }
 

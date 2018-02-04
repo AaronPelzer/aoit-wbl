@@ -5,7 +5,7 @@
     margin: 0;
   }
   .dvLogin {
-    min-width: 310px; !important;
+    min-width: 310px !important;
     text-align: center;
   }
   .panel-body img {
@@ -25,42 +25,62 @@
   }
 </style>
 
+<br>
+
 <div class="container">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+              <img style="width: 125px; height: 125px;" src="http://diaryofasocialgal.com/wp-content/uploads/2016/03/placeholder.png" class="rounded" alt="...">
+            </div>
+            <div class="col-xs-6 col-sm-7 col-md-9 col-lg-10">
+              <h2 class="card-title">Jovan Kelly</h2>
+              <em><h6 class="card-subtitle mb-2 text-muted">Science Technology Engineering & Mathematic</h6></em>
+              <br>
+              <a class="float-right" href="profile" class="card-link">More Information</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <br>
   <div class="row" id="grid">
-    
+
   </div>
 </div>  
 
 <script>
-    var data = [{
-      title: "Basic Information",
-      link: "Info"
-    }, {
-      title: "Courses",
-      link: "Courses"
-    }, {
-      title: "Professional Skills",
-      link: ""
-    }, {
-      title: "Technical Skills",
-      link: "Technical"
-    }, {
-      title: "Work-Based Learning Activities",
-      link: ""
-    }, {
-      title: "Industry-Based Assessments [Certifications]",
-      link: ""
-    }]
+    var data = [
+      {
+        title: "CTE Coursework",
+        link: "Courses"
+      }, {
+        title: "Professional Skills",
+        link: ""
+      }, {
+        title: "Technical Skills",
+        link: "Technical"
+      }, {
+        title: "Work-Based Learning Activities",
+        link: "WBL"
+      }, {
+        title: "Industry-Based Assessments",
+        link: ""
+      }, {
+        title: "Resume",
+        link: ""
+      }
+    ]
 
     var html = "";
 
     for(var i = 0; i < data.length; i++){
-      html += `<div style="border: solid black 1px; height: 100px" class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-          <center><a href="${data[i].link}">${data[i].title}</a></center>
-        </div>`
+      html += `<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" style="margin-top: 20px"><div class="card"><div class="card-body"><h5 class="card-title">${data[i].title}</h5><h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6><p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p></div><div class="card-footer">
+      <small class="text-muted">Last updated 3 mins ago<a class="float-right" href="${data[i].link}" class="card-link">More Information</a></small>
+    </div></div></div>`
     }
-
 
     document.querySelector("#grid").innerHTML = html;
 

@@ -40,6 +40,10 @@ function createCol(name) {
     //return "<td>" + name + "</td>";
 }
 
+function createListItem(name) {
+    return `<li class="list-group-item">${name}<button class="btn btn-danger btnRemove float-right"> - </button></li>`;
+}
+
 function updateHTML(name, content) {
     el(name).innerHTML = content;
 }

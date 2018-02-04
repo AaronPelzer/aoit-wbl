@@ -1,0 +1,52 @@
+<% include ../header.ejs %>
+
+
+<form method="POST" action="">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="form-group">
+                <label for="tbOrg">Organization</label>
+                <input class="form-control" name="tbOrg" type="text" placeholder="title" value=""/>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label for="tbDate">Date</label>
+                    <input class="form-control" name="tbDate" type="date" placeholder="Date" value=">">
+                </div>
+            </div>
+        
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label>Hours</label>
+                    <input class="form-control" name="tbHour"
+                            type="number" placeholder="Hours" value=""/>
+                </div>
+            </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-4">
+            <div class="form-group">
+                <label for="ddlRace">Comments</label>
+                <textarea class="form-control" name="tbComment" placeholder="Enter any comments">  </textarea>  
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <button class="btn btn-default">Back</button>
+            <div class="pull-right">
+                <button class="btn btn-default">Save</button>
+                <button class="btn btn-default btnNext">Next</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="/js/utilities.js"></script>
+<% include ../footer.ejs %>

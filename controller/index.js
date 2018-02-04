@@ -6,7 +6,7 @@ router.get("/", function(req, res) {
     if(!req.user){
         res.redirect('account/login');
     } else {
-        res.redirect('student/profile');
+        res.redirect('student/');
     }
 });
 

@@ -8,9 +8,9 @@ const router = require("express")(),
       Cluster = require('../model/cluster'),
       Race = require('../model/race'),
       IdeaStatus = require('../model/ideaStatus'),
-      Gender = require('../model/gender');
-
-
+      Gender = require('../model/gender'),
+      WBL = require('../model/wblActivity'),
+      WBLType = require('../model/wblType');
 
 function isAuthenticated(req, res, next){
 
@@ -22,13 +22,13 @@ function isAuthenticated(req, res, next){
     }
 }
 
-router.get("/Profile", isAuthenticated, (req, res) => {
+router.get("/", isAuthenticated, (req, res) => {
     res.render("student/index", {
         title: "Index"
     })
 });
 
-router.get('/Info', isAuthenticated, function(req, res){
+router.get('/Profile', isAuthenticated, function(req, res){
     let student = new Student();
     student.getOne(req.user.profileID, (err, data) => {
         res.render("student/info", {
@@ -38,7 +38,7 @@ router.get('/Info', isAuthenticated, function(req, res){
     });
 })
 
-router.get("/Info/Edit", isAuthenticated, (req, res) => {
+router.get("/Profile/Edit", isAuthenticated, (req, res) => {
     let payload = {};
     async.parallel({
         student: (cb) => {
@@ -79,6 +79,7 @@ router.post("/Info/Edit", isAuthenticated, (req, res) => {
     let student = new Student(),
         p = req.body,
         items = {
+            dob: p.tbDOB,
             genderID: p.tbGender,
             clusterID: p.tbCluster,
             raceID: p.tbRace,
@@ -94,7 +95,7 @@ router.post("/Info/Edit", isAuthenticated, (req, res) => {
             items.raceOther = p.tbROther;
         }
 
-        student.update(req.user.profileID, items, () => {
+        student.update(req.user.profileID, items, (err) => {
             res.redirect("/student/info");
         })
 });
@@ -199,17 +200,17 @@ router.post("/courses/:id/update", isAuthenticated, function(req, res){
 })
 
 router.get("/Technical", isAuthenticated, function(req, res) {
-    let t = new TechSkill();
-    t.get(req.user.profileID, (err, data) => {
+    let tech = new TechSkill();
+    tech.get(req.user.profileID, (err, data) => {
+        console.log(data);
         res.render("student/technical", {
-            title: "Technical Skills",
-            techSkills: data 
+            title: "Student Technical Skills",
+            results: data
         });
     });
 });
 
 router.post("/newTech", isAuthenticated, (req, res) => {
-    console.log('-----------------reached');
     let p = req.body;
     for(var i in p){
         let a = new Assessment({
@@ -241,30 +242,108 @@ router.post("/newTech", isAuthenticated, (req, res) => {
 
 
 router.get("/Professional", isAuthenticated, function(req, res) {
-    execute(commands.selectSkills, [], function(err, data) {
-        if (err) {
-            console.error(err);
-        }
-        console.log(data);
-
-        res.render("student/professional", {
-            title: "Professional Skills",
-            results: data
-        });
+    
+    res.render("student/professional", {
+        title: "Professional Skills",
+        results: data
     });
 });
 
 
-router.get("/Activities", isAuthenticated, function(req, res) {
-
-    execute("SELECT * FROM wblType ORDER BY type ASC", [], function(err, data) {
-
+router.get("/WBL", isAuthenticated, function(req, res) {
+    let payload = {};
+    async.parallel({
+        wblActivities: (cb) => {
+            let wbl = new WBL();
+            wbl.get(req.user.profileID, (err, data) => {
+                payload.wblActivities = data;
+                cb(err);
+            });
+        },
+        wblTypes: (cb) => {
+            let wblType = new WBLType();
+            wblType.get((err, data) => {
+                payload.wblType = data;
+                cb(err);
+            });
+        }
+    }, (err, results) => {
+        console.log(payload);
         res.render("student/activities", {
             title: "Work Based Learning Activities",
-            results: data
+            results: payload
         });
     });
+});
 
+router.post("/newActivity", isAuthenticated, function(req, res){
+    let p = req.body;
+    for(var i in p){
+        async.waterfall([
+            (cb) => {
+                let c = new Comment({
+                    comment: p[i].comment
+                });
+
+                c.save((err, data) => {
+                    cb(err, data['MAX(ID)']);
+                });
+            }, (commentID, cb) => {
+                let wbl = new WBL({
+                    date: p[i].date,
+                    hours: p[i].hours,
+                    organization: p[i].org,
+                    wblTypeID: p[i].wblType
+                }, commentID, req.user.profileID);    
+
+                wbl.save((err) => {
+                    cb(err, "done");
+                });
+            }
+        ], (err, result) => {
+            if(err) throw err;
+            res.redirect('/WBL');
+        });
+    }
+});
+
+router.get("/WBL/:id/update", isAuthenticated, (req, res) => {
+    res.render('student/updateWbl', {
+        title: "Test",
+        results: {}
+    });
+});
+
+router.post("/WBL/:id/update", isAuthenticated, function(req, res){
+    let p = req.body,
+        wblItems = {
+            date: p.tbDate,
+            organization: p.tbOrg,
+            hours: p.tbHour,
+            wblTypeID: p.wblType
+        };
+
+    async.parallel({
+        course: (cb) => {
+            let wbl = new WBL();
+            wbl.update(req.params.id, courseItems, (err) => {
+                cb(err);
+            });
+        },
+        comment: (cb) => {
+            let comment = new Comment(),
+                wbl = new WBL();
+
+            wbl.select(req.params.id, ["commentID"], (err, data) => {
+                comment.update(data[0].commentID, {comment: p.tbComment}, (err) => {
+                    cb(err);
+                });
+            });
+        }
+    }, (err) => {
+        if(err) throw err;
+        res.redirect('/student/activities');
+    })
 });
 
 router.get("/upload", isAuthenticated, function(req, res) {

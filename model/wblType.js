@@ -20,20 +20,19 @@ module.exports = class wblType {
     }
 
     save(cb){
-        db.insert(tableName, this.model, (err) => {
-            if(err){
-                throw err;
-            }
-            cb();
-        })
+        db.insert(tableName, this.model, cb);
     }
 
     update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        });
+        db.updateById(tableName, id, items, cb);
+    }
+
+    get(cb){
+        db.list(tableName, cb);
+    }
+
+    getOneById(id, cb){
+        db.selectOne(tableName, null, null, 'id=?', id, cb);
     }
 
     remove(id, cb){

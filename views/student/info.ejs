@@ -5,11 +5,55 @@ Health Science Hospitality & Tourism Human Services Information Technology Law P
 * Race White Black Asian Native American Alaska Native Native Hawaiian Pacific Islander Multi-Racial Other Hispanic Yes No IDEA Status Service Required No Service -->
 
     <div class="container">
-        <%= info.fName %> <%= info.lName %>
         <br>
-        <%= info.dob %>
-
-        <a href="/student/info/edit"><button class="btn btn-primary">Edit</button></a>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                        <img style="width: 125px; height: 125px;" src="http://diaryofasocialgal.com/wp-content/uploads/2016/03/placeholder.png" class="rounded" alt="...">
+                    </div>
+                    <div class="col-xs-6 col-sm-7 col-md-9 col-lg-10">
+                        <h2 class="card-title"><%= info.fName %> <%= info.lName %></h2>
+                        <em><h6 class="card-subtitle mb-2 text-muted">Science Technology Engineering & Mathematic</h6></em>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        Basic Information
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Gender: Male</li>
+                        <li class="list-group-item">DOB: 05/07/1998</li>
+                        <li class="list-group-item">Race: Black</li>
+                        <li class="list-group-item">Idea Status: Required</li>
+                    </ul>
+                    <div class="card-footer">
+                            <small class="text-muted"><a class="float-right" href="profile/edit" class="card-link">Edit</a></small>
+                        </div>
+                </div>
+                <br>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        Address
+                    </div>
+                    <div class="card-body">
+                        999 Jamaica Av, 11206, Brooklyn, NY
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted"><a class="float-right" href="#" class="card-link">Edit</a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
 
