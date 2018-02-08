@@ -11,7 +11,10 @@ router.get("/", function(req, res) {
             title: "Index"
         });
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2455026dd04f62608fe695c24237697cfa661fab
 });
 
 
