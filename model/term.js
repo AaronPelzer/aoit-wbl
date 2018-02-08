@@ -1,11 +1,11 @@
-const db = require('../lib/sqlite-wrapper'),
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
       tableName = "term";
 
 module.exports = class Term {
     constructor(term = {}){
         let model = {
             ID: 0,
-            name: 0
+            term: ""
         }
 
         function setProperty(obj){

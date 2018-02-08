@@ -7,9 +7,7 @@ router.get("/", function(req, res) {
     if(!req.user){
         res.redirect('account/login');
     } else {
-        res.render("main/index", {
-            title: "Index"
-        });
+        res.redirect('student/');
     }
 <<<<<<< HEAD
 

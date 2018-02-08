@@ -1,6 +1,7 @@
-var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-    tableName = "Profile";
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+      tableName = "profile";
 
+var sqlite = require('sqlite3').verbose();
 
 module.exports = class Profile {
 
@@ -8,11 +9,10 @@ module.exports = class Profile {
 
         var model = {
             ID: 0,
-            firstName: "",
-            midName: "",
-            lastName: "",
+            fName: "",
+            mName: "",
+            lName: "",
             genderId: 0,
-            genderOther: "",
             dob: 0
         };
 
@@ -20,47 +20,31 @@ module.exports = class Profile {
             for(var p in Object(model) ) {
                 model[p] = obj[p];
             }
-        }
-        // if(Object.keys(profile).length){
-            setProperty(person);
-        //}
+        } 
+        
+        setProperty(person);
         this.model = model;
     }
 
 
-    save(){
-        db.insert(tableName, this.model, function(err){
-            if(err){
-                throw err;
-            }
+    save(cb){
+        db.insert(tableName, this.model, (err) => {
+            if(err) throw err;
+            db.getMax(tableName, cb);
         });
     }
 
-    update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        })
+    update(id, items, cb){
+        console.log('reached');
+        db.updateById(tableName, id, items, cb)
     }
 
-    get(callback){
-
-        db.list(tableName, function(err, data){
-            if(err){
-                throw err;
-            }
-            callback(data);
-        });
+    get(cb){
+        db.list(tableName, cb);
     }
 
     getOne(id, cb){
-        db.find(tableName, id, function(err, data){
-            if(err){
-                throw err;
-            }
-            cb(data);
-        });
+        db.select(tableName, null, null, 'profile.ID=?', [id], cb);
     }
 
     remove(id, cb){

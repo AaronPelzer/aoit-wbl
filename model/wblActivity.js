@@ -1,16 +1,13 @@
 const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-      tableName = "course";
+      tableName = "wblActivity";
 
-module.exports = class Course { 
-    constructor(course = {}, commentID, profileID){
-        let model = {
-            ID: 0,
-            title: "",
-            year: 0,
+module.exports = class WBLActivity {
+    constructor(wblActivity = {}, commentID, profileID){
+        var model = {
+            date: "",
+            organization: "",
             hours: 0,
-            profileID: 0,
-            termID: 0,
-            commentID: 0
+            wblTypeID: 0,
         }
 
         function setProperty(obj){
@@ -19,8 +16,7 @@ module.exports = class Course {
             }
         }
 
-        setProperty(course);
-
+        setProperty(wblActivity);
         this.model = model;
         this.model.profileID = profileID;
         this.model.commentID = commentID;
@@ -38,15 +34,11 @@ module.exports = class Course {
         db.select(tableName, null, null, 'profileID=?', [profileId], cb);
     }
 
-    getOne(id, cb){
-        db.selectOne(tableName, null, null, 'id=?', [id], cb);
+    select(id, joins, columns, cb){
+        db.select(tableName, joins, null, 'profileID=?', [id], cb);
     }
 
     remove(id, cb){
         db.removeById(tableName, id, cb);
-    }
-
-    select(id, columns, cb){
-        db.select(tableName, null, columns, 'ID=?', [id], cb);
     }
 }

@@ -1,31 +1,36 @@
 const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-      tableName = 'hispanic';
+      tableName = "schoolContact";
 
-module.exports = class Hispanic {
-    constructor(hispanic = {}){
-        let model = {
+module.exports = class schoolContact {
+    constructor(contact = {}){
+        var model = {
             ID: 0,
-            selected: 0
+            phone: "",
+            fax: ""
         }
-
+        
         function setProperty(obj){
             for(var p in Object(model)){
                 model[p] = obj[p];
             }
         }
 
-        setProperty(hispanic);
-
+        setProperty(contact);
         this.model = model;
-        this.model.profileId = profileId;
     }
 
     save(cb){
-        db.insert(tableName, this.model, (err) => {
+        let model = this.model;
+        db.insert(tableName, model, (err) => {
             if(err){
                 throw err;
             }
-            cb();
+            db.getMax(tableName, (err, data) => {
+                if(err){
+                    throw err;
+                }
+                cb(data['MAX(ID)']);
+            })
         });
     }
 
@@ -36,9 +41,18 @@ module.exports = class Hispanic {
             }
         });
     }
-
+    
     get(cb){
-        db.list(tableName, function(err, data){
+        db.list(tableName, (err, data) => {
+            if(err){
+                throw err;
+            }
+            cb(data);
+        })
+    }
+
+    getOne(id, cb){
+        db.find(tableName, id, (err, data) => {
             if(err){
                 throw err;
             }

@@ -1,9 +1,16 @@
-var router = require("express")(),
-    sqlite = require('sqlite3').verbose(),
-    db = new sqlite.Database('./data'),
-    uploadUtil = require('../util/upload.js');
-
-
+const router = require("express")(),
+      async = require('async'),
+      Course = require('../model/course'),
+      Comment = require('../model/comment'),
+      Student = require('../model/profile'),
+      TechSkill = require('../model/technical'),
+      Assessment = require('../model/assessment'),
+      Cluster = require('../model/cluster'),
+      Race = require('../model/race'),
+      IdeaStatus = require('../model/ideaStatus'),
+      Gender = require('../model/gender'),
+      WBL = require('../model/wblActivity'),
+      WBLType = require('../model/wblType');
 
 function isAuthenticated(req, res, next){
 
@@ -15,143 +22,337 @@ function isAuthenticated(req, res, next){
     }
 }
 
-function processData() {
-
-}
-
-function getCluster() {
-    var q = 'SELECT * FROM cluster';
-    var cluster = [];
-
-    execute(q, [], function(err, data) {
-
-        for (var x = 0; x < data.length; x++) {
-
-            cluster.push(data[x]);
-        }
-
-        return data;
-    });
-
-    return cluster;
-}
-
-// console.log(getCluster());
-
-// CALLBACK(ERR)
-// CALLBACK(ERR, DATA)
-function execute(query, params, callback) {
-    db.prepare(query).all(params, callback);
-}
-
-
-router.get("/Profile", isAuthenticated, function(req, res) {
-
-    var payload = {};
-
-    execute(commands.selectCluster, [], function(err, data) {
-        payload.cluster = data;
-        execute(commands.selectRace, [], function(err, data) {
-            payload.race = data;
-
-            var r = payload;
-
-            console.log(r.cluster[0]);
-
-            res.render("student/profile", {
-                title: "Profile",
-                results: payload
-            });
-
-        });
-    });
-
-
-    /*
-        execute('SELECT * FROM cluster', [], function(err, data) {
-            res.render("student/profile", {
-                title: "Profile",
-                results: payload
-            });
-        });
-        */
+router.get("/", isAuthenticated, (req, res) => {
+    res.render("student/index", {
+        title: "Index"
+    })
 });
 
-router.get('/Info', function(req, res){
-    console.log("Info");
+router.get('/Profile', isAuthenticated, function(req, res){
+    let student = new Student();
+    student.getOne(req.user.profileID, (err, data) => {
+        res.render("student/info", {
+            title: "Basic Information",
+            info: data[0]
+        })
+    });
+})
 
-    res.render("student/info", {
-        title: "Basic Information"
+router.get("/Profile/Edit", isAuthenticated, (req, res) => {
+    let payload = {};
+    async.parallel({
+        student: (cb) => {
+            let student = new Student();
+            student.getOne(req.user.profileID, cb);
+        },
+        cluster: (cb) => {
+            let cluster = new Cluster();
+            cluster.get(cb);        
+        },
+        race: (cb) => {
+            let race = new Race();
+            race.get(cb);
+        },
+        ideaStatus: (cb) => {
+            let status = new IdeaStatus();
+            status.get(cb);
+        },
+        gender: (cb) => {
+            let gender = new Gender();
+            gender.get(cb);
+        }
+    }, (err, r) => {
+        payload.cluster = r.cluster;
+        payload.race = r.race;
+        payload.ideaStatus = r.ideaStatus;
+        payload.gender = r.gender;
+        payload.student = r.student;
+
+        res.render("student/profile", {
+            title: "Profile",
+            results: payload
+        });
+    });
+});
+
+router.post("/Info/Edit", isAuthenticated, (req, res) => {
+    let student = new Student(),
+        p = req.body,
+        items = {
+            dob: p.tbDOB,
+            genderID: p.tbGender,
+            clusterID: p.tbCluster,
+            raceID: p.tbRace,
+            hispanicID: p.tbHispanic,
+            ideaStatusID: p.tbIdeaStatus
+        }
+
+        if(p.GOther){
+            items.genderOther = p.tbGOther;
+        }
+
+        if(p.ROther){
+            items.raceOther = p.tbROther;
+        }
+
+        student.update(req.user.profileID, items, (err) => {
+            res.redirect("/student/info");
+        })
+});
+
+router.get("/Courses", isAuthenticated, function(req, res) {
+    let course = new Course();
+    course.get(req.user.profileID, (err, data) => {
+        console.log(data);
+        res.render("student/courses", {
+            title: "Student Courses",
+            courses: data
+        });
+    });
+});
+
+router.post("/newCourse", isAuthenticated, function(req, res){
+    let p = req.body;
+    for(var i in p){
+        let c = new Comment({
+            comment: p[i].comment
+        });
+
+        async.waterfall([
+            (cb) => {
+                c.save((err, data) => {
+                    cb(err, data['MAX(ID)']);
+                });
+            }, (commentID, cb) => {
+                let course = new Course({
+                    title: p[i].title,
+                    year: p[i].year,
+                    hours: p[i].hours,
+                    termID: p[i].term   
+                }, commentID, req.user.profileID);    
+
+                course.save((err) => {
+                    cb(err, "done");
+                });
+            }
+        ], (err, result) => {
+            if(err) throw err;
+            res.redirect('/courses');
+        });
+    }
+})
+
+router.get("/courses/:id/update", isAuthenticated, (req, res) => {
+    let c = new Course();
+    let payload = {};
+    async.waterfall([
+        (cb) => {
+            c.getOne(req.params.id, (err, data) => {
+                payload.course = data;
+                cb(err, data.ID);
+            });
+        }, (courseID, cb) => {
+            let comment = new Comment();
+            comment.getOne(courseID, (err, data) => {
+                payload.comment = data;
+                cb(err, "done");
+            });
+        }
+    ], (err, results) => {
+        if(err) throw err;
+
+        res.render('student/updateCourse', {
+            title: "Edit course",
+            results: payload
+        })
+    })
+});
+
+router.post("/courses/:id/update", isAuthenticated, function(req, res){
+    let p = req.body,
+        courseItems = {
+            title: p.tbTitle,
+            year: p.tbYear,
+            hours: p.tbHour,
+        };
+
+    async.parallel({
+        course: (cb) => {
+            let course = new Course();
+            course.update(req.params.id, courseItems, (err) => {
+                cb(err);
+            });
+        },
+        comment: (cb) => {
+            let comment = new Comment(),
+                c = new Course();
+
+            c.select(req.params.id, ["commentID"], (err, data) => {
+                comment.update(data[0].commentID, {comment: p.tbComment}, (err) => {
+                    cb(err);
+                })
+            });
+        }
+    }, (err) => {
+        if(err) throw err;
+        res.redirect('/student/courses');
     })
 })
 
-router.get("/Courses", function(req, res) {
-    console.log("Courses");
-
-    res.render("student/courses", {
-        title: "CTE Courses"
-    });
-});
-
-router.post("/updateCourses", function(req, res){
-    var data = req.body;
-    console.log(data);
-})
-
-router.get("/Technical", function(req, res) {
-    console.log("Technical");
-
-    res.render("student/technical", {
-        title: "Technical Skills"
-    });
-});
-
-router.post("/Technical", (req, res) => {
-    console.log("HIT");
-    console.log(req.body);
-});
-
-
-router.get("/Professional", function(req, res) {
-    execute(commands.selectSkills, [], function(err, data) {
-        if (err) {
-            console.error(err);
-        }
+router.get("/Technical", isAuthenticated, function(req, res) {
+    let tech = new TechSkill();
+    tech.get(req.user.profileID, (err, data) => {
         console.log(data);
-
-        res.render("student/professional", {
-            title: "Professional Skills",
+        res.render("student/technical", {
+            title: "Student Technical Skills",
             results: data
         });
     });
 });
 
+router.post("/newTech", isAuthenticated, (req, res) => {
+    let p = req.body;
+    for(var i in p){
+        let a = new Assessment({
+            selfEval: p[i].scale,
+            grade: p[i].grade
+        });
 
-router.post("/Register", (req, res) => {
-    console.log("HIT");
-    console.log(req.body);
+        async.waterfall([
+            (cb) => {
+                a.save((err, data) => {
+                    cb(err, data['MAX(ID)']);
+                    console.log(data);
+                });
+            }, (assessmentID, cb) => {
+                let techSkill = new TechSkill({
+                    skill: p[i].skill   
+                }, assessmentID, req.user.profileID);    
+
+                techSkill.save((err) => {
+                    cb(err, "done");
+                });
+            }
+        ], (err, result) => {
+            if(err) throw err;
+            res.redirect('/technical');
+        });
+    }
 });
 
 
-router.get("/Activities", function(req, res) {
+router.get("/Professional", isAuthenticated, function(req, res) {
+    
+    res.render("student/professional", {
+        title: "Professional Skills",
+        results: data
+    });
+});
 
-    execute("SELECT * FROM wblType ORDER BY type ASC", [], function(err, data) {
 
+router.get("/WBL", isAuthenticated, function(req, res) {
+    let payload = {};
+    async.parallel({
+        wblActivities: (cb) => {
+            let wbl = new WBL();
+            wbl.get(req.user.profileID, (err, data) => {
+                payload.wblActivities = data;
+                cb(err);
+            });
+        },
+        wblTypes: (cb) => {
+            let wblType = new WBLType();
+            wblType.get((err, data) => {
+                payload.wblType = data;
+                cb(err);
+            });
+        }
+    }, (err, results) => {
+        console.log(payload);
         res.render("student/activities", {
             title: "Work Based Learning Activities",
-            results: data
+            results: payload
         });
     });
-
 });
 
-router.get("/upload", function(req, res) {
+router.post("/newActivity", isAuthenticated, function(req, res){
+    let p = req.body;
+    for(var i in p){
+        async.waterfall([
+            (cb) => {
+                let c = new Comment({
+                    comment: p[i].comment
+                });
+
+                c.save((err, data) => {
+                    cb(err, data['MAX(ID)']);
+                });
+            }, (commentID, cb) => {
+                let wbl = new WBL({
+                    date: p[i].date,
+                    hours: p[i].hours,
+                    organization: p[i].org,
+                    wblTypeID: p[i].wblType
+                }, commentID, req.user.profileID);    
+
+                wbl.save((err) => {
+                    cb(err, "done");
+                });
+            }
+        ], (err, result) => {
+            if(err) throw err;
+            res.redirect('/WBL');
+        });
+    }
+});
+
+router.get("/WBL/:id/update", isAuthenticated, (req, res) => {
+    res.render('student/updateWbl', {
+        title: "Test",
+        results: {}
+    });
+});
+
+router.post("/WBL/:id/update", isAuthenticated, function(req, res){
+    let p = req.body,
+        wblItems = {
+            date: p.tbDate,
+            organization: p.tbOrg,
+            hours: p.tbHour,
+            wblTypeID: p.wblType
+        };
+
+    async.parallel({
+        course: (cb) => {
+            let wbl = new WBL();
+            wbl.update(req.params.id, courseItems, (err) => {
+                cb(err);
+            });
+        },
+        comment: (cb) => {
+            let comment = new Comment(),
+                wbl = new WBL();
+
+            wbl.select(req.params.id, ["commentID"], (err, data) => {
+                comment.update(data[0].commentID, {comment: p.tbComment}, (err) => {
+                    cb(err);
+                });
+            });
+        }
+    }, (err) => {
+        if(err) throw err;
+        res.redirect('/student/activities');
+    })
+});
+
+router.get("/upload", isAuthenticated, function(req, res) {
     res.render("student/upload", {
         title: "Upload Documents"
     });
 })
 
-router.post('/upload', function(req, res){
+router.post('/upload', isAuthenticated, function(req, res){
     uploadUtil.setDestination(1234567890);
     uploadUtil.upload("myFile", "resume", req, res);
     res.status(204).end();

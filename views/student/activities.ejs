@@ -4,7 +4,7 @@
     <div class="col-sm-12 col-md-2 col-lg-2">
         <div class="form-group">
             <label for="tbDate">Date</label>
-            <input class="form-control" name="tbDate" type="text" placeholder="01/01/2001" required />
+            <input class="form-control" name="tbDate" type="date" placeholder="01/01/2001" required />
         </div>
     </div>
 
@@ -13,8 +13,8 @@
             <label for="ddlWblType">Work Based Learning</label>
             <select class="form-control" name="ddlWblType" required>
                 <option></option>
-                <% for(var i = 0; i < results.length; i++) { %>
-                    <option value="<%= results[i].ID %>"> <%= results[i].type %> </option>
+                <% for(var i = 0; i < results.wblType.length; i++) { %>
+                    <option value="<%= results.wblType[i].ID %>"> <%= results.wblType[i].type %> </option>
                 <% } %>
             </select>
         </div>
@@ -43,7 +43,7 @@
     <div class="col-sm-12 col-md-9 col-lg-9">
         <div class="form-group">
             <label for="tbComment">Comment(s)</label>
-            <textarea class="form-control" name="tbComments" type="text" placeholder=""></textarea>
+            <textarea class="form-control" name="tbComment" type="text" placeholder=""></textarea>
         </div>
     </div>
 
@@ -54,7 +54,15 @@
     </div>
 </div>
 
-
+<div class="row">
+    <div class="list-group col-xs-12 col-sm-12 col-md-10 col-lg-10">
+        <% for(var a in results.wblActivities){ %>        
+            <a href="courses/<%= results.wblActivities[a].ID %>/update" class="list-group-item list-group-item-action">
+                <%= results.wblActivities[a].organization %>
+            </a>
+        <% } %>
+    </div>
+</div>
 
     <div class="dvEntered">
 
@@ -64,7 +72,7 @@
         <div class="col-sm-12 col-md-12 col-lg-12">
             <button class="btn btn-default">Back</button>
             <div class="pull-right">
-                <button class="btn btn-default">Save</button>
+                <button class="btn btn-default" id="save">Save</button>
                 <button class="btn btn-default">Next</button>
             </div>
         </div>
@@ -98,14 +106,21 @@
     addListener(".btnAdd", "click", function(){
         var html = "";
 
-        addNewItem(["[name=tbDate]", "[name=ddlWblType]", "[name=tbOrg]", "[name=tbHours]", "[name=tbComments]"], { 
-            date: "", wblType: 0, org: "", hours: 0, comments: "" 
+        addNewItem(["[name=tbDate]", "[name=ddlWblType]", "[name=tbOrg]", "[name=tbHours]", "[name=tbComment]"], { 
+            date: "", wblType: 0, org: "", hours: 0, comment: "" 
             }, activities);
 
         var cols = createCol( el("[name=ddlWblType]").options[activities[ activities.length - 1].wblType].text );
 
         el(".dvEntered").insertAdjacentHTML("beforeEnd", createRow(cols));    
     });
+
+    addListener("#save", "click", () => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "newActivity", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(activities));
+    })
 </script>
 
 <% include ../footer.ejs %>

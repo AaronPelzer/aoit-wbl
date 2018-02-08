@@ -5,71 +5,56 @@ Health Science Hospitality & Tourism Human Services Information Technology Law P
 * Race White Black Asian Native American Alaska Native Native Hawaiian Pacific Islander Multi-Racial Other Hispanic Yes No IDEA Status Service Required No Service -->
 
     <div class="container">
-        <form> 
-            <div class="row">
-                <div class="">
-                    <input class="form-control" name="tbDOB" type="text" placeholder="Date of Birth" />
+        <br>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                        <img style="width: 125px; height: 125px;" src="http://diaryofasocialgal.com/wp-content/uploads/2016/03/placeholder.png" class="rounded" alt="...">
+                    </div>
+                    <div class="col-xs-6 col-sm-7 col-md-9 col-lg-10">
+                        <h2 class="card-title"><%= info.fName %> <%= info.lName %></h2>
+                        <em><h6 class="card-subtitle mb-2 text-muted">Science Technology Engineering & Mathematic</h6></em>
+                    </div>
+                </div>
                 </div>
             </div>
-            
-            <div class="row tech">
-                <div class="col-md-5">
-                    <input class="form-control" name="tbTechSkills" type="text" placeholder="Technical Skills" />
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        Basic Information
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Gender: Male</li>
+                        <li class="list-group-item">DOB: 05/07/1998</li>
+                        <li class="list-group-item">Race: Black</li>
+                        <li class="list-group-item">Idea Status: Required</li>
+                    </ul>
+                    <div class="card-footer">
+                            <small class="text-muted"><a class="float-right" href="profile/edit" class="card-link">Edit</a></small>
+                        </div>
                 </div>
-                <label>Grade Level</label>
-                <div class="col-md-3">
-                    <select class="ddlGrade"></select>
-                </div>
-                <div class="col-md-3">
-                    <label>Scale</label>
-                    <select class="ddlScale">
-                </select>
+                <br>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        Address
+                    </div>
+                    <div class="card-body">
+                        999 Jamaica Av, 11206, Brooklyn, NY
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted"><a class="float-right" href="#" class="card-link">Edit</a></small>
+                    </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
     
-
-    <script>
-        function el(name, all) {
-            if (all) {
-                return document.querySelectorAll(name);
-            } else {
-                return document.querySelector(name);
-            }
-        }
-
-
-        function createNumericSelectMenu(min, max, newCounter) {
-            var html = "";
-            var counter = 0;
-
-
-            for (var i = min; i < max; i++) {
-                if (newCounter) {
-                    html += "<option value='" + counter + "'>" + i + "</div>";
-                    counter++;
-                } else {
-                    html += "<option value='" + i + "'>" + i + "</div>";
-                }
-            }
-            return html;
-        }
-
-
-        function updateHTML(name, content) {
-            el(name).innerHTML = content;
-        }
-
-        function init() {
-            updateHTML(".ddlGrade", createNumericSelectMenu(9, 13, true));
-            updateHTML(".ddlScale", createNumericSelectMenu(0, 5));
-        }
-
-
-
-
-        init();
-    </script>
 
     <% include ../footer.ejs %>
