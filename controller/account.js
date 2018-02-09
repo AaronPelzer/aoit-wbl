@@ -71,12 +71,11 @@ router.post("/Register", csrfProtection, function(req, res) {
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(pass, salt, function(err, hash) {
                 
-                p.save((err) => {
+                p.save((err, context) => {
 
                     if(err){
                         return console.error(err.msg);
                     }
-                    
 
                     let a = new Account({
                         osis: post.tbOsis.trim(),
@@ -86,31 +85,47 @@ router.post("/Register", csrfProtection, function(req, res) {
                         profileID: 0,
                         accountTypeId: 1,
                         lastLogin: "",
-                        lastUpdated: ""
-                    }, data['MAX(ID)']);
+                        lastUpdate: ""
+                    }, context.lastID);
 
                     // COMMENTED OUT FOR PRIOR TESTING
-                    a.save((err, status) => {
+                    a.save((err, context) => {
 
                         if(err){
-                            res.send("error");
+                            console.error(err);
                         } else {
 
-                            var h = crypto.createHash('md5').update(a.osis + a.email).digest("hex");
+                            var data = a.model.osis +  a.model.email;
 
-                            console.log(h);
+                            var h = crypto.createHash('md5').update(data).digest("hex");
 
-                            var mail = require('../lib/nodeMailer');
-                                mail.sendConfirmationLink(a.email, p.lName, 'google.com');
+                            var o = {
+                                accountID: context.lastName,
+                                link: h
+                            };
 
-                            res.render("/Confirmation", {
-                                title: "Confirm Account",
+                            a.setAccountHold({
+                                accountID: context.lastID,
+                                link: h
+                            }, function(err, context){
+
+                                if(err)
+                                    console.error(err);
+
+                                req.flash("success_msg", "Please check your email to validate your account");
+                        
+                                var mail = require('../lib/nodeMailer');
+                                    mail.sendConfirmationLink(a.model.email, p.model.lastName, o.link);
+
+                                res.render("account/confirm", {
+                                    title: "Confirm Account",
+                                });
+
                             });
+                            
                         }
                     });
 
-                    req.flash("success_msg", "Please check your email to validate your account");
-                    res.redirect("Confirmation");
                 })
             });
         });
@@ -132,6 +147,21 @@ router.get("/Confirmation", function(req, res){
 
 });
 
+
+// FINISH VERIFICATION -> CONTROLLER.ACCOUNT VERIFYACCOUNT
+router.get("/Verify/:token", function(req, res){
+
+    var account = new Account();
+
+    var t = req.params;
+
+    account.verifyAccount( null, "link=?", [t.token], function(err, row){
+        if(err) console.error(err);
+
+        console.log(row);
+    });
+    
+});
 
 //
 // LOGIN
