@@ -15,7 +15,7 @@ module.exports = class Account {
             profileID: 0,
             accountTypeId: 0,
             lastLogin: "",
-            lastUpdated: ""
+            lastUpdate: ""
         };
 
         function setProperty(obj){
@@ -29,15 +29,12 @@ module.exports = class Account {
 
         this.model = model;
         this.model.profileID = profileID;
+
+        console.log("ID: " + this.model.ID);
     }
 
     save(cb){
-        db.insert(tableName, this.model, function(err){
-            console.log("Model");
-            console.log(this);
-            console.log("BREAK");
-            cb(err);
-        });
+        db.insert(tableName, this.model, cb);
     }
 
     update(id, items, cb){
@@ -70,5 +67,17 @@ module.exports = class Account {
             if(err) throw err;
             cb(null, isMatch);
         });
+    }
+
+    setAccountHold(data, cb){
+        db.insert("verification", data, cb);
+    }
+
+    /**
+ * selectOne('Users', null, { 'Users.username': 'name' }, 'name=?', ['bar'],
+ *   function(err, row) { });
+ */
+    verifyAccount(obj, col, data, cb){
+        db.selectOne("verification", null, obj, col, data, cb);
     }
 };
