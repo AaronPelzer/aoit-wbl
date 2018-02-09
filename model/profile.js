@@ -28,14 +28,19 @@ module.exports = class Profile {
     }
 
 
+/*
     save(cb){
-        db.insert(tableName, this.model, function(err, data){
+        db.insert(tableName, this.model, function(err, context){
             if(err) throw err;
 
-            console.log(id);
+            console.log(context);
             
             db.getMax(tableName, cb);
         });
+    }
+*/
+    save(cb){
+        db.insert(tableName, this.model, cb);
     }
 
     update(id, items, cb){
