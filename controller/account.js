@@ -22,7 +22,7 @@ router.get("/Register", csrfProtection,  function(req, res) {
 });
 
 router.post("/Register", csrfProtection, function(req, res) {
-
+    var crypto = require('crypto');
 
     console.log("HIT");
     console.log(req.body);
@@ -56,10 +56,11 @@ router.post("/Register", csrfProtection, function(req, res) {
         var d = new Date();
 
         let p = new Profile({
-            fName: post.tbFirst.trim(),
-            mName: post.tbMiddle.trim(),
-            lName: post.tbLast.trim(),
-            genderId: 0,
+            firstName: post.tbFirst.trim(),
+            midName: post.tbMiddle.trim(),
+            lastName: post.tbLast.trim(),
+            genderID: 0,
+            genderOther: "",
             dob: "2018/01/10"
         });
 
@@ -70,7 +71,13 @@ router.post("/Register", csrfProtection, function(req, res) {
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(pass, salt, function(err, hash) {
                 
-                p.save((err, data) => {
+                p.save((err) => {
+
+                    if(err){
+                        return console.error(err.msg);
+                    }
+                    
+
                     let a = new Account({
                         osis: post.tbOsis.trim(),
                         email: post.tbEmail.trim() + "@aoiths.org",
@@ -84,14 +91,24 @@ router.post("/Register", csrfProtection, function(req, res) {
 
                     // COMMENTED OUT FOR PRIOR TESTING
                     a.save((err, status) => {
+
                         if(err){
                             res.send("error");
                         } else {
+
+                            var h = crypto.createHash('md5').update(a.osis + a.email).digest("hex");
+
+                            console.log(h);
+
+                            var mail = require('../lib/nodeMailer');
+                                mail.sendConfirmationLink(a.email, p.lName, 'google.com');
+
                             res.render("/Confirmation", {
                                 title: "Confirm Account",
                             });
                         }
                     });
+
                     req.flash("success_msg", "Please check your email to validate your account");
                     res.redirect("Confirmation");
                 })

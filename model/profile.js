@@ -9,10 +9,11 @@ module.exports = class Profile {
 
         var model = {
             ID: 0,
-            fName: "",
-            mName: "",
-            lName: "",
-            genderId: 0,
+            firstName: "",
+            midName: "",
+            lastName: "",
+            genderID: 0,
+            genderOther: "",
             dob: 0
         };
 
@@ -28,8 +29,11 @@ module.exports = class Profile {
 
 
     save(cb){
-        db.insert(tableName, this.model, (err) => {
+        db.insert(tableName, this.model, function(err, data){
             if(err) throw err;
+
+            console.log(id);
+            
             db.getMax(tableName, cb);
         });
     }

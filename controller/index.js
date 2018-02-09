@@ -4,15 +4,20 @@ var express = require("express"),
 
 
 router.get("/", function(req, res) {
+    
+    res.render("main/index", {
+        title: "Academy of Innovative Technology"
+    });
+
+    /*
     if(!req.user){
         res.redirect('account/login');
     } else {
-        res.redirect('student/');
+        res.render("main/index", {
+            title: "Index"
+        });
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 2455026dd04f62608fe695c24237697cfa661fab
+    */
 });
 
 

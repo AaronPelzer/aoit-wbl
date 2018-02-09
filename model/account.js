@@ -32,7 +32,12 @@ module.exports = class Account {
     }
 
     save(cb){
-        db.insert(tableName, this.model, cb);
+        db.insert(tableName, this.model, function(err){
+            console.log("Model");
+            console.log(this);
+            console.log("BREAK");
+            cb(err);
+        });
     }
 
     update(id, items, cb){
