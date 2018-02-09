@@ -66,8 +66,6 @@ router.post("/Register", csrfProtection, function(req, res) {
 
         var pass = post.tbOsis.trim() + "" + util.generateRandomNum();
 
-        console.log(pass);
-        
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(pass, salt, function(err, hash) {
                 
@@ -138,9 +136,6 @@ router.post("/Register", csrfProtection, function(req, res) {
 
 router.get("/Confirmation", function(req, res){
 
-    // var mail = require('../lib/nodeMailer');
-    // mail.sendConfirmationLink('jkelly@aoiths.org', 'Jovan', 'google.com');
-
     res.render("account/confirm", {
         title: "Confirm Account"
     });
@@ -155,10 +150,10 @@ router.get("/Verify/:token", function(req, res){
 
     var t = req.params;
 
-    account.verifyAccount( null, "link=?", [t.token], function(err, row){
+    account.verifyAccount( null, "link=?", [t.token], function(err){
         if(err) console.error(err);
 
-        console.log(row);
+        console.log("Activated Successfully");
     });
     
 });
