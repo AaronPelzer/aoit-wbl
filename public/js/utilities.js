@@ -76,7 +76,6 @@ function addNewItem(arr, obj = {}, model) {
 
         obj[Object.keys(obj)[idx]] = f[idx];
     });
-    // JSON.stringify(obj);
     model.push(obj);
 }
 
@@ -92,14 +91,13 @@ function other(name, inputName){
 
 // TESTING
 function reset(args) {
-    //args.forEach(function(elem) {
     el("[name]", 1).forEach(function(elem) {
-        if (el(elem).type === "text") {
-            el(elem).value = "";
-        } else if (el(elem).type === "select-one") {
-            // el(elem).value = "";
-            var e = el(elem);
-            e.selectedIndex = 0;
+        if (elem.type === "text" || elem.type === "number" || elem.type === "date") {
+            elem.value = "";
+        } else if (elem.type === "select-one") {
+            elem.selectedIndex = 0;
+        } else if (elem.type === "textarea") {
+            elem.innerHTML = "";
         }
     });
 }

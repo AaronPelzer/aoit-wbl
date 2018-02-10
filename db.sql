@@ -272,7 +272,7 @@ CREATE TABLE professionalSkill (
     desc TEXT NOT NULL
 );
 
-INSERT INTO professionalSkill (title, desc) VALUES ("Supervision", "Needs minimal supervision to complete tasks."),
+INSERT INTO professionalSkill (skill, desc) VALUES ("Supervision", "Needs minimal supervision to complete tasks."),
     ("Focus", "Maintains focus on tasks despite internal and/or external distractions."),
     ("Adaptable", "Adapts approach in response to new conditions or others’ actions."),
     ("Time Management", "Manages time to complete tasks on schedule."),

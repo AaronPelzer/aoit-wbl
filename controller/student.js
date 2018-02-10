@@ -10,7 +10,8 @@ const router = require("express")(),
       IdeaStatus = require('../model/ideaStatus'),
       Gender = require('../model/gender'),
       WBL = require('../model/wblActivity'),
-      WBLType = require('../model/wblType');
+      WBLType = require('../model/wblType'),
+      Certification = require('../model/certification');
 
 function isAuthenticated(req, res, next){
 
@@ -23,8 +24,12 @@ function isAuthenticated(req, res, next){
 }
 
 router.get("/", isAuthenticated, (req, res) => {
-    res.render("student/index", {
-        title: "Index"
+    let student = new Student();
+    student.getOne(req.user.profileID, (err, data) => {
+        res.render("student/index", {
+            title: "Index",
+            student: data[0]
+        })
     })
 });
 
@@ -62,6 +67,9 @@ router.get("/Profile/Edit", isAuthenticated, (req, res) => {
             gender.get(cb);
         }
     }, (err, r) => {
+
+        console.log(r);
+
         payload.cluster = r.cluster;
         payload.race = r.race;
         payload.ideaStatus = r.ideaStatus;
@@ -251,32 +259,25 @@ router.get("/Professional", isAuthenticated, function(req, res) {
 
 
 router.get("/WBL", isAuthenticated, function(req, res) {
-    let payload = {};
     async.parallel({
-        wblActivities: (cb) => {
-            let wbl = new WBL();
-            wbl.get(req.user.profileID, (err, data) => {
-                payload.wblActivities = data;
-                cb(err);
-            });
-        },
-        wblTypes: (cb) => {
+        wblType: function(cb) {
             let wblType = new WBLType();
-            wblType.get((err, data) => {
-                payload.wblType = data;
-                cb(err);
-            });
+            wblType.get(cb);
+        },
+        activities: function(cb) {
+            let activities = new WBL();
+            activities.get(req.user.profileID, cb);
         }
-    }, (err, results) => {
-        console.log(payload);
-        res.render("student/activities", {
-            title: "Work Based Learning Activities",
-            results: payload
-        });
+    }, function(err, results) {
+        res.render('student/activities', {
+            title: "WBL",
+            results: results
+        })
     });
 });
 
 router.post("/newActivity", isAuthenticated, function(req, res){
+    console.log("HERERERERER");
     let p = req.body;
     for(var i in p){
         async.waterfall([
@@ -302,15 +303,27 @@ router.post("/newActivity", isAuthenticated, function(req, res){
             }
         ], (err, result) => {
             if(err) throw err;
-            res.redirect('/WBL');
+            res.redirect('/student/WBL');
         });
     }
 });
 
 router.get("/WBL/:id/update", isAuthenticated, (req, res) => {
-    res.render('student/updateWbl', {
-        title: "Test",
-        results: {}
+    async.parallel({
+        wblType: function(cb) {
+            let wblType = new WBLType();
+            wblType.get(cb);
+        },
+        activity: function(cb) {
+            let activities = new WBL();
+            activities.getOne(req.params.id, cb);
+        }
+    }, function(err, results) {
+        console.log(results);
+        res.render('student/updateWbl', {
+            title: "WBL",
+            results: results
+        })
     });
 });
 
@@ -324,9 +337,9 @@ router.post("/WBL/:id/update", isAuthenticated, function(req, res){
         };
 
     async.parallel({
-        course: (cb) => {
+        wbl: (cb) => {
             let wbl = new WBL();
-            wbl.update(req.params.id, courseItems, (err) => {
+            wbl.update(req.params.id, wblItems, (err) => {
                 cb(err);
             });
         },
@@ -335,6 +348,7 @@ router.post("/WBL/:id/update", isAuthenticated, function(req, res){
                 wbl = new WBL();
 
             wbl.select(req.params.id, ["commentID"], (err, data) => {
+                console.log(data);
                 comment.update(data[0].commentID, {comment: p.tbComment}, (err) => {
                     cb(err);
                 });
@@ -343,6 +357,91 @@ router.post("/WBL/:id/update", isAuthenticated, function(req, res){
     }, (err) => {
         if(err) throw err;
         res.redirect('/student/activities');
+    })
+});
+
+router.get("/Certification", isAuthenticated, (req, res) => {
+    let certification = new Certification();
+    certification.get(req.user.profileID, (err, data) => {
+        if(err) throw err;
+        res.render('student/certification', {
+            title: "Certification",
+            results: data
+        })
+    })
+});
+
+router.post("/Certification/new", isAuthenticated, (req, res) => {
+    let p = req.body;
+    for(var i in p){
+        let c = new Comment({
+            comment: p[i].comment
+        });
+
+        async.waterfall([
+            (cb) => {
+                c.save((err, data) => {
+                    cb(err, data['MAX(ID)']);
+                });
+            }, (commentID, cb) => {
+                let certification = new Certification({
+                    name: p[i].name,
+                    date: p[i].date,
+                    authority: p[i].authority,
+                    score: p[i].score   
+                }, commentID, req.user.profileID);    
+
+                certification.save((err) => {
+                    cb(err, "done");
+                });
+            }
+        ], (err, result) => {
+            if(err) throw err;
+            res.redirect('/certification');
+        });
+    }
+})
+
+router.get("/Certification/:id/update", isAuthenticated, (req, res) => {
+    let certification = new Certification();
+    certification.getOne(req.params.id, (err, data) => {
+        console.log(data);
+        res.render('student/certification.update.ejs', {
+            title: "Update Certification",
+            results: data
+        })
+    })
+});
+
+router.post("/Certification/:id/update", isAuthenticated, (req, res) => {
+    let p = req.body,
+        certItems = {
+            name: p.tbTitle,
+            authority: p.tbAuth,
+            date: p.tbDate,
+            score: p.tbScore
+        };
+
+    async.parallel({
+        certification: (cb) => {
+            let certification = new Certification();
+            certification.update(req.params.id, certItems, (err) => {
+                cb(err);
+            });
+        },
+        comment: (cb) => {
+            let comment = new Comment(),
+                certification = new Certification();
+
+            certification.select(req.params.id, ["commentID"], (err, data) => {
+                comment.update(data[0].commentID, {comment: p.tbComment}, (err) => {
+                    cb(err);
+                });
+            });
+        }
+    }, (err) => {
+        if(err) throw err;
+        res.redirect('/student/certification');
     })
 });
 
