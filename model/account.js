@@ -73,11 +73,17 @@ module.exports = class Account {
         db.insert("verification", data, cb);
     }
 
-    /**
- * selectOne('Users', null, { 'Users.username': 'name' }, 'name=?', ['bar'],
- *   function(err, row) { });
- */
     verifyAccount(obj, col, data, cb){
-        db.selectOne("verification", null, obj, col, data, cb);
+        db.selectOne("verification", null, obj, col, data, function(err, row){
+            if(err) console.error(err);
+
+            if(data[0] === row.link){
+
+                db.update(tableName, "ID = ?" , [row.accountID], { verified: 1 }, function(err) {
+                    db.remove("verification", 'accountID=?', [row.accountID], cb);
+                });
+            }
+            console.log(row);
+        });
     }
 };
