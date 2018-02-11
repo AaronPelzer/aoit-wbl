@@ -108,6 +108,12 @@ router.post("/Info/Edit", isAuthenticated, (req, res) => {
         })
 });
 
+/**
+ * 
+ * COURSES
+ * 
+ */
+
 router.get("/Courses", isAuthenticated, function(req, res) {
     let course = new Course();
     course.get(req.user.profileID, (err, data) => {
@@ -125,7 +131,7 @@ router.post("/newCourse", isAuthenticated, function(req, res){
         let c = new Comment({
             comment: p[i].comment
         });
-
+        console.log("i: " + i);
         async.waterfall([
             (cb) => {
                 c.save((err, data) => {
@@ -145,7 +151,10 @@ router.post("/newCourse", isAuthenticated, function(req, res){
             }
         ], (err, result) => {
             if(err) throw err;
-            res.redirect('/courses');
+
+            if(i == p.length - 1){
+                res.redirect('/');
+            }
         });
     }
 })
@@ -207,6 +216,12 @@ router.post("/courses/:id/update", isAuthenticated, function(req, res){
     })
 })
 
+/**
+ * 
+ * TECHNICAL SKILLS
+ * 
+ */
+
 router.get("/Technical", isAuthenticated, function(req, res) {
     let tech = new TechSkill();
     tech.get(req.user.profileID, (err, data) => {
@@ -248,15 +263,58 @@ router.post("/newTech", isAuthenticated, (req, res) => {
     }
 });
 
+router.get("/Technical/:id/update", isAuthenticated, (req, res) => {
+    let t = new TechSkill();
+    t.selectOne(req.params.id, {'assessment': 'assessment.ID=technical.assessmentID'}, null, (err, data) => {
+        res.render("student/technical.update.ejs", {
+            title: "Update Technical Skill",
+            results: data
+        })
+    });
+})
+
+router.post("/Technical/:id/update", isAuthenticated, (req, res) => {
+    let p = req.body;
+
+    async.parallel({
+        tech: (cb) => {
+            let t = new TechSkill();
+            t.update(req.params.id, {skill: p.tbTech}, cb);
+        },
+        assessment: (cb) => {
+            let t = new TechSkill(),
+                a = new Assessment();
+
+            t.selectOne(req.params.id, null, ["assessmentID"], (err, data) => {
+                a.update(data.assessmentID, {grade: p.ddlGrade, selfEval: p.ddlScale}, cb);
+            });
+        }
+    }, (err, results) => {
+        if(err) throw err;
+        console.log("reached");
+        res.redirect('/student/technical');
+    });
+})
+
+/**
+ * 
+ * PROFESSIONAL SKILL
+ * 
+ */
 
 router.get("/Professional", isAuthenticated, function(req, res) {
     
     res.render("student/professional", {
         title: "Professional Skills",
-        results: data
+        results: {}
     });
 });
 
+/**
+ * 
+ * WORK-BASED LEARNING
+ * 
+ */
 
 router.get("/WBL", isAuthenticated, function(req, res) {
     async.parallel({
@@ -277,35 +335,27 @@ router.get("/WBL", isAuthenticated, function(req, res) {
 });
 
 router.post("/newActivity", isAuthenticated, function(req, res){
-    console.log("HERERERERER");
     let p = req.body;
     for(var i in p){
-        async.waterfall([
-            (cb) => {
-                let c = new Comment({
-                    comment: p[i].comment
-                });
+        console.log(p[i]);
 
-                c.save((err, data) => {
-                    cb(err, data['MAX(ID)']);
-                });
-            }, (commentID, cb) => {
-                let wbl = new WBL({
-                    date: p[i].date,
-                    hours: p[i].hours,
-                    organization: p[i].org,
-                    wblTypeID: p[i].wblType
-                }, commentID, req.user.profileID);    
-
-                wbl.save((err) => {
-                    cb(err, "done");
-                });
-            }
-        ], (err, result) => {
-            if(err) throw err;
-            res.redirect('/student/WBL');
+        var c = new Comment({
+            comment: p[i].comment
         });
+    
+        c.save((err, data) => {
+            var wbl = new WBL({
+                date: p[i].date,
+                hours: p[i].hours,
+                organization: p[i].org,
+                wblTypeID: p[i].wblType
+            }, data['MAX(ID)'], req.user.profileID);    
+    
+            wbl.save((err) => {
+            });
+        })
     }
+    res.redirect('/Wbl');
 });
 
 router.get("/WBL/:id/update", isAuthenticated, (req, res) => {
@@ -359,6 +409,12 @@ router.post("/WBL/:id/update", isAuthenticated, function(req, res){
         res.redirect('/student/activities');
     })
 });
+
+/**
+ * 
+ * CERTIFICATION
+ * 
+ */
 
 router.get("/Certification", isAuthenticated, (req, res) => {
     let certification = new Certification();

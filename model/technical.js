@@ -27,12 +27,20 @@ module.exports = class Technical {
         db.insert(tableName, this.model, cb);
     }
 
-    update(id, items){
+    update(id, items, cb){
         db.updateById(tableName, id, items, cb);
     }
 
     get(profileId, cb){
         db.select(tableName, null, null, 'profileID=?', [profileId], cb)
+    }
+
+    select(id, joins, columns, cb){
+        db.select(tableName, joins, null,  `${tableName}.ID=?`, [id], cb);
+    }
+
+    selectOne(id, joins, columns, cb){
+        db.selectOne(tableName, joins, null, 'technical.ID=?', [id], cb)
     }
 
     remove(id, cb){

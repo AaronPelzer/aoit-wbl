@@ -21,7 +21,7 @@ CREATE TABLE account (
     password TEXT NOT NULL,
     dateCreated DATE NOT NULL,
     lastLogin DATE NOT NULL,
-    lastUpdated DATE NOT NULL,
+    lastUpdate DATE NOT NULL,
     verified BOOLEAN NOT NULL DEFAULT 0,
     profileID INTEGER NOT NULL,
     accountTypeID INTEGER NOT NULL,
@@ -32,9 +32,9 @@ CREATE TABLE account (
 -- Profile Information
 CREATE TABLE profile (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    fName TEXT NOT NULL,
-    mName TEXT NULL,
-    lName TEXT NOT NULL,
+    firstName TEXT NOT NULL,
+    midName TEXT NULL,
+    lastName TEXT NOT NULL,
     dob DATE NOT NULL,
     gradYear INTEGER NULL,
     grade TINYINTEGER NULL,
@@ -134,7 +134,7 @@ CREATE TABLE term (
     term TEXT NOT NULL
 );
 
-INSERT INTO term(name) VALUES("Spring"),
+INSERT INTO term(term) VALUES("Spring"),
     ("Summer"),
     ("Fall");
 
@@ -330,8 +330,11 @@ CREATE TABLE eventType (
 -- Proficiency
 CREATE TABLE proficiency (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
     desc TEXT NOT NULL
 );
+
+INSERT INTO proficiency(name, desc) VALUES("Not Exposed", "The opportunity has not yet been provided to the student to demonstrate the skill."), ("Training Level", "Preparing to become work ready, but has difficulty completing tasks without prompting and repeated help. Does not readily request help. Does not attempt task before asking for or receiving assistance. "), ("Improving Towards Entry Level", "More work ready. Has difficulty completing some tasks. May attempt task before asking for help. Needs prompting or assistance. "), ("Entry Level", "Meets and demonstrates the skills at a level equal to what is expected of any employee in a similar position. Completes tasks and work projects with and without help. Improves work using team or supervisor feedback. Meets quality standards. "), ("Exceeds Entry Level", "Demonstrates mastery of skills at a level above what is expected of any employee in a similar position. Uses information generated personally and by others to improve work quality. Identifies problems before they arise and makes adjustments accordingly. Exceeds work expectations for quality and attends to detail in the development of projects and assignments.");
 
 -- Internship
 CREATE TABLE internship (

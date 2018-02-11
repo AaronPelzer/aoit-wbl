@@ -28,7 +28,7 @@ module.exports = class Assessment {
         });
     }
 
-    update(id, items){
+    update(id, items, cb){
         db.updateById(tableName, id, items, cb);
     }
     

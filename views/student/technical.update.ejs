@@ -1,0 +1,46 @@
+<% include ../header.ejs %>
+<br>
+<h1><%= title %></h1>
+<br>
+
+<form method="POST" action="update">
+    <div class="row">
+        <div class="col-sm-8 col-md-1 col-lg-1">
+    
+        </div>
+        <div class="col-sm-8 col-md-3 col-lg-5">
+            <div class="form-group">
+                <label for="tbTech">Skill</label>
+                <input class="form-control" name="tbTech" type="text" placeholder="Enter skill you have learned and/or applied." value="<%= results.skill %>" required />
+            </div>
+        </div>
+        <div class="col-sm-8 col-md-2 col-lg-2">
+            <div class="form-group">
+                <label for="ddlGrade">Grade</label>
+                <select name="ddlGrade" class="form-control" required>
+                    <option>Select Grade</option>
+                    <option value="9" <% if(results.grade === 9){ %> selected <% }  %>>9</option>
+                    <option value="10" <% if(results.grade === 10){ %> selected <% }  %>>10</option>
+                    <option value="11" <% if(results.grade === 11){ %> selected <% }  %>>11</option>
+                    <option value="12" <% if(results.grade === 12){ %> selected <% }  %>>12</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-8 col-md-2 col-lg-1">
+            <div class="form-group">
+                <label for="ddlScale">Scale</label>
+                <select name="ddlScale" class="form-control" required>
+                    <option></option>
+                    <option value="1" <% if(results.selfEval === 1){ %> selected <% }  %>>1</option>
+                    <option value="2" <% if(results.selfEval === 2){ %> selected <% }  %>>2</option>
+                    <option value="3" <% if(results.selfEval === 3){ %> selected <% }  %>>3</option>
+                    <option value="4" <% if(results.selfEval === 4){ %> selected <% }  %>>4</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <button class="btn btn-default">Save</button>
+    </div>
+</form>
