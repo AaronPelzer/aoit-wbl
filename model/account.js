@@ -4,8 +4,8 @@ var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
     bcrypt = require("bcryptjs");
 
 module.exports = class Account {
-    
-    constructor(account = {}, profile = {}){
+
+    constructor(account = {}, profile = {}) {
         var model = {
             ID: 0,
             osis: "",
@@ -18,26 +18,26 @@ module.exports = class Account {
             lastUpdate: ""
         };
 
-        function setProperty(obj){
-            for(var p in Object(model) ) {
-                console.log( `${p} = ${obj}`);
+        function setProperty(obj) {
+            for (var p in Object(model)) {
+                console.log(`${p} = ${obj}`);
                 model[p] = obj[p];
             }
         }
 
         //if(Object.keys(account).length > 0 && Object.keys(profile).length ){
-            setProperty(account);
+        setProperty(account);
         //}
 
         this.model = model;
         this.profile = profile;
     }
 
-    save(cb){
+    save(cb) {
         var m = this.model;
 
-        db.insert("profile", this.profile, function(err){
-            if(err){
+        db.insert("profile", this.profile, function(err) {
+            if (err) {
                 throw err;
             }
 
@@ -45,36 +45,36 @@ module.exports = class Account {
 
             m.profileID = this.lastID;
 
-            db.insert("account", m, function(err){
-                if(err){
+            db.insert("account", m, function(err) {
+                if (err) {
                     throw err;
                 }
                 console.log("Account Inserted ID " + this.lastID);
-                cb({status: 1});
+                cb({ status: 1 });
             });
         });
     }
 
-    update(id, obj){
+    update(id, obj) {
         db.updateById(tableName, id, obj, (err) => {
-            if(err){
+            if (err) {
                 console.log(err);
             }
         })
     }
 
-    remove(id){
+    remove(id) {
         db.removeById(tableName, id, (err) => {
-            if(err){
-                throw(err);
+            if (err) {
+                throw (err);
             }
         })
     }
 
-    get(callback){
+    get(callback) {
 
-        db.list(tableName, function(err, data){
-            if(err){
+        db.list(tableName, function(err, data) {
+            if (err) {
                 throw err;
             }
 
@@ -83,20 +83,21 @@ module.exports = class Account {
     }
 
     // GENERIC VERSION
-    getOne(where, vals, cb){
+    getOne(where, vals, cb) {
         db.selectOne(tableName, null, null, where, vals, cb);
     }
 
-    getAccountById(id, cb){
+    getAccountById(id, cb) {
         db.selectOne(tableName, null, null, 'id=?', id, cb);
     }
-    getAccountByEmail(email, cb){
+
+    getAccountByEmail(email, cb) {
         db.selectOne(tableName, null, null, 'email=?', email, cb);
     }
-    
-    comparePassword(userPassword, hash, cb){
+
+    comparePassword(userPassword, hash, cb) {
         bcrypt.compare(userPassword, hash, function(err, isMatch) {
-            if(err) throw err;
+            if (err) throw err;
             cb(null, isMatch);
         });
     }

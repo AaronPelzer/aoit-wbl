@@ -1,13 +1,14 @@
-var router = require("express")(),
-    sqlite = require('sqlite3').verbose(),
-    db = new sqlite.Database('./data'),
+var db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+    router = require("express")(),
+    Student = require("./student.js"),
+    tableName = "profile",
     uploadUtil = require('../util/upload.js');
 
 
 
-function isAuthenticated(req, res, next){
+function isAuthenticated(req, res, next) {
 
-    if(req.isAuthenticated()){
+    if (req.isAuthenticated()) {
         return next();
     } else {
         req.flash("error_msg", "You are not logged in");
@@ -49,6 +50,8 @@ router.get("/Profile", isAuthenticated, function(req, res) {
 
     var payload = {};
 
+
+    /*
     execute(commands.selectCluster, [], function(err, data) {
         payload.cluster = data;
         execute(commands.selectRace, [], function(err, data) {
@@ -65,19 +68,10 @@ router.get("/Profile", isAuthenticated, function(req, res) {
 
         });
     });
-
-
-    /*
-        execute('SELECT * FROM cluster', [], function(err, data) {
-            res.render("student/profile", {
-                title: "Profile",
-                results: payload
-            });
-        });
-        */
+    */
 });
 
-router.get('/Info', function(req, res){
+router.get('/Info', function(req, res) {
     console.log("Info");
 
     res.render("student/info", {
@@ -93,7 +87,7 @@ router.get("/Courses", function(req, res) {
     });
 });
 
-router.post("/updateCourses", function(req, res){
+router.post("/updateCourses", function(req, res) {
     var data = req.body;
     console.log(data);
 })
@@ -151,7 +145,7 @@ router.get("/upload", function(req, res) {
     });
 })
 
-router.post('/upload', function(req, res){
+router.post('/upload', function(req, res) {
     uploadUtil.setDestination(1234567890);
     uploadUtil.upload("myFile", "resume", req, res);
     res.status(204).end();

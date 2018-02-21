@@ -16,54 +16,57 @@ module.exports = class Profile {
             dob: 0
         };
 
-        function setProperty(obj){
-            for(var p in Object(model) ) {
+        function setProperty(obj) {
+            for (var p in Object(model)) {
                 model[p] = obj[p];
             }
         }
         // if(Object.keys(profile).length){
-            setProperty(person);
+        setProperty(person);
         //}
         this.model = model;
     }
 
 
-    save(){
-        db.insert(tableName, this.model, function(err){
-            if(err){
+    save() {
+        db.insert(tableName, this.model, function(err) {
+            if (err) {
                 throw err;
             }
         });
     }
 
-    update(id, items){
+    update(id, items) {
         db.updateById(tableName, id, items, (err) => {
-            if(err){
+            if (err) {
                 throw err;
             }
         })
     }
 
-    get(callback){
+    get(callback) {
 
-        db.list(tableName, function(err, data){
-            if(err){
+        db.list(tableName, function(err, data) {
+            if (err) {
                 throw err;
             }
             callback(data);
         });
     }
 
-    getOne(id, cb){
-        db.find(tableName, id, function(err, data){
-            if(err){
+    getOne(id, cb) {
+        db.selectOne(tableName, cb);
+        /*
+        db.find(tableName, id, function(err, data) {
+            if (err) {
                 throw err;
             }
             cb(data);
         });
+        */
     }
 
-    remove(id, cb){
+    remove(id, cb) {
         db.removeById(tableName, id, cb);
     }
 };
