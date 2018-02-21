@@ -1,15 +1,13 @@
-const db = require('../lib/sqlite-wrapper'),
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
       tableName = 'professional';
 
-module.expors = class Professional {
-    constructor(professional = {}, profileID){
+module.exports = class Professional {
+    constructor(professional = {}, assessmentID, profileID){
         let model = {
             ID: 0,
             professionalTypeID:0,
-            profileID: 0,
-            grade: 0,
-            selfEval: 0,
-            teachEval: 0
+            assessmentID: 0,
+            profileID: 0
         }
 
         function setProperty(obj){
@@ -22,32 +20,19 @@ module.expors = class Professional {
 
         this.model = model;
         this.model.profileID = profileID;
+        this.assessment = assessment;
     }
 
     save(cb){
-        db.insert(tableName, this.model, (err) => {
-            if(err){
-                throw err;
-            }
-            cb();
-        });
+        db.insert(tableName, this.model, cb);
     }
 
     update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        });
+        db.updateById(tableName, id, items, cb);
     }
 
     get(profileId, cb){
-        db.select(tableName, null, null, 'profileID=?', [profileId], (err, data) => {
-            if(err){
-                throw err;
-            }
-            cb(data);
-        })
+        db.select(tableName, null, null, 'profileID=?', [profileId], cb)
     }
 
     remove(id, cb){

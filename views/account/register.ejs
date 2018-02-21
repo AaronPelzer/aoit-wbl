@@ -52,7 +52,11 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="form-group">
             <label for="ddlGender">Gender</label>
-            <select class="form-control" name="ddlGender"></select>
+            <select class="form-control" name="ddlGender">
+                <option></option>
+                <option value="2">Female</option>
+                <option value="1">Male</option>
+            </select>
         </div>
     </div>
 
@@ -61,10 +65,11 @@
             <label for="ddlRace">Ethnicity</label>
             <select class="form-control" name="ddlRace">
                 <option></option>
-                <% for(var i=0; i<results.race.length; i++) { %>
-                        <option value="<%= results.race[i].ID %>">
-                        <%= results.race[i].type %></option>
-                <% } %>
+                <% results.forEach((r) => { %>
+                    <option value="<%= r.ID %>">
+                        <%= r.race %>
+                    </option>
+                <% }) %>
             </select>
         </div>
     </div>

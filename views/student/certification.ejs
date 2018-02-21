@@ -1,0 +1,141 @@
+<% include ../header.ejs %>
+
+<br>
+
+<h1><%= title %></h1>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="tbTitle">Title</label>
+            <input class="form-control" type="text" name="tbTitle" placeholder="Enter Certification Title" />
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-3">
+            <div class="form-group">
+                <label for="tbAuth">Authority</label>
+                <input class="form-control" type="text" name="tbAuth" placeholder="Enter Certifiying Authority" />
+            </div>
+        </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="tbDate">Date</label>
+            <input class="form-control" type="date" name="tbDate" placeholder="Enter Date" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label for="tbScore">Score</label>
+            <input class="form-control" type="number" name="tbScore" placeholder="Score"/>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-10">
+        <div class="form-group">
+            <label for="tbComment">Comment(s)</label>
+            <textarea class="form-control" type="text" row="3" name="tbComment" placeholder="Enter description about course load"></textarea>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <div class="form-group" style="padding-top: 40px;">
+            <button class="btn btn-default btnAdd"> + </button>
+        </div>
+    </div>
+</div>
+<hr/>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                New Certifications
+            </div>
+            <ul class="dvEntered list-group list-group-flush">
+                <li id="empty" class="list-group-item">No new certifications added.</li>
+            </ul>
+        </div>
+        <br>
+        <button class="btn btn-sm btn-default float-right" id="save">Save</button>
+        <br/>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Certifications
+            </div>
+            <ul class="list-group list-group-flush">
+                <% for(var c in results){ %>        
+                    <a href="certification/<%= results[c].ID %>/update" class="list-group-item list-group-item-action">
+                        <%= results[c].name %>
+                    </a>  
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</div>
+<br>
+
+<script src="/js/utilities.js"></script>
+<script>
+
+    var row = 0;
+    var certifications = [];
+
+    document.querySelector('#empty').style.display = "show"; 
+
+    addListener(".btnAdd", "click", function(){
+        var html = "";
+
+        addNewItem(["[name=tbTitle]", "[name=tbAuth]", "[name=tbDate]", "[name=tbScore]", "[name=tbComment]"],
+            {   name: "",
+                authority: 0,
+                date: 0,
+                score: 0,
+                comment: ""}, certifications);
+        
+        for(var i = 0; i < certifications.length; i++){
+            console.log(certifications[i]);
+        }
+
+        var cols = certifications[ certifications.length - 1].name ;
+        el(".dvEntered").insertAdjacentHTML("beforeEnd", createListItem(cols));
+        let item = certifications.length - 1;
+        certifications[item].id = item;
+
+        document.querySelector('#empty').style.display = "none";
+        document.querySelectorAll(".btnRemove")[certifications.length - 1].addEventListener("click", (e) => {
+            let listItem = e.target.parentNode;
+            listItem.parentNode.removeChild(listItem);
+
+            let i = 0;
+            while(certifications[i].id !== item){
+                i++;
+            }
+            certifications.splice(i, 1);
+
+            if(certifications.length == 0){
+                document.querySelector('#empty').style.display = "block"; 
+            }
+        });
+
+        reset();
+    });
+
+    addListener("#save", "click", () => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "certification/new", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(certifications));
+    })
+</script>
+
+<% include ../footer.ejs %>

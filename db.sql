@@ -1,83 +1,82 @@
+-- Account Types
 CREATE TABLE accountType (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    type int NOT NULL
+    type INTEGER NOT NULL
+);;
+
+-- Verified 
+CREATE TABLE verified (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    code TEXT NOT NULL,
+    email TEXT NOT NULL,
+    accountID INTEGER NOT NULL,
+    FOREIGN KEY(accountID) REFERENCES account(ID)
 );
 
-//
-// Account Information
+-- Account Information
 CREATE TABLE account (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     OSIS TEXT NOT NULL,
     email TEXT NOT NULL,
     password TEXT NOT NULL,
-    dateCreated TEXT NOT NULL, 
+    dateCreated DATE NOT NULL,
+    lastLogin DATE NOT NULL,
+    lastUpdate DATE NOT NULL,
+    verified BOOLEAN NOT NULL DEFAULT 0,
     profileID INTEGER NOT NULL,
     accountTypeID INTEGER NOT NULL,
-    lastLogin TEXT NOT NULL,
-    lastUpdate TEXT NOT NULL,
-    verified BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY(profileID) REFERENCES profile(ID),
     FOREIGN KEY(accountTypeID) REFERENCES accountType(ID)
-);
+); 
 
-CREATE TABLE school (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    addressId INT NOT NULL,
-    FOREIGN KEY(addressId) REFERENCES address(ID)
-);
-
-CREATE TABLE address (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    address TEXT NOT NULL,
-    address2 TEXT NULL,
-    city TEXT NOT NULL,
-    state TEXT NOT NULL,
-    zip TEXT NOT NULL
-);
-
-CREATE TABLE contact (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    schoolID INT NOT NULL,
-    type TEXT NULL,
-    desc TEXT NULL
-);
-
-
-CREATE TABLE contactType (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
-);
-
-
-// Student Information
+-- Profile Information
 CREATE TABLE profile (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     firstName TEXT NOT NULL,
     midName TEXT NULL,
     lastName TEXT NOT NULL,
-    genderID INT NOT NULL,
+    dob DATE NOT NULL,
+    gradYear INTEGER NULL,
+    grade TINYINTEGER NULL,
     genderOther TEXT NULL,
-    dob Date NOT NULL
+    raceOther NULL,
+    resume TEXT NULL,
+    clusterID INTEGER NULL,
+    raceID INTEGER NULL,
+    hispanicID INTEGER NULL,
+    schoolID INTEGER NULL,
+    genderID INTEGER NULL,
+    evaluatorID INTEGER NULL,
+    addressID INTEGER NULL,
+    ideaStatusID INTEGER NULL,
+    FOREIGN KEY(clusterID) REFERENCES cluster(ID),
+    FOREIGN KEY(raceID) REFERENCES race(ID),
+    FOREIGN KEY(hispanicID) REFERENCES hispanic(ID),
+    FOREIGN KEY(schoolID) REFERENCES school(ID),
+    FOREIGN KEY(genderID) REFERENCES gender(ID),
+    FOREIGN KEY(evaluatorID) REFERENCES evaluator(ID),
+    FOREIGN KEY(addressID) REFERENCES address(ID),
+    FOREIGN KEY(ideaStatusID) REFERENCES ideaStatus(ID)
 );
 
-CREATE TABLE genderType (
+-- School Information
+CREATE TABLE school (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    type TEXT NOT NULL
+    name TEXT NOT NULL,
+    website TEXT NULL,
+    addressID INTEGER NOT NULL,
+    contactID INTEGER NOT NULL,
+    FOREIGN KEY(addressID) REFERENCES address(ID),
+    FOREIGN KEY(contactID) REFERENCES schoolContact(ID)
 );
 
-INSERT INTO genderType(type) VALUES("Male"),
-    ("Female"),
-    ("Other");
-
+-- Cluster
 CREATE TABLE cluster (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    Title TEXT NOT NULL,
-    Description TEXT NULL
+    title TEXT NOT NULL
 );
 
-
-INSERT INTO cluster(Title) VALUES("Agriculture Food & Natural Resources"), 
+INSERT INTO cluster(title) VALUES("Agriculture Food & Natural Resources"), 
     ("Architecture & Construction"),
     ("Arts A/V Technology & Communications"), 
     ("Business Management & Administration"),
@@ -88,17 +87,18 @@ INSERT INTO cluster(Title) VALUES("Agriculture Food & Natural Resources"),
     ("Human Services"),
     ("Information Technology"),
     ("Law Public Safety Corrections & Security"), 
-    ("Manufacturing"),Type
+    ("Manufacturing"),
     ("Marketing"),
     ("Science Technology Engineering & Mathematics"), 
     ("Transportation Distribution & Logistics");
 
+-- Race
 CREATE TABLE race (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    type TEXT NOT NULL
+    race TEXT NOT NULL
 );
 
-INSERT INTO race(type) VALUES("White"),
+INSERT INTO race(race) VALUES("White"),
     ("Black"),
     ("Asian"),
     ("Native American"),
@@ -108,139 +108,125 @@ INSERT INTO race(type) VALUES("White"),
     ("Multi-Racial"),
     ("Other");
 
+-- Hispanic
 CREATE TABLE hispanic (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    profileId INT NOT NULL,
-    selected INT NOT NULL
+    type BOOLEAN NOT NULL
 );
 
-CREATE TABLE ideaStatus (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    typeId INTEGER NOT NULL,
-    FOREIGN KEY(typeid) REFERENCES ideaStatusTypes(ID)
-);
-
-CREATE TABLE ideaStatusTypes(
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL
-);
-
-INSERT INTO ideaStatusTypes(title) VALUES("Service Required"), ("No Service");
-
-
-//
-// CTE Courses
-CREATE TABLE courses(
+-- Course
+CREATE TABLE course (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
-    year INT NOT NULL,
-    hours INT NOT NULL,
-    profileID INT NOT NULL,
+    year INTEGER NOT NULL,
+    hours INTEGER NOT NULL,
+    commentID INTEGER NOT NULL,
+    profileID INTEGER NOT NULL,
+    termID INTEGER NOT NULL,
+    FOREIGN KEY(commentID) REFERENCES comment(ID),
+    FOREIGN KEY(profileID) REFERENCES profile(ID),
+    FOREIGN KEY(termID) REFERENCES term(ID)
+);
+
+-- Term
+CREATE TABLE term (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    term TEXT NOT NULL
+);
+
+INSERT INTO term(term) VALUES("Spring"),
+    ("Summer"),
+    ("Fall");
+
+-- Gender
+CREATE TABLE gender (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    gender TEXT NOT NULL
+);
+
+INSERT INTO gender(gender) VALUES("Male"),
+    ("Female"),
+    ("Other");
+
+-- Contact
+CREATE TABLE contact (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    fName TEXT NOT NULL,
+    lName TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    cell TEXT NOT NULL,
+    contactTypeID INTEGER NOT NULL,
+    profileID INTEGER NOT NULL,
+    FOREIGN KEY(contactTypeID) REFERENCES contactType(ID),
     FOREIGN KEY(profileID) REFERENCES profile(ID)
 );
 
-CREATE TABLE term(
+-- ContactType
+CREATE TABLE contactType (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+    type TEXT NOT NULL
 );
 
-INSERT INTO term(name) VALUES("Spring"),("Summer"),("Fall");
-
-CREATE TABLE comments (
+-- SchoolContact
+CREATE TABLE schoolContact (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    courseID INTEGER NOT NULL,
-    message TEXT NULL,
-    FOREIGN KEY(courseID) REFERENCES courses(ID)
+    phone TEXT NOT NULL,
+    fax TEXT NULL
 );
 
-CREATE TABLE profiency (
+-- Address
+CREATE TABLE address (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    desc TEXT NOT NULL
+    address TEXT NOT NULL,
+    address2 TEXT NULL,
+    city TEXT NOT NULL,
+    state TEXT NOT NULL,
+    zip TEXT NOT NULL
 );
 
-CREATE TABLE skills (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    desc TEXT NOT NULL
-);
-Type
-INSERT INTO skills (title, desc) VALUES ("Supervision", "Needs minimal supervision to complete tasks."),
-    ("Focus", "Maintains focus on tasks despite internal and/or external distractions."),
-    ("Adaptable", "Adapts approach in response to new conditions or others’ actions."),
-    ("Time Management", "Manages time to complete tasks on schedule."),
-    ("Impact Awareness", "Recognizes the consequences of one’s actions."),
-    ("Team Spirit", "Balances own needs with the needs of others."),
-    ("Collaboration","Helps team members complete tasks, as needed."),
-    ("Problem Solver", "Identifies alternative ideas/processes that are more effective."),
-    ("Motivation", "Brings energy and enthusiasm to the work."),
-    ("Responsibility", "Takes responsibility for their actions, instead of blaming others.");
-
-
-// 
-// ASSESSMENT
-CREATE TABLE technical (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    profileID INT NOT NULL,
-    grade INT NOT NULL,
-    personType INT NOT NULL,
-    assessmentID INT NOT NULL
-);
-
-CREATE TABLE personType(
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    who TEXT NOT NULL
-);
-
-INSERT INTO personType (who) VALUES("self"), ("evaluator");
-
-CREATE TABLE assessment (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    type INT NOT NULL,
-    rating INT NOT NULL
-);
-
-
+-- Evaluator 
 CREATE TABLE evaluator (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    first TEXT NOT NULL,
-    last TEXT NOT NULL,
+    fName TEXT NOT NULL,
+    lName TEXT NOT NULL,
     title TEXT NOT NULL,
-    grade INT NOT NULL,
-    comment TEXT NULL
-);
-
-CREATE TABLE professional (
-    ID INTEGER NOT NULL PRIMARY KEY,
-    profileID INT NOT NULL,
-    professionalTypeID INT NOT NULL,
     grade TINYINT NOT NULL,
-    selfEval TINYINT NOT NULL,
-    teachEval TINYINT NOT NULL,
-    FOREIGN KEY(profileID) REFERENCES profile(ID),
-    FOREIGN KEY(professionalTypeID) REFERENCES professionalType(ID)
+    commentID INTEGER NOT NULL,
+    FOREIGN KEY(commentID) REFERENCES comment(ID)
 );
 
-CREATE TABLE professionalType(
-    ID INTEGER NOT NULL PRIMARY KEY,
-    title TEXT NOT NULL,
-    desc TEXT NOT NULL
-)
+-- Comment
+CREATE TABLE comment (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    comment INTEGER NOT NULL
+);
 
-INSERT INTO professionalType(title, desc) VALUES ("SUPERVISION", "Needs minimal supervision to complete tasks."),
-("FOCUS", "Maintains focus on tasks despite internal and/or external distractions."),
-("ADAPTABLE", "Adapts approach in response to new conditions or others’ actions."),
-("TIME MANAGEMENT", "Manages time to complete tasks on schedule."),
-("IMPACT AWARENESS", "Recognizes the consequences of one’s actions."),
-("TEAM SPIRIT", "Balances own needs with the needs of others."),
-("COLLABORATION", "Helps team members complete tasks, as needed."),
-("PROBLEM SOLVER", "Identifies alternative ideas/processes that are more effective."),
-("MOTIVATION", "Brings energy and enthusiasm to the work."),
-("RESPONSIBILITY", "Takes responsibility for their actions, instead of blaming others.");
+-- Idea Status
+CREATE TABLE ideaStatus (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    status TEXT NOT NULL
+);
 
+INSERT INTO ideaStatus(status) VALUES("Service Required"),
+    ("No Service");
 
+-- WBL Activities
+CREATE TABLE wblActivity (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    date DATE NOT NULL,
+    organization TEXT NOT NULL,
+    hours INTEGER NOT NULL,
+    wblTypeID INTEGER NOT NULL,
+    profileID INTEGER NOT NULL,
+    commentID INTEGER NOT NULL,
+    FOREIGN KEY(wblTypeID) REFERENCES wblType(ID),
+    FOREIGN KEY(profileID) REFERENCES profile(ID),
+    FOREIGN KEY(commentID) REFERENCES comment(ID)
+);
 
-CREATE TABLE wblType(
-    ID INTEGER NOT NULL PRIMARY KEY,
+-- WBL Type
+CREATE TABLE wblType (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     type TEXT NOT NULL
 );
 
@@ -255,9 +241,116 @@ INSERT INTO wblType(type) VALUES("Guest Speaker"),
     ("Intenships"),
     ("Work Experiences");
 
-CREATE TABLE verification(
-    ID INTEGER NOT NULL PRIMARY KEY,
-    accountID INTEGER NOT NULL,
-    link TEXT NOT NULL,
-    FOREIGN KEY(accountID) REFERENCES account(ID)
-)
+-- Certifications
+CREATE TABLE certification (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    date DATE NOT NULL,
+    name TEXT NOT NULL,
+    authority TEXT NOT NULL,
+    score INTEGER NOT NULL,
+    commentID INTEGER NOT NULL,
+    profileID INTEGER NOT NULL,
+    FOREIGN KEY(commentID) REFERENCES comment(ID),
+    FOREIGN KEY(profileID) REFERENCES profile(ID)
+);
+
+-- Professional
+CREATE TABLE professional (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    profileID INTEGER NOT NULL,
+    professionalSkillID INTEGER NOT NULL,
+    assessmentID INTEGER NOT NULL,
+    FOREIGN KEY(profileID) REFERENCES profile(ID),
+    FOREIGN KEY(professionalSkillID) REFERENCES professionalSkill(ID),
+    FOREIGN KEY(assessmentID) REFERENCES assessment(ID)
+);
+
+-- ProfessionalType
+CREATE TABLE professionalSkill (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    skill TEXT NOT NULL,
+    desc TEXT NOT NULL
+);
+
+INSERT INTO professionalSkill (skill, desc) VALUES ("Supervision", "Needs minimal supervision to complete tasks."),
+    ("Focus", "Maintains focus on tasks despite internal and/or external distractions."),
+    ("Adaptable", "Adapts approach in response to new conditions or others’ actions."),
+    ("Time Management", "Manages time to complete tasks on schedule."),
+    ("Impact Awareness", "Recognizes the consequences of one’s actions."),
+    ("Team Spirit", "Balances own needs with the needs of others."),
+    ("Collaboration","Helps team members complete tasks, as needed."),
+    ("Problem Solver", "Identifies alternative ideas/processes that are more effective."),
+    ("Motivation", "Brings energy and enthusiasm to the work."),
+    ("Responsibility", "Takes responsibility for their actions, instead of blaming others.");
+
+
+-- Assessment
+CREATE TABLE assessment (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    selfEval TINYINT NOT NULL,
+    techEval TINYINT NULL,
+    grade TINYINTEGER NOT NULL
+);
+
+-- Technical
+CREATE TABLE technical (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    skill TEXT NOT NULL,
+    assessmentID INTEGER NOT NULL,
+    profileID INTEGER NOT NULL,
+    FOREIGN KEY(assessmentID) REFERENCES assessment(ID),
+    FOREIGN KEY(profileID) REFERENCES profile(ID)
+);
+
+-- Attendee
+CREATE TABLE attendee (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    eventID INTEGER NOT NULL,
+    profileID INTEGER NOT NULL,
+    FOREIGN KEY(eventID) REFERENCES event(ID),
+    FOREIGN KEY(profileID) REFERENCES profile(ID)
+);
+
+-- Event
+CREATE TABLE event (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    date DATE NOT NULL,
+    location TEXT NOT NULL,
+    eventTypeID INTEGER NOT NULL,
+    FOREIGN KEY(eventTypeID) REFERENCES eventType(ID)
+);
+
+-- Event Type
+CREATE TABLE eventType (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    type TEXT NOT NULL
+);
+
+-- Proficiency
+CREATE TABLE proficiency (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    desc TEXT NOT NULL
+);
+
+INSERT INTO proficiency(name, desc) VALUES("Not Exposed", "The opportunity has not yet been provided to the student to demonstrate the skill."), ("Training Level", "Preparing to become work ready, but has difficulty completing tasks without prompting and repeated help. Does not readily request help. Does not attempt task before asking for or receiving assistance. "), ("Improving Towards Entry Level", "More work ready. Has difficulty completing some tasks. May attempt task before asking for help. Needs prompting or assistance. "), ("Entry Level", "Meets and demonstrates the skills at a level equal to what is expected of any employee in a similar position. Completes tasks and work projects with and without help. Improves work using team or supervisor feedback. Meets quality standards. "), ("Exceeds Entry Level", "Demonstrates mastery of skills at a level above what is expected of any employee in a similar position. Uses information generated personally and by others to improve work quality. Identifies problems before they arise and makes adjustments accordingly. Exceeds work expectations for quality and attends to detail in the development of projects and assignments.");
+
+-- Internship
+CREATE TABLE internship (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    desc TEXT NOT NULL,
+    date DATE NOT NULL,
+    length INTEGER NOT NULL,
+    company TEXT NOT NULL,
+    skillsLearned TEXT NOT NULL,
+    profileID INTEGER NOT NULL,
+    FOREIGN KEY(profileID) REFERENCES profile(ID)
+);
+
+CREATE TABLE verification (
+      ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      accountID INTEGER NOT NULL,
+      link TEXT NOT NULL
+);
+

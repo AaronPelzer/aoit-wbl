@@ -1,4 +1,4 @@
-const db = require('../lib/sqlite-wrapper'),
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
       tableName = 'professionalType';
 
 module.exports = class ProfessionalType {
@@ -25,11 +25,7 @@ module.exports = class ProfessionalType {
     }
 
     update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        });
+        db.updateById(tableName, id, items, cb);
     }
 
     get(cb){

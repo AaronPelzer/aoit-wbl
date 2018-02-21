@@ -1,5 +1,6 @@
 <% include ../header.ejs %>
 
+<br>
 
 <h1><%= title %></h1>
 
@@ -40,7 +41,7 @@
         </div>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-2">
         <div class="form-group">
             <label for="tbHours">Hours</label>
             <input class="form-control" name="tbHours" type="number" placeholder="123" />
@@ -49,44 +50,59 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-10">
         <div class="form-group">
             <label for="tbComment">Comment(s)</label>
             <textarea class="form-control" type="text" row="3" name="tbComment" placeholder="Enter description about course load"></textarea>
         </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
         <div class="form-group" style="padding-top: 40px;">
-            <div style="float: right; !important;">
-                <button class="btn btn-danger"> x </button>
-                <button class="btn btn-success btnAdd"> + </button>
-            </div>
+            <button class="btn btn-default btnAdd"> + </button>
         </div>
     </div>
 </div>
-
-<div class="dvEntered"></div>
-
+<hr/>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-        <button class="btn btn-danger btnBack">Back</button>
-        <div class="" style="float: right; !important"> 
-            <button class="btn btn-default" id="save">Save</button>
-            <button class="btn btn-success" disabled>Next</button>
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                New Courses
+            </div>
+            <ul class="dvEntered list-group list-group-flush">
+                <li id="empty" class="list-group-item">No new courses added.</li>
+            </ul>
+        </div>
+        <br>
+        <button class="btn btn-sm btn-default float-right" id="save">Save</button>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Courses
+            </div>
+            <ul class="list-group list-group-flush">
+                <% for(var c in courses){ %>        
+                    <a href="courses/<%= courses[c].ID %>/update" class="list-group-item list-group-item-action">
+                        <%= courses[c].title %> - <%= courses[c].year %> - <%= courses[c].hours %>
+                    </a>  
+                <% } %>
+            </ul>
         </div>
     </div>
 </div>
-
+<br>
 
 <script src="/js/utilities.js"></script>
 <script>
 
     var row = 0;
     var courses = [];
+
+    document.querySelector('#empty').style.display = "show"; 
 
     addListener(".btnAdd", "click", function(){
         var html = "";
@@ -96,14 +112,41 @@
                 term: 0,
                 year: 0,
                 hours: 0,
-                comments: ""}, courses);
+                comment: ""}, courses);
+        
+        for(var i = 0; i < courses.length; i++){
+            console.log(courses[i]);
+        }
 
-        var cols = createCol( courses[ courses.length - 1].title );
-        el(".dvEntered").insertAdjacentHTML("beforeEnd", createRow(cols));
+        var cols = courses[ courses.length - 1].title ;
+        el(".dvEntered").insertAdjacentHTML("beforeEnd", createListItem(cols));
+        let item = courses.length - 1;
+        courses[item].id = item;
+
+        document.querySelector('#empty').style.display = "none";
+        document.querySelectorAll(".btnRemove")[courses.length - 1].addEventListener("click", (e) => {
+            let listItem = e.target.parentNode;
+            listItem.parentNode.removeChild(listItem);
+
+            let i = 0;
+            while(courses[i].id !== item){
+                i++;
+            }
+            courses.splice(i, 1);
+
+            if(courses.length == 0){
+                document.querySelector('#empty').style.display = "block"; 
+            }
+        });
+
+        reset();
     });
 
     addListener("#save", "click", () => {
-        
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "newCourse", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(courses));
     })
 </script>
 

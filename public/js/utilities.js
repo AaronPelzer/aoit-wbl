@@ -40,6 +40,10 @@ function createCol(name) {
     //return "<td>" + name + "</td>";
 }
 
+function createListItem(name) {
+    return `<li class="list-group-item">${name}<button class="btn btn-danger btnRemove float-right"> - </button></li>`;
+}
+
 function updateHTML(name, content) {
     el(name).innerHTML = content;
 }
@@ -87,14 +91,13 @@ function other(name, inputName){
 
 // TESTING
 function reset(args) {
-    //args.forEach(function(elem) {
     el("[name]", 1).forEach(function(elem) {
-        if (el(elem).type === "text") {
-            el(elem).value = "";
-        } else if (el(elem).type === "select-one") {
-            // el(elem).value = "";
-            var e = el(elem);
-            e.selectedIndex = 0;
+        if (elem.type === "text" || elem.type === "number" || elem.type === "date") {
+            elem.value = "";
+        } else if (elem.type === "select-one") {
+            elem.selectedIndex = 0;
+        } else if (elem.type === "textarea") {
+            elem.innerHTML = "";
         }
     });
 }

@@ -1,15 +1,15 @@
 const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-      tableName = "course";
+      tableName = "certification";
 
-module.exports = class Course { 
-    constructor(course = {}, commentID, profileID){
+module.exports = class Certification { 
+    constructor(certification = {}, commentID, profileID){
         let model = {
             ID: 0,
-            title: "",
-            year: 0,
-            hours: 0,
+            name: "",
+            date: "",
+            authority: "",
+            score: "",
             profileID: 0,
-            termID: 0,
             commentID: 0
         }
 
@@ -19,7 +19,7 @@ module.exports = class Course {
             }
         }
 
-        setProperty(course);
+        setProperty(certification);
 
         this.model = model;
         this.model.profileID = profileID;

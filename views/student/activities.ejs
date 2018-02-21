@@ -1,10 +1,14 @@
 <% include ../header.ejs %>
 
+<br>
+
+<h1><%= title %></h1>
+
 <div class="row">
     <div class="col-sm-12 col-md-2 col-lg-2">
         <div class="form-group">
             <label for="tbDate">Date</label>
-            <input class="form-control" name="tbDate" type="text" placeholder="01/01/2001" required />
+            <input class="form-control" name="tbDate" type="date" placeholder="01/01/2001" required />
         </div>
     </div>
 
@@ -13,8 +17,8 @@
             <label for="ddlWblType">Work Based Learning</label>
             <select class="form-control" name="ddlWblType" required>
                 <option></option>
-                <% for(var i = 0; i < results.length; i++) { %>
-                    <option value="<%= results[i].ID %>"> <%= results[i].type %> </option>
+                <% for(var i = 0; i < results.wblType.length; i++) { %>
+                    <option value="<%= results.wblType[i].ID %>"> <%= results.wblType[i].type %> </option>
                 <% } %>
             </select>
         </div>
@@ -32,7 +36,7 @@
     <div class="col-sm-12 col-md-2 col-lg-2">
         <div class="form-group">
             <label for="tbHours">Hours</label>
-            <input class="form-control" name="tbHours" type="text" placeholder="" required />
+            <input class="form-control" name="tbHours" type="number" placeholder="" required />
         </div>
     </div>
 
@@ -43,7 +47,7 @@
     <div class="col-sm-12 col-md-9 col-lg-9">
         <div class="form-group">
             <label for="tbComment">Comment(s)</label>
-            <textarea class="form-control" name="tbComments" type="text" placeholder=""></textarea>
+            <textarea class="form-control" name="tbComment" type="text" placeholder=""></textarea>
         </div>
     </div>
 
@@ -54,58 +58,85 @@
     </div>
 </div>
 
-
-
-    <div class="dvEntered">
-
-    </div>
-    <br /><br />
-    <div class="row">
-        <div class="col-sm-12 col-md-12 col-lg-12">
-            <button class="btn btn-default">Back</button>
-            <div class="pull-right">
-                <button class="btn btn-default">Save</button>
-                <button class="btn btn-default">Next</button>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                New Activities
             </div>
+            <ul class="dvEntered list-group list-group-flush">
+                <li id="empty" class="list-group-item">No new activities added.</li>
+            </ul>
+        </div>
+        <br>
+        <button class="btn btn-sm btn-default float-right" id="save">Save</button>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Activity
+            </div>
+            <ul class="list-group list-group-flush">
+                <% for(var w in results.activities){ %>        
+                    <a href="WBL/<%= results.activities[w].ID %>/update" class="list-group-item list-group-item-action">
+                        <%= results.activities[w].organization %>
+                    </a>  
+                <% } %>
+            </ul>
         </div>
     </div>
+</div>
 
 <script src="/js/utilities.js"></script>
 <script>
 
-    var row = 0,
+        var row = 0,
         activities = [];
+    
+        document.querySelector('#empty').style.display = "show"; 
+    
+        addListener(".btnAdd", "click", function(){
+            var html = "";
+    
+            addNewItem(["[name=tbDate]", "[name=ddlWblType]", "[name=tbOrg]", "[name=tbHours]", "[name=tbComment]"], { 
+                date: "", wblType: 0, org: "", hours: 0, comment: "" 
+                }, activities);
+            
+                for(var i = 0; i < activities.length; i++){
+                    console.log(activities[i]);
+                }
 
-    function reset(args){
-
-        args.forEach(function(elem){
-            if(el(elem).type === "text"){
-                el(elem).value = "";
-            } else if(el(elem).type === "select-one"){
-                var e = el(elem);
-                e.selectedIndex = 0;
-            }
+            var cols = activities[ activities.length - 1].org ;
+            el(".dvEntered").insertAdjacentHTML("beforeEnd", createListItem(cols));
+            let item = activities.length - 1;
+            activities[item].id = item;
+    
+            document.querySelector('#empty').style.display = "none";
+            document.querySelectorAll(".btnRemove")[activities.length - 1].addEventListener("click", (e) => {
+                let listItem = e.target.parentNode;
+                listItem.parentNode.removeChild(listItem);
+    
+                let i = 0;
+                while(activities[i].id !== item){
+                    i++;
+                }
+                activities.splice(i, 1);
+    
+                if(activities.length == 0){
+                    document.querySelector('#empty').style.display = "block"; 
+                }
+            });
+    
+            reset();
         });
-    }
-
-    function getNames(){
-        var names = el("[name]", 1);
-        names.forEach((itm) => {
-            console.log(itm.getAttribute("name"));
-        });
-    }
-
-    addListener(".btnAdd", "click", function(){
-        var html = "";
-
-        addNewItem(["[name=tbDate]", "[name=ddlWblType]", "[name=tbOrg]", "[name=tbHours]", "[name=tbComments]"], { 
-            date: "", wblType: 0, org: "", hours: 0, comments: "" 
-            }, activities);
-
-        var cols = createCol( el("[name=ddlWblType]").options[activities[ activities.length - 1].wblType].text );
-
-        el(".dvEntered").insertAdjacentHTML("beforeEnd", createRow(cols));    
-    });
-</script>
+    
+        addListener("#save", "click", () => {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "newActivity", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(activities));
+        })
+    </script>
 
 <% include ../footer.ejs %>

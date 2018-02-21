@@ -2,6 +2,7 @@ var express = require("express"),
     router = express(),
     uploadUtil = require('../util/upload.js');
 
+
 router.get("/", function(req, res) {
     /*
         if(!req.user){
@@ -13,6 +14,7 @@ router.get("/", function(req, res) {
         title: "Index"
     });
 });
+
 
 router.get("/contact", function(req, res) {
     res.render("main/contact", {

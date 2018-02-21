@@ -1,12 +1,11 @@
-const db = require('../lib/sqlite-wrapper'),
+const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
       tableName = 'comment';
 
 module.exports = class Comment {
     constructor(comment = {}){
         let model = {
             ID: 0,
-            courseId: 0,
-            message: ""
+            comment: ""
         }
     
         function setProperty(obj){
@@ -15,34 +14,30 @@ module.exports = class Comment {
             }
         }
 
-        setProperty(contactType);
-
+        setProperty(comment);
         this.model = model;
     }
 
     save(cb){
-        db.insert(tableName, this.model, (err) => {
+        let model = this.model;
+        db.insert(tableName, model, (err) => {
             if(err){
                 throw err;
             }
-            cb();
-        })
+            db.getMax(tableName, cb);
+        });
     }
 
-    update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        });
+    update(id, items, cb){
+        db.updateById(tableName, id, items, cb);
     }
 
     get(profileId, cb){
         db.list(tableName, cb);
     }
 
-    getOneById(id, cb){
-        db.selectOne(tableName, null, null, 'id=?', id, cb);
+    getOne(id, cb){
+        db.selectOne(tableName, null, null, 'id=?', [id], cb);
     }
 
     remove(id, cb){
