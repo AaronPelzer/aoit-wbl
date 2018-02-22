@@ -45,6 +45,8 @@ router.get("/", isAuthenticated, (req, res) => {
 
 router.get('/Profile', isAuthenticated, function(req, res) {
     let student = new Student();
+    console.log(req.user);
+
     student.getOne(req.user.profileID, (err, data) => {
         res.render("student/info", {
             title: "Basic Information",
@@ -78,13 +80,13 @@ router.get("/Profile/Edit", isAuthenticated, (req, res) => {
         }
     }, (err, r) => {
 
-        console.log(r);
-
         payload.cluster = r.cluster;
         payload.race = r.race;
         payload.ideaStatus = r.ideaStatus;
         payload.gender = r.gender;
         payload.student = r.student;
+
+        // console.log(payload);
 
         res.render("student/profile", {
             title: "Profile",

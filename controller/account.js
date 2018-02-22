@@ -209,6 +209,7 @@ passport.use(new LocalStrategy(function(email, password, done) {
     });
 }));
 
+// SECTION TO SET TO PROFILEID
 passport.serializeUser(function(user, done) {
     done(null, user.ID);
 });
@@ -227,8 +228,8 @@ router.post("/Login", csrfProtection, passport.authenticate("local", {
     failureRedirect: "/Account/Login",
     failureFlash: true
 }), function(req, res) {
-    console.log(req.body);
-    console.log(req.user);
+    // console.log(req.body);
+    // console.log(req.user);
     res.redirect("/Student");
 });
 

@@ -4,6 +4,9 @@ var express = require("express"),
 
 
 router.get("/", function(req, res) {
+
+    console.log(req.session);
+
     /*
         if(!req.user){
             res.redirect('account/login');
