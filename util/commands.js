@@ -29,10 +29,16 @@ var commands = {
         db.query(`SELECT * FROM ${table}'`, cb);
     },
 
+    getOneById: (table, id, cb) => {
+        db.query(`SELECT * FROM ${table} WHERE ID='${id}' LIMIT 1`, (err, data, fields) => {
+            cb(err, data[0], fields);
+        });
+    },
+
     getOne: (table, where, whereVal, cb) => {
         db.query(`SELECT * FROM ${table} WHERE ${where}='${whereVal}' LIMIT 1`, (err, data, fields) => {
             cb(err, data[0], fields);
-        });
+        })
     },
 
     update: (table, where, whereVal, items, cb) => {

@@ -78,11 +78,7 @@
                 Activity
             </div>
             <ul class="list-group list-group-flush">
-                <% for(var w in results.activities){ %>        
-                    <a href="WBL/<%= results.activities[w].ID %>/update" class="list-group-item list-group-item-action">
-                        <%= results.activities[w].organization %>
-                    </a>  
-                <% } %>
+                
             </ul>
         </div>
     </div>
@@ -96,47 +92,85 @@
     
         document.querySelector('#empty').style.display = "show"; 
     
-        addListener(".btnAdd", "click", function(){
-            var html = "";
+        // addListener(".btnAdd", "click", function(){
+        //     var html = "";
     
-            addNewItem(["[name=tbDate]", "[name=ddlWblType]", "[name=tbOrg]", "[name=tbHours]", "[name=tbComment]"], { 
-                date: "", wblType: 0, org: "", hours: 0, comment: "" 
-                }, activities);
+        //     addNewItem(["[name=tbDate]", "[name=ddlWblType]", "[name=tbOrg]", "[name=tbHours]", "[name=tbComment]"], { 
+        //         date: "", wblType: 0, org: "", hours: 0, comment: "" 
+        //         }, activities);
             
-                for(var i = 0; i < activities.length; i++){
-                    console.log(activities[i]);
-                }
+        //         for(var i = 0; i < activities.length; i++){
+        //             console.log(activities[i]);
+        //         }
 
-            var cols = activities[ activities.length - 1].org ;
-            el(".dvEntered").insertAdjacentHTML("beforeEnd", createListItem(cols));
-            let item = activities.length - 1;
-            activities[item].id = item;
+        //     var cols = activities[ activities.length - 1].org ;
+        //     el(".dvEntered").insertAdjacentHTML("beforeEnd", createListItem(cols));
+        //     let item = activities.length - 1;
+        //     activities[item].id = item;
     
-            document.querySelector('#empty').style.display = "none";
-            document.querySelectorAll(".btnRemove")[activities.length - 1].addEventListener("click", (e) => {
-                let listItem = e.target.parentNode;
-                listItem.parentNode.removeChild(listItem);
+        //     document.querySelector('#empty').style.display = "none";
+        //     document.querySelectorAll(".btnRemove")[activities.length - 1].addEventListener("click", (e) => {
+        //         let listItem = e.target.parentNode;
+        //         listItem.parentNode.removeChild(listItem);
     
-                let i = 0;
-                while(activities[i].id !== item){
-                    i++;
+        //         let i = 0;
+        //         while(activities[i].id !== item){
+        //             i++;
+        //         }
+        //         activities.splice(i, 1);
+    
+        //         if(activities.length == 0){
+        //             document.querySelector('#empty').style.display = "block"; 
+        //         }
+        //     });
+    
+        //     reset();
+        // });
+
+        addListener('.btnAdd', 'click', () => {
+            let data = {};
+            let inputs = document.querySelectorAll('[name]');
+            for(field in inputs){
+                if((typeof inputs[field] == 'object' || typeof inputs[field] == 'number') && (inputs[field].name !== 'viewport' && inputs[field].name !== undefined)){
+                    let input = inputs[field];
+                    data[input.name] = input.value;
+                    console.log(inputs[field].name);
                 }
-                activities.splice(i, 1);
-    
-                if(activities.length == 0){
-                    document.querySelector('#empty').style.display = "block"; 
-                }
-            });
-    
-            reset();
+            }
+            console.log(data);
+            postData("/student/wbl/new", data);
         });
-    
-        addListener("#save", "click", () => {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", "newActivity", true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify(activities));
-        })
+        
+        // addListener("#save", "click", () => {
+        //     postData('wbl/new', activities[0])
+        //         .then(data => console.log(data))
+        //         .catch(err => console.error(err));
+        // });
+
+        function postData(url, data) {
+            // Default options are marked with *
+            console.log(data);
+            return fetch(url, {
+                body: JSON.stringify(data), // must match 'Content-Type' header
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *omit
+                headers: {
+                    'content-type': 'application/json'
+                },
+                Accept: 'application/json',
+                method: 'POST', // *GET, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *same-origin
+                redirect: 'follow', // *manual, error
+            })
+            .then(response => response.json()) // parses response to JSON
+        }        
+
+        // addListener("#save", "click", () => {
+        //     let xhr = new XMLHttpRequest();
+        //     xhr.open("POST", "newActivity", true);
+        //     xhr.setRequestHeader('Content-Type', 'application/json');
+        //     xhr.send(JSON.stringify(activities));
+        // })
     </script>
 
 <% include ../footer.ejs %>

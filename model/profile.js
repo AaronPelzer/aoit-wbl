@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require('../util/commands'),
-      tableName = "profile";
+      tableName = "Profile";
 
 module.exports = class Profile {
     constructor(person = {}) {
@@ -15,25 +15,22 @@ module.exports = class Profile {
     }
 
     save(cb){
-        // db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
         util.insert(tableName, this.model, cb); 
     }
 
     get(cb){
-        db.query(`SELECT * FROM ${tableName}`, cb);
+        util.list(tableName, cb);
     }
 
     getOne(id, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE ID=${id} LIMIT 1`, (err, data) => {
-            cb(err, data[0]);
-        });
+        util.getOneById(tableName, id, cb);
     }
 
     update(id, items, cb){
-        db.query(`UPDATE ${tableName} SET ? WHERE ID=${id}`, items, cb)
+        util.updateById(tableName, id, items, cb);
     }
 
     remove(id, cb){
-        db.query(`DELETE FROM ${tableName} WHERE ID=${id}`, cb);
+        util.removeById(tableName, id, cb);
     }
 };

@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = 'wblActivity';
+      tableName = 'WBLActivity';
 
 module.exports = class WBLActivity {
     constructor(wblActivity = {}){
@@ -21,7 +21,7 @@ module.exports = class WBLActivity {
     }
 
     get(pId, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE profileID='${pId}'`, cb);
+        util.select(tableName, '*', 'profileId', pId, cb);
     }
 
     getOne(id, cb){

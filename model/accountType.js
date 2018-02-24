@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = "accountType";
+      tableName = "AccountType";
 
 exports.module = class AccountType {
     constructor(accountType = {}){
@@ -12,18 +12,18 @@ exports.module = class AccountType {
     }
 
     save(cb){
-        db.query(`SELECT * FROM ${tableName} SET ?`, this.model, cb);
+        util.insert(tableName, this.model, cb);
     }
 
     update(id, items, cb){FROM
-        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
+        util.updateById(tableName, id, items, cb);
     }
 
     get(cb){
-        db.query(`SELECT * FROM ${tableName}`, cb);
+        util.list(tableName, cb);
     }
 
     remove(id, cb){
-        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`. items, cb);
+        util.removeById(tableName, id, cb);
     }
 }

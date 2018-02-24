@@ -323,47 +323,55 @@ router.get("/Professional", isAuthenticated, function(req, res) {
  */
 
 router.get("/WBL", isAuthenticated, function(req, res) {
-    async.parallel({
-        wblType: function(cb) {
-            let wblType = new WBLType();
-            wblType.get(cb);
-        },
-        activities: function(cb) {
-            let activities = new WBL();
-            activities.get(req.user.profileID, cb);
-        }
-    }, function(err, results) {
-        res.render('student/activities', {
-            title: "WBL",
-            results: results
-        })
+    // async.parallel({
+    //     wblType: function(cb) {
+    //         let wblType = new WBLType();
+    //         wblType.get((err, data) => {
+    //             cb(err, data);
+    //         });
+    //     },
+    //     activities: function(cb) {
+    //         let activities = new WBL();
+    //         activities.get(req.user.profileID, cb);
+    //     }
+    // }, function(err, results) {
+    //     console.log(results.activities);
+    //     res.render('student/activities', {
+    //         title: "WBL",
+    //         results: results
+    //     })
+    // });
+    let payload = {};
+    let wblType = new WBLType();
+    wblType.get((err, data) => {
+        payload.wblType = data;
+        console.log(payload);
     });
 });
 
-router.post("/newActivity", isAuthenticated, function(req, res){
+router.post("/WBL/new", isAuthenticated, function(req, res){
     let p = req.body;
-    for(var i in p){
-        console.log(p[i]);
+    // for(var i in p){
+    console.log("ping");
+    var c = new Comment({
+        comment: p.comment
+    });
 
-        var c = new Comment({
-            comment: p[i].comment
+    c.save((err, data) => {
+        var wbl = new WBL({
+            date: p.date,
+            hours: p.hours,
+            organization: p.org,
+            wblTypeID: p.wblType,
+            commentID: data.insertId,
+            profileID: req.user.profileID
+        });    
+
+        wbl.save((err) => {
+            // res.redirect('/Wbl');
         });
-    
-        c.save((err, data) => {
-            var wbl = new WBL({
-                date: p[i].date,
-                hours: p[i].hours,
-                organization: p[i].org,
-                wblTypeID: p[i].wblType,
-                commentID: data.insertId,
-                profileID: req.user.profileID
-            });    
-    
-            wbl.save((err) => {
-                res.redirect('/Wbl');
-            });
-        })
-    }
+    })
+    // }
 });
 
 router.get("/WBL/:id/update", isAuthenticated, (req, res) => {

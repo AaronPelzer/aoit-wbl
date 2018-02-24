@@ -1,7 +1,7 @@
 const db = require("../config/db"),
       Profile = require("./profile.js"),
       bcrypt = require("bcryptjs"),
-      tableName = "account",
+      tableName = "Account",
       util = require('../util/commands');
 
 module.exports = class Account {
@@ -37,31 +37,27 @@ module.exports = class Account {
     }
 
     update(id, items, cb){
-        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
+        util.updateById(tableName,id, items, cb);
     }
 
     remove(id, cb){
-        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
+        util.removeById(tableName, id, cb);
     }
 
     get(cb){
-        db.query(`SELECT * FROM ${tableName}`);
+        util.list(tableName, cb);
     }
 
     getAccountById(id, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`, (err, data) => {
-            cb(err, data[0]);
-        });
+        util.getOneById(tableName, id, cb);
     }
 
     getAccountByEmail(email, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE email='${email}' LIMIT 1`, (err, data) => {
-            cb(err, data[0]);
-        });
+        util.getOne(tableName, 'email', email, cb);
     }
 
     setAccountHold(data, cb){
-        db.query('INSERT INTO verification SET ?', data, cb);
+        util.insert('Verified', data, cb);
     }
 
     comparePassword(userPassword, hash, cb){
@@ -83,6 +79,6 @@ module.exports = class Account {
         //     }
         //     console.log(row);
         // });
-        db.query(`SELECT * FROM verification WHERE link=${token}`, cb);
+        db.query(`SELECT * FROM Verified WHERE link=${token}`, cb);
     }
 };

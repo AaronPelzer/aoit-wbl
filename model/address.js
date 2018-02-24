@@ -1,5 +1,5 @@
-const db = require('../lib/sqlite-wrapper.js')('./wbl', true),
-    tableName = "address";
+const util = require('../util/commands'),
+      tableName = "address";
 
 module.exports = class Address {
     constructor(address = {}){
@@ -10,42 +10,27 @@ module.exports = class Address {
             state: "",
             zip: ""
         }
-        
-        function setProperty(obj){
-            for(var p in Object(model)){
-                model[p] = obj[p];
-            }
-        }
 
-        setProperty(address);
-
-        this.model = model;
-        console.log(this.model);
+        this.model = util.setProperty(model, address);
     }
 
     save(cb){
-        let model = this.model;
-        db.insert(tableName, model, (err) => {
-            if(err){
-                throw err;
-            }
-            db.getMax(tableName, cb);
-        });
+        util.insert(tableName, this.model, cb);
     }
 
     update(id, items){
-        db.updateById(tableName, id, items, cb);
+        util.updateById(tableName, id, items, cb);
     }
     
     get(cb){
-        db.list(tableName, cb)
+        util.list(tableName, cb);
     }
 
     getOne(id, cb){
-        db.find(tableName, id, cb);
+        util.getOneById(tableName, id, cb);
     }
 
     remove(id, cb){
-        db.removeById(tableName, id, cb);
+        util.removeById(tableName, id, cb);
     }
 }

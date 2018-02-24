@@ -8,7 +8,7 @@ module.exports = class wblType {
             type: ""
         }
 
-        this.model = util.setProperty(model);
+        this.model = util.setProperty(model, wblType);
     }
 
     save(cb){

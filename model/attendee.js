@@ -13,22 +13,22 @@ module.exports = class Attendee {
     }
 
     save(cb){
-        db.query(`INSERT INTO ${tableName} SET ? `, this.model, cb);
+        util.insert(tableName, this.model, cb);
     }
 
     get(cb){
-        db.query(`SELECT * FROM ${tableName}`)
+        util.list(tableName, cb);
     }
 
     getOne(id, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`, cb);
+        util.getOneById(tableName, id, cb);
     }
 
     update(id, items, cb){
-        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
+        util.updateById(tableName, id, cb);
     }
 
     remove(id, cb){
-        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
+        util.removeById(tableName, id, cb);
     }
 }
