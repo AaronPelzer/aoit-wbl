@@ -30,6 +30,7 @@ CREATE TABLE account (
 ); 
 
 -- Profile Information
+
 CREATE TABLE profile (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     firstName TEXT NOT NULL,
@@ -48,7 +49,7 @@ CREATE TABLE profile (
     genderID INTEGER NULL,
     evaluatorID INTEGER NULL,
     addressID INTEGER NULL,
-    ideaStatusID INTEGER NULL,
+    ideaStatusID INTEGER NULL, ethnicity INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY(clusterID) REFERENCES cluster(ID),
     FOREIGN KEY(raceID) REFERENCES race(ID),
     FOREIGN KEY(hispanicID) REFERENCES hispanic(ID),
