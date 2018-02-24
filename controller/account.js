@@ -53,8 +53,6 @@ router.post("/Register", csrfProtection, function(req, res) {
     } else {
         console.log("\n\nPASSED\n\n");
 
-        var d = new Date();
-
         let p = new Profile({
             firstName: post.tbFirst.trim(),
             midName: post.tbMiddle.trim(),
@@ -63,75 +61,60 @@ router.post("/Register", csrfProtection, function(req, res) {
             genderOther: "",
             dob: "2018/01/10"
         });
-
-        var pass = post.tbOsis.trim() + "" + util.generateRandomNum();
-
-        bcrypt.genSalt(10, function(err, salt) {
-            bcrypt.hash(pass, salt, function(err, hash) {
                 
-                p.save((err, context) => {
+        p.save((err, context) => {
 
-                    if(err){
-                        return console.error(err.msg);
-                    }
+            if(err){
+                console.log(err);
+                return console.error(err.msg);
+            }
+            
+            let date = new Date(),
+                dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
-                    let a = new Account({
-                        osis: post.tbOsis.trim(),
-                        email: post.tbEmail.trim() + "@aoiths.org",
-                        password: hash,
-                        dateCreated: d.getDate(),
-                        profileID: 0,
-                        accountTypeId: 1,
-                        lastLogin: "",
-                        lastUpdate: ""
-                    }, context.lastID);
-
-                    // COMMENTED OUT FOR PRIOR TESTING
-                    a.save((err, context) => {
-
-                        if(err){
-                            console.error(err);
-                        } else {
-
-                            var data = a.model.osis +  a.model.email;
-
-                            var h = crypto.createHash('md5').update(data).digest("hex");
-
-                            var o = {
-                                accountID: context.lastName,
-                                link: h
-                            };
-
-                            a.setAccountHold({
-                                accountID: context.lastID,
-                                link: h
-                            }, function(err, context){
-
-                                if(err)
-                                    console.error(err);
-
-                                req.flash("success_msg", "Please check your email to validate your account");
-                        
-                                var mail = require('../lib/nodeMailer');
-                                    mail.sendConfirmationLink(a.model.email, p.model.lastName, o.link);
-
-                                res.render("account/confirm", {
-                                    title: "Confirm Account",
-                                });
-
-                            });
-                            
-                        }
-                    });
-
-                })
+            let a = new Account({
+                osis: post.tbOsis.trim(),
+                email: post.tbEmail.trim() + "@aoiths.org",
+                dateCreated: dateStr,
+                lastLogin: dateStr,
+                lastUpdate: dateStr,
+                profileID: context.insertId,
+                accountTypeId: 1
             });
+
+            // COMMENTED OUT FOR PRIOR TESTING
+            a.save((err, context, rand) => {
+                if(err){
+                    console.error(err);
+                } else {
+                    var data = a.model.osis +  a.model.email;
+
+                    let obj = {
+                        accountID: context.ID,
+                        link: crypto.createHash('md5').update(data).digest("hex")
+                    };
+
+                    a.setAccountHold(obj, function(err, context){
+
+                        if(err)
+                            console.error(err);
+
+                        req.flash("success_msg", "Please check your email to validate your account");
+                
+                        let mail = require('../lib/nodeMailer');
+                            mail.sendConfirmationLink(a.model.email, p.model.lastName, rand, obj.link);
+
+                        res.render("account/confirm", {
+                            title: "Confirm Account",
+                        });
+
+                    });
+                    
+                }
+            });
+
         });
-    
     }
-    
-
-
 });
 
 router.get("/Confirmation", function(req, res){
@@ -173,15 +156,15 @@ router.get("/Login", csrfProtection, function(req, res) {
 passport.use(new LocalStrategy(function(email, password, done) {
 
         let acc = new Account();
-
         acc.getAccountByEmail(email, function(err, user) {
             console.log("EMAIL");
+
             if (err) { 
                 return done(err); 
             }
             if (!user) {
                 return done(null, false, { message: 'Email Is Not Registered!' });
-            }
+            };
 
             acc.comparePassword(password, user.password, function(err, isMatch){
                 console.log("Password");

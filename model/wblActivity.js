@@ -1,48 +1,42 @@
-const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-      tableName = "wblActivity";
+const db = require("../config/db"),
+      util = require("../util/commands"),
+      tableName = 'wblActivity';
 
 module.exports = class WBLActivity {
-    constructor(wblActivity = {}, commentID, profileID){
+    constructor(wblActivity = {}){
         var model = {
             date: "",
             organization: "",
             hours: 0,
             wblTypeID: 0,
+            profileID: 0,
+            commentID: 0
         }
 
-        function setProperty(obj){
-            for(var p in Object(model)){
-                model[p] = obj[p];
-            }
-        }
-
-        setProperty(wblActivity);
-        this.model = model;
-        this.model.profileID = profileID;
-        this.model.commentID = commentID;
+        this.model = util.setProperty(model, wblActivity);
     }
 
     save(cb){
-        db.insert(tableName, this.model, cb);
+        db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
     }
 
-    update(id, items, cb){
-        db.updateById(tableName, id, items, cb);
-    }
-
-    get(profileId, cb){
-        db.select(tableName, null, null, 'profileID=?', [profileId], cb);
+    get(pId, cb){
+        db.query(`SELECT * FROM ${tableName} WHERE profileID='${pId}'`, cb);
     }
 
     getOne(id, cb){
-        db.selectOne(tableName, null, null, 'id=?', [id], cb);
+        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`);
     }
 
-    select(id, columns, cb){
-        db.select(tableName, null, columns, 'ID=?', [id], cb);
+    update(id, items, cb){
+        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
     }
 
     remove(id, cb){
-        db.removeById(tableName, id, cb);
+        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
+    }
+
+    select(id, columns, cb){
+        db.query(`SELECT ? FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 }

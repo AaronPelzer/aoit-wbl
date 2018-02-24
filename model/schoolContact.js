@@ -1,66 +1,38 @@
-const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+const db = require("../config/db"),
+      util = require("../util/commands"),
       tableName = "schoolContact";
 
 module.exports = class schoolContact {
     constructor(contact = {}){
         var model = {
-            ID: 0,
             phone: "",
             fax: ""
         }
-        
-        function setProperty(obj){
-            for(var p in Object(model)){
-                model[p] = obj[p];
-            }
-        }
 
-        setProperty(contact);
-        this.model = model;
+        this.model = setProperty(model, contact);
     }
 
     save(cb){
-        let model = this.model;
-        db.insert(tableName, model, (err) => {
-            if(err){
-                throw err;
-            }
-            db.getMax(tableName, (err, data) => {
-                if(err){
-                    throw err;
-                }
-                cb(data['MAX(ID)']);
-            })
-        });
+        db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
     }
 
-    update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        });
-    }
-    
-    get(cb){
-        db.list(tableName, (err, data) => {
-            if(err){
-                throw err;
-            }
-            cb(data);
-        })
+    get(pId, cb){
+        db.query(`SELECT * FROM ${tableName}`, cb);
     }
 
     getOne(id, cb){
-        db.find(tableName, id, (err, data) => {
-            if(err){
-                throw err;
-            }
-            cb(data);
-        });
+        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`);
+    }
+
+    update(id, items, cb){
+        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
     }
 
     remove(id, cb){
-        db.removeById(tableName, id, cb);
+        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
+    }
+
+    select(id, columns, cb){
+        db.query(`SELECT ? FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 }

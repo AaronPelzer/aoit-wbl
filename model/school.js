@@ -1,9 +1,9 @@
-const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
-      Address = require('./address.js'),
-      tableName = "school";
+const db = require("../config/db"),
+      util = require("../util/commands"),
+      tableName = 'school';
 
 module.exports = class School { 
-    constructor(school = {}, addressID, contactID){
+    constructor(school = {}){
         var model = {
             ID: 0,
             name: "",
@@ -17,67 +17,31 @@ module.exports = class School {
             }
         }
 
-        setProperty(school);
-
-        this.model = model;
-        this.model.addressID = addressID;
-        this.model.contactID = contactID;
+        this.model = util.setProperty(model, school);
     }
 
     save(cb){
-        let model = this.model;
-        db.insert(tableName, model, (err, data) => {
-            if(err){
-                throw err;
-            }
-            cb();
-        });
-    }
-
-    selectOne(columns, where, val, cb){
-        db.selectOne(tableName, null, columns, `${where}=?`, [val], (err, data) => {
-            if(err){
-                throw err;
-            }
-            cb(data);
-        })
-    }
-
-    update(id, items, cb){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-            cb();
-        });
-    }
-
-    remove(id, cb){
-        db.removeById(tableName, id, (err) => {
-            if(err){
-                throw err;
-            }
-            cb();
-        })
+        db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
     }
 
     get(cb){
-        db.list(tableName, (err, data) => {
-            if(err){
-                throw err;
-            }
-
-            cb(data);
-        });
+        db.query(`SELECT * FROM ${tableName}`, cb);
     }
 
     getOne(id, cb){
-        db.find(tableName, id, (err, data) => {
-            if(err){
-                throw err;
-            }
-            cb(data);
-        })
+        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`);
+    }
+
+    update(id, items, cb){
+        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
+    }
+
+    remove(id, cb){
+        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
+    }
+
+    select(id, columns, cb){
+        db.query(`SELECT ? FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 }
     

@@ -1,4 +1,5 @@
-const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+const db = require('../config/db'),
+      util = require('../util/commands'),
       tableName = "attendee";
 
 module.exports = class Attendee {
@@ -8,34 +9,26 @@ module.exports = class Attendee {
             profileID: 0
         }
 
-        function setProperty(obj){
-            for(var p in Object(model) ) {
-                console.log( `${p} = ${obj}`);
-                model[p] = obj[p];
-            }
-        }
-
-        setProperty(attendee);
-        this.model = model;
+        this.model = util.setProperty(model, attendee);
     }
 
-    save(){
-        db.insert(tableName, this.model, cb);
+    save(cb){
+        db.query(`INSERT INTO ${tableName} SET ? `, this.model, cb);
     }
 
-    update(id, items){
-        db.updateById(tableName, id, items, cb)
-    }
-
-    get(callback){
-        db.list(tableName, cb);
+    get(cb){
+        db.query(`SELECT * FROM ${tableName}`)
     }
 
     getOne(id, cb){
-        db.find(tableName, id, cb);
+        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`, cb);
+    }
+
+    update(id, items, cb){
+        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
     }
 
     remove(id, cb){
-        db.removeById(tableName, id, cb);
+        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 }

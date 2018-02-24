@@ -1,52 +1,46 @@
-const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+const db = require("../config/db"),
+      util = require("../util/commands"),
       tableName = "course";
 
 module.exports = class Course { 
-    constructor(course = {}, commentID, profileID){
+    constructor(course = {}){
         let model = {
-            ID: 0,
             title: "",
             year: 0,
             hours: 0,
-            profileID: 0,
             termID: 0,
-            commentID: 0
+            commentID: 0,
+            profileID: 0
         }
 
-        function setProperty(obj){
-            for(var p in Object(model)){
-                model[p] = obj[p];
-            }
-        }
-
-        setProperty(course);
-
-        this.model = model;
-        this.model.profileID = profileID;
-        this.model.commentID = commentID;
+        this.model = util.setProperty(model, course);
     }
 
     save(cb){
-        db.insert(tableName, this.model, cb);
+        db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
     }
 
-    update(id, items, cb){
-        db.updateById(tableName, id, items, cb);
+    getCommentID(id, cb){
+        db.query(`SELECT commentID FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 
-    get(profileId, cb){
-        db.select(tableName, null, null, 'profileID=?', [profileId], cb);
+    get(pId, cb){
+        db.query(`SELECT * FROM ${tableName} WHERE profileID='${pId}'`, cb);
     }
 
     getOne(id, cb){
-        db.selectOne(tableName, null, null, 'id=?', [id], cb);
+        db.query(`SELECT * FROM ${tableName} LIMIT 1`, cb);
+    }
+
+    getWithComment(pId, cb){
+        db.query(`SELECT * FROM ${tableName}, comment WHERE ${tableName}.profileID='${pId}' AND comment.ID=${tableName}.commentId`);
+    }
+
+    update(id, items, cb){
+        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
     }
 
     remove(id, cb){
-        db.removeById(tableName, id, cb);
-    }
-
-    select(id, columns, cb){
-        db.select(tableName, null, columns, 'ID=?', [id], cb);
+        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 }

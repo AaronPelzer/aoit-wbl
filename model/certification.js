@@ -1,10 +1,10 @@
-const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+const db = require("../config/db"),
+      util = require("../util/commands"),
       tableName = "certification";
 
 module.exports = class Certification { 
     constructor(certification = {}, commentID, profileID){
         let model = {
-            ID: 0,
             name: "",
             date: "",
             authority: "",
@@ -13,40 +13,30 @@ module.exports = class Certification {
             commentID: 0
         }
 
-        function setProperty(obj){
-            for(var p in Object(model)){
-                model[p] = obj[p];
-            }
-        }
-
-        setProperty(certification);
-
-        this.model = model;
-        this.model.profileID = profileID;
-        this.model.commentID = commentID;
+        this.model = util.setProperty(model, certification);
     }
 
     save(cb){
-        db.insert(tableName, this.model, cb);
+        db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
     }
 
-    update(id, items, cb){
-        db.updateById(tableName, id, items, cb);
-    }
-
-    get(profileId, cb){
-        db.select(tableName, null, null, 'profileID=?', [profileId], cb);
+    get(pId, cb){
+        db.query(`SELECT * FROM ${tableName} WHERE profileID='${pId}'`, cb);
     }
 
     getOne(id, cb){
-        db.selectOne(tableName, null, null, 'id=?', [id], cb);
+        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`);
+    }
+
+    update(id, items, cb){
+        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
     }
 
     remove(id, cb){
-        db.removeById(tableName, id, cb);
+        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 
     select(id, columns, cb){
-        db.select(tableName, null, columns, 'ID=?', [id], cb);
+        db.query(`SELECT ? FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 }

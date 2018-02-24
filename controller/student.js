@@ -26,9 +26,11 @@ function isAuthenticated(req, res, next){
 router.get("/", isAuthenticated, (req, res) => {
     let student = new Student();
     student.getOne(req.user.profileID, (err, data) => {
+        console.log(req.user);
+        console.log(data);
         res.render("student/index", {
             title: "Index",
-            student: data[0]
+            student: data
         })
     })
 });
@@ -38,7 +40,7 @@ router.get('/Profile', isAuthenticated, function(req, res){
     student.getOne(req.user.profileID, (err, data) => {
         res.render("student/info", {
             title: "Basic Information",
-            info: data[0]
+            info: data
         })
     });
 })
@@ -135,15 +137,17 @@ router.post("/newCourse", isAuthenticated, function(req, res){
         async.waterfall([
             (cb) => {
                 c.save((err, data) => {
-                    cb(err, data['MAX(ID)']);
+                    cb(err, data.insertId);
                 });
             }, (commentID, cb) => {
                 let course = new Course({
                     title: p[i].title,
                     year: p[i].year,
                     hours: p[i].hours,
-                    termID: p[i].term   
-                }, commentID, req.user.profileID);    
+                    termID: p[i].term,
+                    profileID: req.user.profileID,
+                    commentID: commentID  
+                });    
 
                 course.save((err) => {
                     cb(err, "done");
@@ -235,32 +239,34 @@ router.get("/Technical", isAuthenticated, function(req, res) {
 
 router.post("/newTech", isAuthenticated, (req, res) => {
     let p = req.body;
-    for(var i in p){
-        let a = new Assessment({
-            selfEval: p[i].scale,
-            grade: p[i].grade
-        });
+    res.send("OUT OF ORDER!");
+    // for(var i in p){
+    //     let a = new Assessment({
+    //         selfEval: p[i].scale,
+    //         grade: p[i].grade
+    //     });
 
-        async.waterfall([
-            (cb) => {
-                a.save((err, data) => {
-                    cb(err, data['MAX(ID)']);
-                    console.log(data);
-                });
-            }, (assessmentID, cb) => {
-                let techSkill = new TechSkill({
-                    skill: p[i].skill   
-                }, assessmentID, req.user.profileID);    
+    //     async.waterfall([
+    //         (cb) => {
+    //             a.save((err, data) => {
+    //                 cb(err, data.insertId);
+    //             });
+    //         }, (assessmentID, cb) => {
+    //             let techSkill = new TechSkill({
+    //                 skill: p[i].skill,
+    //                 assessmentD: assessmentID,
+    //                 profileID: req.user.profileID 
+    //             });    
 
-                techSkill.save((err) => {
-                    cb(err, "done");
-                });
-            }
-        ], (err, result) => {
-            if(err) throw err;
-            res.redirect('/technical');
-        });
-    }
+    //             techSkill.save((err) => {
+    //                 cb(err, "done");
+    //             });
+    //         }
+    //     ], (err, result) => {
+    //         if(err) throw err;
+    //         res.redirect('/technical');
+    //     });
+    // }
 });
 
 router.get("/Technical/:id/update", isAuthenticated, (req, res) => {
@@ -348,14 +354,16 @@ router.post("/newActivity", isAuthenticated, function(req, res){
                 date: p[i].date,
                 hours: p[i].hours,
                 organization: p[i].org,
-                wblTypeID: p[i].wblType
-            }, data['MAX(ID)'], req.user.profileID);    
+                wblTypeID: p[i].wblType,
+                commentID: data.insertId,
+                profileID: req.user.profileID
+            });    
     
             wbl.save((err) => {
+                res.redirect('/Wbl');
             });
         })
     }
-    res.redirect('/Wbl');
 });
 
 router.get("/WBL/:id/update", isAuthenticated, (req, res) => {
@@ -437,15 +445,17 @@ router.post("/Certification/new", isAuthenticated, (req, res) => {
         async.waterfall([
             (cb) => {
                 c.save((err, data) => {
-                    cb(err, data['MAX(ID)']);
+                    cb(err, data.insertId);
                 });
             }, (commentID, cb) => {
                 let certification = new Certification({
                     name: p[i].name,
                     date: p[i].date,
                     authority: p[i].authority,
-                    score: p[i].score   
-                }, commentID, req.user.profileID);    
+                    score: p[i].score,
+                    commentID: commentID,
+                    profileID: req.user.profileID
+                });    
 
                 certification.save((err) => {
                     cb(err, "done");

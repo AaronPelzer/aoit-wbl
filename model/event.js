@@ -1,4 +1,5 @@
-const db = require("../lib/sqlite-wrapper.js")('./wbl', true),
+const db = require("../config/cb"),
+      util = require("../util/commands"),
       tableName = "event";
 
 module.exports = class Event {
@@ -10,52 +11,26 @@ module.exports = class Event {
             eventType: 0
         }
 
-        function setProperties(obj){
-            for(var p in Object(model)){
-                model[p] = obj[p];
-            }
-        }
-
-        setProperties(event);
-        this.model = model;
+        this.model = util.setProperties(event);
     }
 
-    save(){
-        db.insert(tableName, this.model, function(err){
-            if(err){
-                throw err;
-            }
-        });
+    save(cb){
+        db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
     }
 
-    update(id, items){
-        db.updateById(tableName, id, items, (err) => {
-            if(err){
-                throw err;
-            }
-        })
-    }
-
-    get(callback){
-
-        db.list(tableName, function(err, data){
-            if(err){
-                throw err;
-            }
-            callback(data);
-        });
+    get(cb){
+        db.query(`SELECT * FROM ${tableName}`, cb);
     }
 
     getOne(id, cb){
-        db.find(tableName, id, function(err, data){
-            if(err){
-                throw err;
-            }
-            cb(data);
-        });
+        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`, cb);
+    }
+
+    update(id, items, cb){
+        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
     }
 
     remove(id, cb){
-        db.removeById(tableName, id, cb);
+        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
     }
 }
