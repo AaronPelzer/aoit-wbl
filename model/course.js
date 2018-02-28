@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = "course";
+      tableName = "Course";
 
 module.exports = class Course { 
     constructor(course = {}){
@@ -9,7 +9,6 @@ module.exports = class Course {
             year: 0,
             hours: 0,
             termID: 0,
-            commentID: 0,
             profileID: 0
         }
 
@@ -17,19 +16,20 @@ module.exports = class Course {
     }
 
     save(cb){
-        db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
+        util.insert(tableName, this.model, cb);
     }
 
     getCommentID(id, cb){
-        db.query(`SELECT commentID FROM ${tableName} WHERE ID='${id}'`, cb);
+        util.selectOne(tableName, 'commentID', 'ID', id, cb);
     }
 
     get(pId, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE profileID='${pId}'`, cb);
+        db.query(`SELECT Course.*, Term.term FROM Course INNER JOIN Term ON Course.termID=Term.ID WHERE Course.profileID="${pId}";
+        `, cb);
     }
 
     getOne(id, cb){
-        db.query(`SELECT * FROM ${tableName} LIMIT 1`, cb);
+        util.getOneById(tableName, id, cb);
     }
 
     getWithComment(pId, cb){
@@ -37,10 +37,10 @@ module.exports = class Course {
     }
 
     update(id, items, cb){
-        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
+        util.updateById(tableName, id, items, cb);
     }
 
     remove(id, cb){
-        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
+        util.removeById(tableName, id, cb);
     }
 }

@@ -26,7 +26,7 @@ var commands = {
     },
 
     list: (table, cb) => {
-        db.query(`SELECT * FROM ${table}'`, cb);
+        db.query(`SELECT * FROM ${table}`, cb);
     },
 
     getOneById: (table, id, cb) => {
@@ -57,14 +57,29 @@ var commands = {
         db.query(`DELETE FROM ${table} WHERE ID='${id}'`, cb);
     },
 
-    select: (table, id, columns, where, whereVal, cb) => {
-        db.query(`SELECT ? FROM ${table} WHERE ${where}='${whereVal}'`, columns, cb);
+    selectAll: (table, where, whereVal, cb) => {
+        db.query(`SELECT * FROM ${table} WHERE ${where}='${whereVal}'`, cb);
     },
 
-    selectOne: (table, id, columns, where, whereVal, cb) => {
-        db.query(`SELECT ? FROM ${table} WHERE ${where}='${whereVal}' LIMIT 1`, columns, (err, data, fields) => {
-            cb(err, data[0], fields);
-        });
+    select: (table, columns, where, whereVal, cb) => {
+        if(columns === null){
+            db.query(`SELECT * FROM ${table} WHERE ${where}='${whereVal}'`, cb);
+        } else {
+            db.query(`SELECT ? FROM ${table} WHERE ${where}='${whereVal}'`, columns, cb);
+        }
+    },
+
+    selectOne: (table, columns, where, whereVal, cb) => {
+        if(columns === null){
+            console.log(`SELECT * FROM ${table} WHERE ${where}='${whereVal}'`);
+            db.query(`SELECT * FROM ${table} WHERE ${where}='${whereVal}' LIMIT 1`, (err, data, fields) => {
+                cb(err, data[0], fields);
+            });
+        } else {
+            db.query(`SELECT ? FROM ${table} WHERE ${where}='${whereVal}' LIMIT 1`, columns, (err, data, fields) => {
+                cb(err, data[0], fields);
+            });
+        }
     }
 }
 

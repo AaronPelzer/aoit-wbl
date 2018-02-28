@@ -4,20 +4,18 @@ var express = require("express"),
 
 
 router.get("/", function(req, res) {
-    
-    res.render("main/index", {
-        title: "Academy of Innovative Technology"
-    });
+
+    console.log(req.session);
 
     /*
-    if(!req.user){
-        res.redirect('account/login');
-    } else {
-        res.render("main/index", {
-            title: "Index"
-        });
-    }
+        if(!req.user){
+            res.redirect('account/login');
+        }
     */
+
+    res.render("main/index", {
+        title: "Index"
+    });
 });
 
 

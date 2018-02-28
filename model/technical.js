@@ -13,15 +13,15 @@ module.exports = class Technical {
     }
 
     save(cb){
-        db.query(`INSERT INTO ${tableName} SET ?`, this.model, cb);
+        util.insert(tableName, this.model, cb);
     }
 
-    get(profileId, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE profileID='${profileId}'`);
+    get(pId, cb){
+        db.query(`SELECT Technical.*, TechnicalAssessment.technicalSkillID, GROUP_CONCAT(TechnicalAssessment.grade Order By TechnicalAssessment.grade) As grades, Group_Concat(TechnicalAssessment.studentScore Order By TechnicalAssessment.grade) AS scores FROM Technical, TechnicalAssessment WHERE TechnicalAssessment.TechnicalSkillID=Technical.ID AND Technical.profileID=${pId} GROUP BY Technical.ID`, cb);
     }
 
     getOne(id, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`, cb);
+        util.getOneById(tableName, id, cb);
     }
 
     getWithAssessment(profileID, cb){
@@ -29,10 +29,10 @@ module.exports = class Technical {
     }
 
     update(id, items, cb){
-        db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
+        util.updateById(id, items, cb);
     }
 
     remove(id, cb){
-        db.query(`DELETE FROM ${tableName} WHERE ID='${id}'`, cb);
+        util.removeById(id, cb);
     }
 }

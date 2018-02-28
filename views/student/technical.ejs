@@ -40,43 +40,32 @@
     <div class="col-sm-1 col-md-1 col-lg-1" style="padding-top: 30px;">
         <button class="btn btn-default btnAdd" style="float: right !important;">+</button>
     </div>
-
 </div>
 
-<hr>
-
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                New Technical Skills
-            </div>
-            <ul class="dvEntered list-group list-group-flush">
-                <li id="empty" class="list-group-item">No new skills added.</li>
-            </ul>
-        </div>
-        <br>
-        <button class="btn btn-sm btn-default float-right" id="save">Save</button>
-    </div>
-
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                Technical Skills
-            </div>
-            <ul class="list-group list-group-flush">
-                <% if(results.length === 0) { %>
-                    <li id="empty2" class="list-group-item">You currently have no skills</li>
-                <% } %>
-
-                <% for(var w in results){ %>        
-                    <a href="Technical/<%= results[w].ID %>/update" class="list-group-item list-group-item-action">
-                        <%= results[w].skill %>
-                    </a>  
-                <% } %>
-            </ul>
-        </div>
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Skill</th>
+            <th scope="col">9th</th>
+            <th scope="col">10th</th>
+            <th scope="col">11th</th>
+            <th scope="col">12th</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% results.forEach((s, indx) => { %>          
+                <tr>
+                    <th scope="row"><%= indx + 1%></th>
+                    <td><%= s.skill %></td>
+                    <% s.assessments.forEach((a, indx) => { %>
+                        <td><%= a[9 + indx] %></td>
+                    <% }) %>
+                </tr>
+                <% }) %>        
+        </tbody>
+        </table>
 </div>
 
 <script src="/js/utilities.js"></script>

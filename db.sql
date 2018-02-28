@@ -30,6 +30,8 @@ CREATE TABLE IF NOT EXISTS CTEPathway (
     pathway VARCHAR(64) NOT NULL
 );
 
+INSERT INTO CTEPathway(pathway) VALUES("Web Design / Programming: (Adobe Certification)"), ("Hardware: (A+ Certification)"), ("Game Design: (Unity)");
+
 -- Ethnicity
 CREATE TABLE IF NOT EXISTS Ethnicity (
     ID TINYINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -60,7 +62,8 @@ CREATE TABLE IF NOT EXISTS Gender (
 
 INSERT INTO Gender(gender) VALUES("Male"),
     ("Female"),
-    ("Other");
+    ("Other"),
+    ("Prefer Not to say.");
 
 -- SchoolContact
 CREATE TABLE IF NOT EXISTS SchoolContact (
@@ -136,6 +139,7 @@ CREATE TABLE IF NOT EXISTS Profile (
     evaluatorID INTEGER NULL,
     addressID INTEGER NULL,
     ideaStatusID TINYINT NULL,
+    pathwayID TINYINT NOT NULL,
     FOREIGN KEY(clusterID) REFERENCES Cluster(ID),
     FOREIGN KEY(ethnicityID) REFERENCES Ethnicity(ID),
     FOREIGN KEY(hispanicID) REFERENCES Hispanic(ID),
@@ -143,7 +147,8 @@ CREATE TABLE IF NOT EXISTS Profile (
     FOREIGN KEY(genderID) REFERENCES Gender(ID),
     FOREIGN KEY(evaluatorID) REFERENCES Evaluator(ID) ON DELETE CASCADE,
     FOREIGN KEY(addressID) REFERENCES Address(ID) ON DELETE CASCADE,
-    FOREIGN KEY(ideaStatusID) REFERENCES IdeaStatus(ID)
+    FOREIGN KEY(ideaStatusID) REFERENCES IdeaStatus(ID),
+    FOREIGN KEY(pathwayID) REFERENCES CTEPathway(ID)
 );
 
 -- Account Types
@@ -189,12 +194,12 @@ INSERT INTO Term(term) VALUES("Spring"),
     ("Fall");
 
 -- Course
-CREATE TABLE IF NOT EXISTS course (
+CREATE TABLE IF NOT EXISTS Course (
     ID INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     title TEXT NOT NULL,
     year INTEGER NOT NULL,
     hours INTEGER NOT NULL,
-    commentID INTEGER NOT NULL,
+    commentID INTEGER NULL,
     profileID INTEGER NOT NULL,
     termID INTEGER NOT NULL,
     FOREIGN KEY(commentID) REFERENCES Comment(ID),

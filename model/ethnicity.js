@@ -1,14 +1,14 @@
 const db = require("../config/db"),
-      util = require('../util/commands'),
-      tableName = 'Gender';
+      util = require("../util/commands"),
+      tableName = 'Ethnicity';
 
-module.exports = class Gender {
-    constructor(genderType = {}){
-        let model = {
-            gender: ""
-        }
+    module.exports = class Ethnicity {
+        constructor(race = {}){
+            let model = {
+                ethnicity: ""
+            }
 
-        this.model = util.setProperty(model, genderType);
+        this.model = util.setProperty(model, race);
     }
 
     save(cb){

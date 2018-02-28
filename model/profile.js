@@ -8,7 +8,10 @@ module.exports = class Profile {
             firstName: "",
             midName: "",
             lastName: "",
-            dob: 0
+            dob: 0,
+            genderID: 0,
+            ethnicityID: 0,
+            pathwayID: 0
         };
         
         this.model = util.setProperty(model, person);

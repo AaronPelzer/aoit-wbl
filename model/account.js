@@ -14,7 +14,7 @@ module.exports = class Account {
             lastLogin: "",
             lastUpdate: "",
             profileID: 0,
-            accountTypeId: 0,
+            accountTypeID: 0,
             lastLogin: "",
             lastUpdate: ""
         };
@@ -67,18 +67,21 @@ module.exports = class Account {
         });
     }
 
-    verifyAccount(token, cb){
-        // db.selectOne("verification", null, obj, col, data, function(err, row){
-        //     if(err) console.error(err);
+    setAccountHold(data, cb) {
+        util.insert("Verification", data, cb);
+    }
 
-        //     if(data[0] === row.link){
-
-        //         db.update(tableName, "ID = ?" , [row.accountID], { verified: 1 }, function(err) {
-        //             db.remove("verification", 'accountID=?', [row.accountID], cb);
-        //         });
-        //     }
-        //     console.log(row);
-        // });
-        db.query(`SELECT * FROM Verified WHERE link=${token}`, cb);
+    verifyAccount(link, cb) {
+        util.selectOne("Verification", null, 'link', link, (err, row) => {
+            if(err) console.error(err);
+            console.log(link, row);
+            if(link === row.link){
+                util.updateById(tableName, row.accountID, {
+                    verified: 1
+                }, err => {
+                    util.remove("Verification", 'accountID', row.accountID, cb);
+                });
+            }
+        });
     }
 };

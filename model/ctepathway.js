@@ -1,17 +1,16 @@
-const db = require("../config/db"),
-      util = require('../util/commands'),
-      tableName = 'Gender';
+const util = require("../util/commands"),
+      tableName = 'CTEPathway';
 
-module.exports = class Gender {
-    constructor(genderType = {}){
+module.exports = class CTEPathway {
+    constructor(pathway = {}){
         let model = {
-            gender: ""
+            pathway: ""
         }
 
-        this.model = util.setProperty(model, genderType);
+        this.model = util.setProperty(model, pathway);
     }
 
-    save(cb){
+    save(cb) {
         util.insert(tableName, this.model, cb);
     }
 

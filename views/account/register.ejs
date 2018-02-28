@@ -27,20 +27,20 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <label>Profile</label>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 
         <div class="form-group">
             <label for="tbFirst">First Name *</label>
             <input class="form-control" name="tbFirst" type="text" placeholder="First"   />
         </div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
         <div class="form-group">
             <label for="tbOsis">Middle</label>
             <input class="form-control" name="tbMiddle" type="text" placeholder="Middle"  />
         </div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
         <div class="form-group">
             <label for="tbOsis">Last Name *</label>
             <input class="form-control" name="tbLast" type="text" placeholder="Last"   />
@@ -49,60 +49,86 @@
 </div>
 
 <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="ddlGender">Gender</label>
+            <select class="form-control" name="ddlGender">
+                <option>Select Gender</option>
+                <% results.gender.forEach(g => { %>
+                    <option value="<%= g.ID %>">
+                        <%= g.gender %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="ddlRace">Ethnicity</label>
+            <select class="form-control" name="ddlRace">
+                <option>Select Ethnicity</option>
+                <% results.ethnicity.forEach((r) => { %>
+                    <option value="<%= r.ID %>">
+                        <%= r.ethnicity %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="tbDOB">Date of Birth</label>
+            <input name="tbDOB" class="form-control" type="date"/>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label>Account</label>
+</div>
+
+<div class="row">
+    <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="tbEmail">School Email</label>
+            <div class="input-group">
+                <input class="form-control" name="tbEmail" type="text" placeholder="Email"/>
+                <spaN class="input-group-addon">@aoiths.org</span>
+            </div>
+        </div>
+    </div>
+
     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="tbPath">School Pathway</label>
+            <select class="form-control" name="ddlPath">
+                <option>Select Pathway</option>
+                <% results.pathway.forEach(p => { %>
+                    <option value="<%= p.ID %>">
+                        <%= p.pathway %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
         <div class="form-group">
             <label for="tbOsis">OSIS</label>
             <input class="form-control" name="tbOsis" type="text" placeholder="OSIS" value="123456789"   />
         </div>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
         <div class="form-group">
             <label for="tbOsis">Confirm OSIS</label>
             <input class="form-control" name="tbCOsis" type="text" placeholder="OSIS" value="123456789"  />
-        </div>
-    </div>
-    
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-        <div class="form-group">
-            <label for="tbPath">School Pathway</label>
-            <select class="form-control" name="ddlPath">
-                <option>Select Pathway</option>
-                <option value="1">Web Design / Programming: (Adobe Certification)</option>
-                <option value="2">Hardware: (A+ Certification)</option>
-                <option value="3">Game Design: (Unity)</option>
-                <option value="4" disabled>Robotics (Dev)</option>
-            </select>
-        </div>
-    </div>
-
-    <br />
-    
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <label>Account</label>
-    </div>
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        <div class="form-group">
-            <label for="tbEmail">School Email</label>
-            <div class="input-group">
-                <input class="form-control" name="tbEmail" type="text" placeholder="user"   />
-                <spaN class="input-group-addon">@aoiths.org</span>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        <div class="form-group">
-            <label for="tbPass">Password</label>
-            <input class="form-control" name="tbPass" type="password" placeholder="******"  />
-        </div>
-    </div>
-
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        <div class="form-group">
-            <label for="tbCPass">Confirm Password</label>
-            <input class="form-control" name="tbCPass" type="password" placeholder="******"  />
         </div>
     </div>
 </div>
