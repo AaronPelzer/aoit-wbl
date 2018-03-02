@@ -2,7 +2,9 @@ var router = require("express")(),
     // sqlite = require('sqlite3').verbose(),
     Address = require('../model/address'),
     School = require('../model/school'),
-    User = require('../model/profile');
+    User = require('../model/profile'),
+    Course = require('../model/course'),
+    Technical = require('../model/technical');
 
 
 router.get("/", function(req, res) {
@@ -31,10 +33,24 @@ router.get("/Students", (req, res) => {
     });
 });
 
+router.get("/View/Students/:student", (req, res) => {
+    res.render("admin/student/info", {
+        title: "Student Info"
+    });
+});
+
 router.get("/Students/:student", (req, res) => {
     let user = new User();
-    user.getOne(req.params.student, (err, student) => {
-        res.json(student);
+    user.getOneWithInfo(req.params.student, (err, student) => {
+        let course = new Course();
+        course.get(req.params.student, (err, courses) => {
+            student.courses = courses;
+            let technical = new Technical();
+            technical.get(req.params.student, (err, technical) => {
+                student.technical = technical;
+                res.json(student);
+            })
+        })
     });
 })
 

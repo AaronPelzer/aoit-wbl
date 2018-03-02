@@ -17,7 +17,20 @@ module.exports = class Technical {
     }
 
     get(pId, cb){
-        db.query(`SELECT Technical.*, TechnicalAssessment.technicalSkillID, GROUP_CONCAT(TechnicalAssessment.grade Order By TechnicalAssessment.grade) As grades, Group_Concat(TechnicalAssessment.studentScore Order By TechnicalAssessment.grade) AS scores FROM Technical, TechnicalAssessment WHERE TechnicalAssessment.TechnicalSkillID=Technical.ID AND Technical.profileID=${pId} GROUP BY Technical.ID`, cb);
+        db.query(`SELECT Technical.*, TechnicalAssessment.technicalSkillID, GROUP_CONCAT(TechnicalAssessment.grade Order By TechnicalAssessment.grade) As grades, Group_Concat(TechnicalAssessment.studentScore Order By TechnicalAssessment.grade) AS scores FROM Technical, TechnicalAssessment WHERE TechnicalAssessment.TechnicalSkillID=Technical.ID AND Technical.profileID=${pId} GROUP BY Technical.ID`, (err, data, fields) => {
+            data.forEach((skill) => {
+                let grades = skill.grades.split(',');
+                let scores = skill.scores.split(',');
+                grades.forEach((grade, indx) => {
+                    skill['grade ' +  grade] = scores[indx];
+                });
+
+                delete skill['grades'];
+                delete skill['scores'];
+            });
+        
+            cb(err, data, fields);
+        });
     }
 
     getOne(id, cb){

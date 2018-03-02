@@ -4,7 +4,6 @@
 <div class="row">
     <div class="col-lg-8 form-inline">
         <input class="form-control" id="query" type="text" placeholder="Search Students"/>
-        <button class="btn btn-primary" id="search">Search</button>
     </div>
     <div class="col-lg-2">
 
@@ -53,8 +52,10 @@
         rows.innerHTML = html;
     }
 
-    document.querySelector("#search").addEventListener('click', (e) => {
-        search();
+    document.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter'){
+            search();
+        }
     });
 
     function search(){

@@ -1,0 +1,111 @@
+<% include ../../header.ejs %>
+
+<!-- <div class="container"> -->
+    <br><br>
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+            <img src="http://via.placeholder.com/210x200" class="rounded float-left" style="width: 100%" alt="">
+        </div>
+        
+        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+            <br>
+            <h1 id="name">John Smith</h1>
+            <em><h5 id="pathway" style="color: gray"></h5></em>
+            <hr>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Date of Birth</strong></li>
+                <li class="list-group-item" id="dob">5 May 1990</li>
+                <li class="list-group-item"><strong>Gender</strong></li>
+                <li class="list-group-item" id="gender">Male</li>
+                <li class="list-group-item"><strong>Ethnicity</strong></li>
+                <li class="list-group-item" id="ethnicity">Black</li>
+            </ul>
+        </div>
+
+        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9">
+            <h3>Courses</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Course</th>
+                    <th scope="col">Year</th>
+                    <th scope="col">Hours</th>
+                    <th scope="col">Term</th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="courses">
+                    
+                </tbody>
+            </table>
+            <br/>
+            <hr>
+            <br/>
+            <h3>Technical Skills</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Technical Skill</th>
+                        <th scope="col">9th</th>
+                        <th scope="col">10th</th>
+                        <th scope="col">11th</th>
+                        <th scope="col">12th</th>
+                    </tr>
+                </thead>
+                <tbody id="technical">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+<!-- </div> -->
+
+<script>
+    let param = window.location.pathname.split('/')[4];
+    console.log(param);
+    fetch(`/Administrator/Students/${param}`)
+        .then(res => {
+            return res.json();
+        }).then(data => {
+            console.log(data);
+            populateData(data);
+            populateTable('#courses', data.courses);
+            populateTable('#technical', data.technical);
+        });
+
+    function populateData(data){
+        document.querySelector('#name').innerHTML = data.firstName + ' ' + data.lastName;
+        document.querySelector('#pathway').innerHTML = data.pathway;
+        document.querySelector('#ethnicity').innerHTML = data.ethnicity;
+        document.querySelector('#gender').innerHTML = data.gender;
+        let dob = new Date(data.dob);
+        document.querySelector('#dob').innerHTML = dob.toDateString();
+    }
+
+    function populateTable(table, arr){
+        let html = '';
+        arr.forEach((item, indx) => {
+            html += `
+                <tr>
+                    <td>${indx + 1}</td>`;
+
+            let keys = Object.keys(item);
+            keys.forEach((i, err) => {
+                if(i.indexOf('ID') === -1 )
+                    html += `<td>${item[i]}</td>`
+            });
+            html += '</tr>';
+        });
+        let rows = document.querySelector(table);
+        rows.innerHTML = html;
+    }
+</script>
+
+<% include ../../footer.ejs %>
