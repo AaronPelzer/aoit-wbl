@@ -50,9 +50,11 @@ INSERT INTO Ethnicity(ethnicity) VALUES("White"),
 
 -- Hispanic
 CREATE TABLE IF NOT EXISTS Hispanic (
-    ID BIT(1) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    type BIT(1) NOT NULL
+    ID TINYINT(2) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    type BOOLEAN NOT NULL
 );
+
+INSERT INTO Hispanic(type), VALUES(true), (false);
 
 -- Gender
 CREATE TABLE IF NOT EXISTS Gender (
@@ -133,7 +135,7 @@ CREATE TABLE IF NOT EXISTS Profile (
     resume TEXT NULL,
     clusterID TINYINT NULL,
     ethnicityID TINYINT NULL,
-    hispanicID BIT(1) NULL,
+    hispanicID TINYINT(2) NULL,
     schoolID INTEGER NULL,
     genderID TINYINT NULL,
     evaluatorID INTEGER NULL,

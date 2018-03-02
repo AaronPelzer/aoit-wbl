@@ -38,10 +38,30 @@ module.exports = class Profile {
     }
 
     getAllStudents(query, cb) {
-        if(Object.keys(query.length === 0)){
-            db.query(`SELECT ${tableName}.* FROM ${tableName}, Account WHERE Account.profileID=${tableName}.ID AND Account.accountTypeID=5`, cb);
+        if(Object.keys(query).length === 0){
+            console.log(1);
+            db.query(`
+                SELECT 
+                    p.ID, p.firstName, p.midName, p.lastName, p.dob, p.grade, e.ethnicity, h.type, path.pathway 
+                FROM Account AS a, ${tableName} AS p 
+                LEFT JOIN Ethnicity AS e ON (e.ID=p.ethnicityID)
+                LEFT JOIN Hispanic AS h ON (h.ID=p.hispanicID) 
+                LEFT JOIN CTEPathway AS path ON (path.ID=p.pathwayID) 
+                WHERE a.profileID=p.ID AND a.accountTypeID=5
+                ORDER BY p.lastName
+            `, cb);
         } else {
-            db.query(`SELECT ${tableName}.* FROM ${tableName}, Account WHERE Account.profileID=${tableName}.ID AND Account.accountTypeID=5 AND ?`, query, cb);
+            console.log(2);
+            db.query(`
+                SELECT 
+                    p.ID, p.firstName, p.midName, p.lastName, p.dob, p.grade, e.ethnicity, h.type, path.pathway FROM Account AS a, Profile AS p 
+                LEFT JOIN Ethnicity AS e ON (e.ID=p.ethnicityID) 
+                LEFT JOIN Hispanic AS h ON (h.ID=p.hispanicID) 
+                LEFT JOIN CTEPathway AS path ON (path.ID=p.pathwayID) 
+                WHERE a.profileID=p.ID AND a.accountTypeID=5
+                AND ?
+                ORDER BY p.lastName`
+            , query, cb);
         }
     }
 };

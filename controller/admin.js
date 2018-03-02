@@ -25,6 +25,7 @@ router.get("/View/Students/", (req, res) => {
 
 router.get("/Students", (req, res) => {
     let user = new User();
+    console.log(req.query);
     user.getAllStudents(req.query, (err, students, fields) => {
         res.json(students);
     });

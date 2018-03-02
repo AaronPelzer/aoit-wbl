@@ -1,5 +1,71 @@
 <% include ../../header.ejs %>
 
+<h1><%= title %></h1>
+<div class="row">
+    <div class="col-lg-8 form-inline">
+        <input class="form-control" id="query" type="text" placeholder="Search Students"/>
+        <button class="btn btn-primary" id="search">Search</button>
+    </div>
+    <div class="col-lg-2">
 
+    </div>
+    <div class="col-lg-2">
+        <span class="float-right oi oi-sort-ascending"></span>
+        <span class="float-right oi oi-sort-descending"></span>
+    </div>
+</div>
+<br>
+<table class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Grade</th>
+        <th scope="col">Pathway</th>
+      </tr>
+    </thead>
+    <tbody id="rows">
+    
+    </tbody>
+  </table>
 
+<script>
+    fetch('/Administrator/Students')
+        .then(res => {
+            return res.json();
+        }).then(data => {
+            populateTable(data);
+        });
+
+    function populateTable(arr){
+        let html = '';
+        arr.forEach((item, indx) => {
+            html += `
+                <tr>
+                    <td>${indx + 1}</td>
+                    <td><a href="students/${item.ID}" style="color:#000; text-decoration: none">${item.lastName}, ${item.firstName}</a></td>
+                    <td>${item.grade}</td>
+                    <td>${item.pathway}</td>
+                </tr>
+            `;
+        });
+        let rows = document.querySelector('#rows');
+        rows.innerHTML = html;
+    }
+
+    document.querySelector("#search").addEventListener('click', (e) => {
+        search();
+    });
+
+    function search(){
+        let query = document.querySelector("#query").value;
+        fetch(`/Administrator/Students?${query}`)
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                console.log(data);
+                populateTable(data);
+            })
+    }
+</script>
 <% include ../../footer.ejs %>
