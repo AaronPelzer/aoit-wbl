@@ -59,7 +59,7 @@
 
     function search(){
         let query = document.querySelector("#query").value;
-        fetch(`/Administrator/Students?${query}`)
+        fetch(`/Administrator/Students?query=${query}`)
             .then(res => {
                 return res.json();
             }).then(data => {
