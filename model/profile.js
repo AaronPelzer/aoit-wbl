@@ -36,4 +36,12 @@ module.exports = class Profile {
     remove(id, cb){
         util.removeById(tableName, id, cb);
     }
+
+    getAllStudents(query, cb) {
+        if(Object.keys(query.length === 0)){
+            db.query(`SELECT ${tableName}.* FROM ${tableName}, Account WHERE Account.profileID=${tableName}.ID AND Account.accountTypeID=5`, cb);
+        } else {
+            db.query(`SELECT ${tableName}.* FROM ${tableName}, Account WHERE Account.profileID=${tableName}.ID AND Account.accountTypeID=5 AND ?`, query, cb);
+        }
+    }
 };

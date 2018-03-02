@@ -1,7 +1,8 @@
 var router = require("express")(),
-    sqlite = require('sqlite3').verbose(),
+    // sqlite = require('sqlite3').verbose(),
     Address = require('../model/address'),
-    School = require('../model/school');
+    School = require('../model/school'),
+    User = require('../model/profile');
 
 
 router.get("/", function(req, res) {
@@ -12,12 +13,48 @@ router.get("/", function(req, res) {
 
 router.get("/evaluator", function(req, res) {
     res.render("admin/evaluator", {
-        title: "Industry-Based Assessments"
+        title: "Evaluators"
     });
 });
 
-router.post("/evaluator", function(req, res) {
+router.get("/View/Students/", (req, res) => {
+    res.render("admin/student/index", {
+        title: "Students"
+    })
+})
 
+router.get("/Students", (req, res) => {
+    let user = new User();
+    user.getAllStudents(req.query, (err, students, fields) => {
+        res.json(students);
+    });
+});
+
+router.get("/Students/:student", (req, res) => {
+    let user = new User();
+    user.getOne(req.params.student, (err, student) => {
+        res.json(student);
+    });
+})
+
+router.put("/Students/:student", (req, res) => {
+    let post = req.body,
+        user = new User();
+
+    let items = {
+        firstName: req.params.tbFirst,
+        midName: req.params.tbMid,
+        lastName: req.params.tbLast,
+        grade: req.params.ddlGrade,
+        genderID: req.params.ddlGender,
+        genderOther: req.params.tbGOther,
+        pathwayID: req.params.ddlPatway,
+        ideaStatus: req.params.ddlIdea
+    };
+
+    user.update(req.params.student, items, (err, data) => {
+        res.send("updated");
+    });
 });
 
 router.get("/schools", function(req, res) {
@@ -76,30 +113,30 @@ router.get("/schools/:id/edit", (req, res) => {
 });
 
 router.post("/schools/:id/edit", (req, res) => {
-    let s = new School();
-    let schoolData = req.body.tbName.trim();
-    let addressData = {
-        address: req.body.tbAddress.trim(),
-        address2: req.body.tbAddress2.trim(),
-        city: req.body.tbCity.trim(),
-        state: req.body.tbState.trim(),
-        zip: req.body.tbZip.trim()
-    }
+    // let s = new School();
+    // let schoolData = req.body.tbName.trim();
+    // let addressData = {
+    //     address: req.body.tbAddress.trim(),
+    //     address2: req.body.tbAddress2.trim(),
+    //     city: req.body.tbCity.trim(),
+    //     state: req.body.tbState.trim(),
+    //     zip: req.body.tbZip.trim()
+    // }
 
-    for(var key in addressData){
-        if(addressData[key] == '' || addressData[key] == null){
-            delete addressData[key];
-        }
-    }
+    // for(var key in addressData){
+    //     if(addressData[key] == '' || addressData[key] == null){
+    //         delete addressData[key];
+    //     }
+    // }
 
-    s.update(req.params.id, {name: schoolData}, () => {
-        s.selectOne({ 'addressId': 'id' }, 'id', req.params.id, (data) => {
-            let a = new Address(); 
-            a.update(data.id, addressData, () => {
-                res.send("success!");
-            });
-        })
-    });
+    // s.update(req.params.id, {name: schoolData}, () => {
+    //     s.selectOne({ 'addressId': 'id' }, 'id', req.params.id, (data) => {
+    //         let a = new Address(); 
+    //         a.update(data.id, addressData, () => {
+    //             res.send("success!");
+    //         });
+    //     })
+    // });
 });
 
 module.exports = router;
