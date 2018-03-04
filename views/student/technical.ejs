@@ -59,11 +59,46 @@
                 <tr>
                     <th scope="row"><%= indx + 1%></th>
                     <td><%= t.skill %></td>
-                    <td><%= t["grade_9"] || '-'%></td>
-                    <td><%= t["grade_10"] || '-'%></td>
-                    <td><%= t["grade_11"] || '-'%></td>
-                    <td><%= t["grade_12"] || '-' %></td>
-                    <td><button class="btn btn-danger" onclick="remove('<%- t.ID %>')">-</button></td>
+                    <td>
+                        <select data-skill="<%= t.ID %>" data-grade="9" class="form-control" required>
+                            <option>---</option>
+                            <option value="1" <%= t["grade_9"] == "1" ? "selected" : "" %>>1</option>
+                            <option value="2" <%= t["grade_9"] == "2" ? "selected" : "" %>>2</option>
+                            <option value="3" <%= t["grade_9"] == "3" ? "selected" : "" %>>3</option>
+                            <option value="4" <%= t["grade_9"] == "4" ? "selected" : "" %>>4</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select data-skill="<%= t.ID %>" data-grade="10" class="form-control" required>
+                            <option>---</option>
+                            <option value="1" <%= t["grade_10"] == "1" ? "selected" : "" %>>1</option>
+                            <option value="2" <%= t["grade_10"] == "2" ? "selected" : "" %>>2</option>
+                            <option value="3" <%= t["grade_10"] == "3" ? "selected" : "" %>>3</option>
+                            <option value="4" <%= t["grade_10"] == "4" ? "selected" : "" %>>4</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select data-skill="<%= t.ID %>" data-grade="11" class="form-control" required>
+                            <option>---</option>
+                            <option value="1" <%= t["grade_11"] == "1" ? "selected" : "" %>>1</option>
+                            <option value="2" <%= t["grade_11"] == "2" ? "selected" : "" %>>2</option>
+                            <option value="3" <%= t["grade_11"] == "3" ? "selected" : "" %>>3</option>
+                            <option value="4" <%= t["grade_11"] == "4" ? "selected" : "" %>>4</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select data-skill="<%= t.ID %>" data-grade="12" class="form-control" required>
+                            <option>---</option>
+                            <option value="1" <%= t["grade_12"] == "1" ? "selected" : "" %>>1</option>
+                            <option value="2" <%= t["grade_12"] == "2" ? "selected" : "" %>>2</option>
+                            <option value="3" <%= t["grade_12"] == "3" ? "selected" : "" %>>3</option>
+                            <option value="4" <%= t["grade_12"] == "4" ? "selected" : "" %>>4</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="update('<%- t.ID %>')"><span class="oi oi-pencil"></span></button>
+                        <button class="btn btn-danger" onclick="remove('<%- t.ID %>')"><span class="oi oi-trash"></span></button>
+                    </td>
                 </tr>
             <% }) %>
         </tbody>
@@ -88,6 +123,24 @@
         xhr.open("DELETE", `/Student/Technical/`, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({id: id}));
+        window.location.href = '/Student/Technical';
+    }
+
+    function update(id){
+        let fields = document.querySelectorAll(`[data-skill='${id}']`);
+        let payload = {
+            arr: []
+        };
+        fields.forEach((item) => {
+            payload.arr.push(`${item.getAttribute("data-grade")} ${item.value}`)
+        });
+        payload.id = id;
+        console.log(payload);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("PUT", `/Student/Technical/`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(payload));
         window.location.href = '/Student/Technical';
     }
 </script>

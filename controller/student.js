@@ -232,6 +232,7 @@ router.post("/courses/:id/update", isAuthenticated, function(req, res){
 router.get("/Technical", isAuthenticated, function(req, res) {
     let tech = new TechSkill();
     tech.get(req.user.profileID, (err, data) => {
+        console.log(data);
         res.render('student/technical', {
             title: "Technical",
             technical: data
@@ -273,36 +274,51 @@ router.post("/Technical/Create", isAuthenticated, (req, res) => {
 
 router.get("/Technical/:id/update", isAuthenticated, (req, res) => {
     let t = new TechSkill();
-    t.selectOne(req.params.id, { 'assessment': 'assessment.ID=technical.assessmentID' }, null, (err, data) => {
-        res.render("student/technical.update.ejs", {
-            title: "Update Technical Skill",
-            results: data
-        });
-    });
+    // let p = 
+    // t.selectOne(req.params.id, { 'assessment': 'assessment.ID=technical.assessmentID' }, null, (err, data) => {
+    //     res.render("student/technical.update.ejs", {
+    //         title: "Update Technical Skill",
+    //         results: data
+    //     });
+    // });
 });
 
-router.put("/Technical/:id/update", isAuthenticated, (req, res) => {
+router.put("/Technical/", isAuthenticated, (req, res) => {
     let p = req.body;
-
-    async.parallel({
-        tech: (cb) => {
-            let t = new TechSkill();
-            t.update(req.params.id, { skill: p.tbTech }, cb);
-        },
-        assessment: (cb) => {
-            let t = new TechSkill(),
-                a = new Assessment();
-
-            t.selectOne(req.params.id, null, ["assessmentID"], (err, data) => {
-                a.update(data.assessmentID, { grade: p.ddlGrade, selfEval: p.ddlScale }, cb);
-            });
-        }
-    }, (err, results) => {
-        if (err) throw err;
-        console.log("reached");
-        res.redirect('/student/technical');
-    });
+    console.log("RESULTTTTTTTTTTTTT", p);
+    let t = new TechAssess();
+    let assessments = p.arr;
+    assessments.forEach((a) => {
+        let grade = parseInt(a.slice(0,2));
+        let score = parseInt(a.slice(2));
+        t.exists(p.id, grade, (r, id) => {
+            if(!isNaN(score) && r){
+                updateAssessment(id, score);
+            } else if(!isNaN(score) && !r) {
+                addAssessment(grade, score, p.id);
+            }
+        });
+    })
 });
+
+function updateAssessment(id, score){
+    let tech = new TechAssess();
+    tech.update(id, {studentScore: score}, (err, data) => {
+        if(err) throw err;
+        else console.log("Assessment Updated!");
+    }); 
+}
+
+function addAssessment(grade, score, techId){
+    let tech = new TechAssess({
+        grade: grade,
+        studentScore: score,
+        technicalSkillID: techId
+    });
+    tech.save((err, data) => {
+        if(err) throw err;
+    })
+}
 
 router.delete("/Technical/", isAuthenticated, (req, res) => {
     let t = new TechSkill();
