@@ -54,11 +54,16 @@
             <label for="ddlGender">Gender</label>
             <select class="form-control" name="ddlGender">
                 <option>Select Gender</option>
-                <% results.gender.forEach(g => { %>
-                    <option value="<%= g.ID %>">
-                        <%= g.gender %>
+                <option value="2">Female</option>
+                <option value="1">Male</option>
+                <option value="3">Other</option>
+                <!-- HARDCODED OPTIONS * UPDATED IN NEXT
+                < % results.ethnicity.forEach(g => { % >
+                    <option value="< %= g.ID % >">
+                        < %= g.gender % >
                     </option>
-                <% }) %>
+                < % }) % >
+                -->
             </select>
         </div>
     </div>
