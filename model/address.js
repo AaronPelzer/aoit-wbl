@@ -1,5 +1,5 @@
 const util = require('../util/commands'),
-      tableName = "address";
+      tableName = "Address";
 
 module.exports = class Address {
     constructor(address = {}){

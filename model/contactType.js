@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = 'contactType';
+      tableName = 'ContactType';
 
 module.exports = class ContactType {
     constructor(contactType = {}){

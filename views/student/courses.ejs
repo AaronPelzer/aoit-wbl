@@ -56,7 +56,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row table-responsive">
     <table class="table">
         <thead>
           <tr>
@@ -87,16 +87,6 @@
 <script src="/js/utilities.js"></script>
 <script>
 
-    function getValues(){
-        let data = {},
-            fields = document.querySelectorAll("[name]");
-        
-        fields.forEach(input => {
-            data[input.name] = input.value;
-        });
-
-        return data;
-    }
 
     addListener(".btnAdd", "click", () => {
         let xhr = new XMLHttpRequest();

@@ -1,6 +1,6 @@
 const db = require("../config/cb"),
       util = require("../util/commands"),
-      tableName = 'eventType';
+      tableName = 'EventType';
 
 module.exports = class EventType {
     constructor(eventType = {}){

@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row table-responsive">
     <table class="table">
         <thead>
             <tr>
@@ -55,65 +55,41 @@
             </tr>
         </thead>
         <tbody>
-            <% results.forEach((s, indx) => { %>          
+            <% technical.forEach((t, indx) => { %>          
                 <tr>
                     <th scope="row"><%= indx + 1%></th>
-                    <td><%= s.skill %></td>
-                    <% s.assessments.forEach((a, indx) => { %>
-                        <td><%= a[9 + indx] %></td>
-                    <% }) %>
+                    <td><%= t.skill %></td>
+                    <td><%= t["grade_9"] || '-'%></td>
+                    <td><%= t["grade_10"] || '-'%></td>
+                    <td><%= t["grade_11"] || '-'%></td>
+                    <td><%= t["grade_12"] || '-' %></td>
+                    <td><button class="btn btn-danger" onclick="remove('<%- t.ID %>')">-</button></td>
                 </tr>
-                <% }) %>        
+            <% }) %>
         </tbody>
         </table>
 </div>
 
+<% var a = user %>
+
 <script src="/js/utilities.js"></script>
 <script>
-    var row = 0;
-    var skills = [];
-
-    document.querySelector('#empty').style.display = "show"; 
-
-    addListener(".btnAdd", "click", function(){
-        var html = "";
-
-        addNewItem(["[name=tbTech]", "[name=ddlGrade]", "[name=ddlScale]"],
-            {   skill: "",
-                grade: 0,
-                scale: 0}, skills);
-
-        var cols = skills[ skills.length - 1].skill ;
-        el(".dvEntered").insertAdjacentHTML("beforeEnd", createListItem(cols));
-        let item = skills.length - 1;
-        skills[item].id = item;
-
-        document.querySelector('#empty').style.display = "none";
-        document.querySelectorAll(".btnRemove")[skills.length - 1].addEventListener("click", (e) => {
-            let listItem = e.target.parentNode;
-            listItem.parentNode.removeChild(listItem);
-
-            let i = 0;
-            while(skills[i].id !== item){
-                i++;
-            }
-            skills.splice(i, 1);
-
-            if(skills.length == 0){
-                document.querySelector('#empty').style.display = "block"; 
-            }
-        });
-
-        reset();
+        
+    addListener(".btnAdd", "click", () => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Student/Technical/Create", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(getValues()));
+        window.location.href = '/Student/Technical';
     });
 
-    addListener("#save", "click", () => {
-        alert();
+    function remove(id) {
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", "newTech", true);
+        xhr.open("DELETE", `/Student/Technical/`, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(skills));
-    })
+        xhr.send(JSON.stringify({id: id}));
+        window.location.href = '/Student/Technical';
+    }
 </script>
 
 <% include ../footer.ejs %>

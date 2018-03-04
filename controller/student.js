@@ -14,6 +14,7 @@ const router = require("express")(),
     Student = require('../model/profile'),
     TechSkill = require('../model/technical'),
     Assessment = require('../model/assessment'),
+    TechAssess = require('../model/technicalAssessment'),
     Cluster = require('../model/cluster'),
     Race = require('../model/ethnicity'),
     IdeaStatus = require('../model/ideaStatus'),
@@ -231,24 +232,9 @@ router.post("/courses/:id/update", isAuthenticated, function(req, res){
 router.get("/Technical", isAuthenticated, function(req, res) {
     let tech = new TechSkill();
     tech.get(req.user.profileID, (err, data) => {
-        data.forEach(skill => {
-            let assessments = [];
-            let grades = skill.grades.split(',');
-            let scores = skill.scores.split(',');
-            grades.forEach((grade, indx) => {
-                let obj = {};
-                obj[grade] = scores[indx];
-                assessments.push(obj);
-            });
-            skill.assessments = assessments;
-            delete skill["grades"];
-            delete skill["scores"];
-            console.log(skill);
-        });
-        console.log(data);
         res.render('student/technical', {
             title: "Technical",
-            results: data
+            technical: data
         })
     });
 });
@@ -261,37 +247,28 @@ router.get('/Info', function(req, res) {
     });
 });
 
-router.post("/newTech", isAuthenticated, (req, res) => {
+router.post("/Technical/Create", isAuthenticated, (req, res) => {
     let p = req.body;
     console.log(p);
-    res.send("OUT OF ORDER!");
-    // for(var i in p){
-    //     let a = new Assessment({
-    //         selfEval: p[i].scale,
-    //         grade: p[i].grade
-    //     });
+    
+    let t = new TechSkill({
+        skill: p.tbTech,
+        profileID: req.user.profileID
+    });
 
-    //     async.waterfall([
-    //         (cb) => {
-    //             a.save((err, data) => {
-    //                 cb(err, data.insertId);
-    //             });
-    //         }, (assessmentID, cb) => {
-    //             let techSkill = new TechSkill({
-    //                 skill: p[i].skill,
-    //                 assessmentD: assessmentID,
-    //                 profileID: req.user.profileID 
-    //             });    
+    t.save((err, data) => {
+        console.log(data);
 
-    //             techSkill.save((err) => {
-    //                 cb(err, "done");
-    //             });
-    //         }
-    //     ], (err, result) => {
-    //         if(err) throw err;
-    //         res.redirect('/technical');
-    //     });
-    // }
+        let a = new TechAssess({
+            grade: p.ddlGrade,
+            studentScore: p.ddlScale,
+            technicalSkillID: data.insertId
+        });
+
+        a.save((err, data) => {
+            if(err) throw err;
+        })
+    })
 });
 
 router.get("/Technical/:id/update", isAuthenticated, (req, res) => {
@@ -304,7 +281,7 @@ router.get("/Technical/:id/update", isAuthenticated, (req, res) => {
     });
 });
 
-router.post("/Technical/:id/update", isAuthenticated, (req, res) => {
+router.put("/Technical/:id/update", isAuthenticated, (req, res) => {
     let p = req.body;
 
     async.parallel({
@@ -324,6 +301,13 @@ router.post("/Technical/:id/update", isAuthenticated, (req, res) => {
         if (err) throw err;
         console.log("reached");
         res.redirect('/student/technical');
+    });
+});
+
+router.delete("/Technical/", isAuthenticated, (req, res) => {
+    let t = new TechSkill();
+    t.remove(req.body.id, (err, data) => {
+        if(err) throw err;
     });
 });
 
@@ -348,55 +332,44 @@ router.get("/Professional", isAuthenticated, function(req, res) {
  */
 
 router.get("/WBL", isAuthenticated, function(req, res) {
-    // async.parallel({
-    //     wblType: function(cb) {
-    //         let wblType = new WBLType();
-    //         wblType.get((err, data) => {
-    //             cb(err, data);
-    //         });
-    //     },
-    //     activities: function(cb) {
-    //         let activities = new WBL();
-    //         activities.get(req.user.profileID, cb);
-    //     }
-    // }, function(err, results) {
-    //     console.log(results.activities);
-    //     res.render('student/activities', {
-    //         title: "WBL",
-    //         results: results
-    //     })
-    // });
     let payload = {};
-    let wblType = new WBLType();
-    wblType.get((err, data) => {
-        payload.wblType = data;
-        console.log(payload);
+    let a = new WBL();
+    a.get(req.user.profileID, (err, data) => {
+        payload.activities = data;
+        let types = new WBLType();
+        types.get((err, types) => {
+            payload.types = types;
+            console.log(payload);
+            res.render('student/activities', {
+                title: "Work-based Activities",
+                results: payload
+            })
+        })
     });
 });
 
-router.post("/WBL/new", isAuthenticated, function(req, res){
+router.post("/WBL/Create", isAuthenticated, function(req, res){
     let p = req.body;
-    // for(var i in p){
-    console.log("ping");
+    console.log(p);
     var c = new Comment({
-        comment: p.comment
+        comment: p.tbComment
     });
 
     c.save((err, data) => {
+        console.log(err, data);
         var wbl = new WBL({
-            date: p.date,
-            hours: p.hours,
-            organization: p.org,
-            wblTypeID: p.wblType,
+            date: p.tbDate,
+            hours: p.tbHours,
+            organization: p.tbOrg,
+            wblTypeID: p.ddlWblType,
             commentID: data.insertId,
             profileID: req.user.profileID
         });    
 
         wbl.save((err) => {
-            // res.redirect('/Wbl');
+            if(err) throw err;
         });
     })
-    // }
 });
 
 router.get("/WBL/:id/update", isAuthenticated, (req, res) => {
@@ -451,6 +424,13 @@ router.post("/WBL/:id/update", isAuthenticated, function(req, res) {
     })
 });
 
+router.delete("/WBL/", (req, res) => {
+    let a = new WBL();
+    a.remove(req.body.id, (err, data) => {
+        if(err) throw err;
+    })
+});
+
 /**
  * 
  * CERTIFICATION
@@ -461,44 +441,44 @@ router.get("/Certification", isAuthenticated, (req, res) => {
     let certification = new Certification();
     certification.get(req.user.profileID, (err, data) => {
         if (err) throw err;
+        console.log(data);
         res.render('student/certification', {
             title: "Certification",
-            results: data
+            certification: data
         })
     })
 });
 
-router.post("/Certification/new", isAuthenticated, (req, res) => {
+router.post("/Certification", isAuthenticated, (req, res) => {
     let p = req.body;
-    for (var i in p) {
-        let c = new Comment({
-            comment: p[i].comment
-        });
 
-        async.waterfall([
-            (cb) => {
-                c.save((err, data) => {
-                    cb(err, data.insertId);
-                });
-            }, (commentID, cb) => {
-                let certification = new Certification({
-                    name: p[i].name,
-                    date: p[i].date,
-                    authority: p[i].authority,
-                    score: p[i].score,
-                    commentID: commentID,
-                    profileID: req.user.profileID
-                });    
+    async.waterfall([
+        (cb) => {
+            let c = new Comment({
+                comment: p.tbComment
+            });
 
-                certification.save((err) => {
-                    cb(err, "done");
-                });
-            }
-        ], (err, result) => {
-            if (err) throw err;
-            res.redirect('/certification');
-        });
-    }
+            c.save((err, data) => {
+                cb(err, data.insertId);
+            });
+        }, (commentID, cb) => {
+            let certification = new Certification({
+                name: p.tbName,
+                date: p.tbDate,
+                authority: p.tbAuth,
+                score: p.tbScore,
+                commentID: commentID,
+                profileID: req.user.profileID
+            });    
+
+            certification.save((err) => {
+                cb(err, "done");
+            });
+        }
+    ], (err, result) => {
+        if (err) throw err;
+        res.redirect('/certification');
+    });
 })
 
 router.get("/Certification/:id/update", isAuthenticated, (req, res) => {
@@ -542,6 +522,13 @@ router.post("/Certification/:id/update", isAuthenticated, (req, res) => {
         if (err) throw err;
         res.redirect('/student/certification');
     })
+});
+
+router.delete("/Certification/", (req, res) => {
+    let a = new Certification();
+    a.remove(req.body.id, (err, data) => {
+        if(err) throw err;
+    });
 });
 
 router.get("/upload", isAuthenticated, function(req, res) {

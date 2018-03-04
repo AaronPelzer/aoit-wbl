@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = "wblType";
+      tableName = "WBLType";
 
 module.exports = class wblType {
     constructor(wblType = {}){

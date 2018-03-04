@@ -1,15 +1,15 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = "technical";
+      tableName = "Technical";
 
 module.exports = class Technical {
-    constructor(technical = {}, assessmentID, profileID){
+    constructor(technical = {}){
         let model = {
             skill: "",
             profileID: 0
         }
 
-        this.model = util.setProperty(technical);
+        this.model = util.setProperty(model, technical);
     }
 
     save(cb){
@@ -22,7 +22,7 @@ module.exports = class Technical {
                 let grades = skill.grades.split(',');
                 let scores = skill.scores.split(',');
                 grades.forEach((grade, indx) => {
-                    skill['grade ' +  grade] = scores[indx];
+                    skill['grade_' +  grade] = scores[indx];
                 });
 
                 delete skill['grades'];
@@ -42,10 +42,10 @@ module.exports = class Technical {
     }
 
     update(id, items, cb){
-        util.updateById(id, items, cb);
+        util.updateById(tableName, id, items, cb);
     }
 
     remove(id, cb){
-        util.removeById(id, cb);
+        util.removeById(tableName, id, cb);
     }
 }

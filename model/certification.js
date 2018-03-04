@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = "certification";
+      tableName = "Certification";
 
 module.exports = class Certification { 
     constructor(certification = {}, commentID, profileID){
@@ -21,7 +21,7 @@ module.exports = class Certification {
     }
 
     get(pId, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE profileID='${pId}'`, cb);
+        db.query(`SELECT * FROM ${tableName} as cert LEFT JOIN Comment AS c ON (c.ID=cert.commentID) WHERE cert.profileID='${pId}'`, cb);
     }
 
     getOne(id, cb){

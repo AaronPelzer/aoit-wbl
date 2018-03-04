@@ -21,7 +21,8 @@ module.exports = class WBLActivity {
     }
 
     get(pId, cb){
-        util.select(tableName, '*', 'profileId', pId, cb);
+        // util.select(tableName, '*', 'profileId', pId, cb);
+        db.query(` SELECT a.ID, a.date, a.organization, a.hours, c.comment, t.type FROM WBLType AS t, WBLActivity AS a LEFT JOIN Comment AS c ON (c.ID=a.commentID) WHERE t.ID=a.wblTypeID AND a.profileID=${pId}`, cb);
     }
 
     getOne(id, cb){

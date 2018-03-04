@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = 'school';
+      tableName = 'School';
 
 module.exports = class School { 
     constructor(school = {}){

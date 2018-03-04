@@ -1,6 +1,6 @@
 const db = require("../config/db"),
       util = require("../util/commands"),
-      tableName = 'cluster';
+      tableName = 'Cluster';
 
 module.exports = class Cluster {
     constructor(cluster = {}){

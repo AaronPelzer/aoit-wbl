@@ -336,7 +336,7 @@ CREATE TABLE IF NOT EXISTS TechnicalAssessment (
     grade TINYINT NOT NULL,
     technicalSkillID INT NOT NULL,
     FOREIGN KEY(technicalSkillID) REFERENCES Technical(
-    ID),
+    ID) ON DELETE CASCADE,
     FOREIGN KEY(studentScore) REFERENCES Proficiency(ID),
     FOREIGN KEY(evaluatorScore) REFERENCES Proficiency(ID)
 );

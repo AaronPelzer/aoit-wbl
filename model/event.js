@@ -1,6 +1,6 @@
 const db = require("../config/cb"),
       util = require("../util/commands"),
-      tableName = "event";
+      tableName = "Event";
 
 module.exports = class Event {
     constructor(event = {}){

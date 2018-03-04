@@ -7,14 +7,14 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
         <div class="form-group">
-            <label for="tbTitle">Title</label>
-            <input class="form-control" type="text" name="tbTitle" placeholder="Enter Certification Title" />
+            <label for="tbTitle">Certification Name</label>
+            <input class="form-control" type="text" name="tbName" placeholder="Enter Certification Name" />
         </div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-3">
             <div class="form-group">
-                <label for="tbAuth">Authority</label>
+                <label for="tbAuth">Certifiying Authority</label>
                 <input class="form-control" type="text" name="tbAuth" placeholder="Enter Certifiying Authority" />
             </div>
         </div>
@@ -52,90 +52,51 @@
 </div>
 <hr/>
 
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                New Certifications
-            </div>
-            <ul class="dvEntered list-group list-group-flush">
-                <li id="empty" class="list-group-item">No new certifications added.</li>
-            </ul>
-        </div>
-        <br>
-        <button class="btn btn-sm btn-default float-right" id="save">Save</button>
-        <br/>
-    </div>
-
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                Certifications
-            </div>
-            <ul class="list-group list-group-flush">
-                <% for(var c in results){ %>        
-                    <a href="certification/<%= results[c].ID %>/update" class="list-group-item list-group-item-action">
-                        <%= results[c].name %>
-                    </a>  
-                <% } %>
-            </ul>
-        </div>
-    </div>
+<div class="row table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Certification Name</th>
+            <th scope="col">Certifiying Authority</th>
+            <th scope="col">Score</th>
+            <th scope="col">Date</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% certification.forEach((c, indx) => { %>          
+                <tr>
+                    <th scope="row"><%= indx + 1%></th>
+                    <td><%= c.name %></td>
+                    <td><%= c.authority %></td>
+                    <td><%= c.score %></td>
+                    <td><%= new Date(c.date).toDateString() %></td>
+                    <td><button class="btn btn-danger" onclick="remove('<%= c.ID %>')">-</button></td>
+                </tr>
+            <% }) %>
+        </tbody>
+        </table>
 </div>
 <br>
 
 <script src="/js/utilities.js"></script>
 <script>
-
-    var row = 0;
-    var certifications = [];
-
-    document.querySelector('#empty').style.display = "show"; 
-
-    addListener(".btnAdd", "click", function(){
-        var html = "";
-
-        addNewItem(["[name=tbTitle]", "[name=tbAuth]", "[name=tbDate]", "[name=tbScore]", "[name=tbComment]"],
-            {   name: "",
-                authority: 0,
-                date: 0,
-                score: 0,
-                comment: ""}, certifications);
-        
-        for(var i = 0; i < certifications.length; i++){
-            console.log(certifications[i]);
-        }
-
-        var cols = certifications[ certifications.length - 1].name ;
-        el(".dvEntered").insertAdjacentHTML("beforeEnd", createListItem(cols));
-        let item = certifications.length - 1;
-        certifications[item].id = item;
-
-        document.querySelector('#empty').style.display = "none";
-        document.querySelectorAll(".btnRemove")[certifications.length - 1].addEventListener("click", (e) => {
-            let listItem = e.target.parentNode;
-            listItem.parentNode.removeChild(listItem);
-
-            let i = 0;
-            while(certifications[i].id !== item){
-                i++;
-            }
-            certifications.splice(i, 1);
-
-            if(certifications.length == 0){
-                document.querySelector('#empty').style.display = "block"; 
-            }
-        });
-
-        reset();
+    addListener(".btnAdd", "click", () => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Student/Certification", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(getValues()));
+        window.location.href = '/Student/Certification';
     });
 
-    addListener("#save", "click", () => {
+    function remove(id) {
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", "certification/new", true);
+        xhr.open("DELETE", `/Student/Certification`, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(certifications));
-    })
+        xhr.send(JSON.stringify({id: id}));
+        window.location.href = '/Student/Certification';
+    }
 </script>
 
 <% include ../footer.ejs %>
