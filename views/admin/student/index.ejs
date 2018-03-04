@@ -50,13 +50,29 @@
 
 <script>
     
-    fetch('/Administration/Students')
+    fetch('API/Students')
         .then(res => {
+            console.log(res);
             return res.json();
         }).then(data => {
-            let page = 1;
-            populateTable(data, page);
+            populateTable(data, 1);
         });
+
+    let currentPage = 1;
+
+    function prevPage(){
+        if(currentPage > 1){
+            currentPage--;
+            populateTable(currentPage);
+        }
+    }
+
+    function nextPage(){
+        if(currentPage < numPages){
+            currentPage++;
+            populateTable(currentPage);
+        }
+    }   
 
     function populateTable(arr, page){
         let html = '';
@@ -80,34 +96,15 @@
         }
     });
 
-    let currentPage = 1;
-
-    function prevPage(){
-        if(currentPage > 1){
-            currentPage--;
-        }
-    }
-
-    function nextPage(){
-        if(currentPage > 1){
-            currentPage--;
-            getData(`/Administration/Student/?start=${currentPage}`);
-        }
-    }
-
-    function getData(query){
-        fetch(query)
+    function search(){
+        let query = document.querySelector("#query").value;
+        fetch(`/Administration/Students?query=${query}`)
             .then(res => {
                 return res.json();
             }).then(data => {
                 console.log(data);
                 populateTable(data);
             })
-    }
-
-    function search(){
-        let query = document.querySelector("#query").value;
-        getData(`/Administration/Students?query=${query}`);
     }
 </script>
 <% include ../../footer.ejs %>
