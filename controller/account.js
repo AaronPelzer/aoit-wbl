@@ -65,6 +65,95 @@ router.post("/Register", csrfProtection, function(req, res) {
             errors: err
         });
     } else {
+        if(err){
+            console.log(err);
+            return console.error(err.msg);
+        }
+        
+        let date = new Date(),
+            dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+
+        let a = new Account({
+            osis: post.tbOsis.trim(),
+            email: post.tbEmail.trim() + "@aoiths.org",
+            dateCreated: dateStr,
+            lastLogin: dateStr,
+            lastUpdate: dateStr,
+            accountTypeID: 5
+        });
+
+        a.save((err, context, rand) => {
+            if(err){
+                console.error(err);
+            } else {
+
+                let p = new Profile({
+                    firstName: post.tbFirst.trim(),
+                    midName: post.tbMiddle.trim(),
+                    lastName: post.tbLast.trim(),
+                    osis: post.tbOsis.trim(),
+                    ethnicityID: parseInt(post.ddlRace),
+                    genderID: parseInt(post.ddlGender),
+                    genderOther: "",
+                    pathwayID: parseInt(post.ddlPath),
+                    dob: post.tbDOB,
+                    accountID: context.insertId
+                });
+                        
+                p.save((err, context) => {
+
+                    var data = a.model.osis +  a.model.email;
+
+                    let obj = {
+                        accountID: context.insertId,
+                        link: crypto.createHash('md5').update(data).digest("hex")
+                    };
+
+                    a.setAccountHold(obj, function(err, context){
+
+                        if(err)
+                            console.error(err);
+
+                        req.flash("success_msg", "Please check your email to validate your account");
+                
+                        let mail = require('../lib/nodeMailer');
+                            mail.sendConfirmationLink(a.model.email, p.model.lastName, rand, obj.link);
+
+                        res.render("account/confirm", {
+                            title: "Confirm Account",
+                        });
+
+                    });
+                });
+            }
+        });
+    }
+});
+
+/*
+router.post("/Register", csrfProtection, function(req, res) {
+    let post = req.body;
+
+    // CREATE OBJECTS 1ST THEN VALIDATE
+    // SET PASS TO NULL IN ACCOUNT{} THEN PROCESS AFTER VALIDATION
+    req.checkBody("tbFirst", "First name is required").notEmpty();
+    req.checkBody("tbLast", "Last name is required").notEmpty();
+    req.checkBody("tbEmail", "Email name is required").notEmpty();
+    req.checkBody("tbOsis", "OSIS must be 9 numbers").isLength({ min: 9, max: 9 });
+
+    req.checkBody("tbCOsis", "OSIS does not match").equals(post.tbOsis);
+
+    let err = req.validationErrors();
+
+    console.log(post);
+
+    if (err) {
+        res.render("account/register", {
+            title: "Register Account",
+            csrfToken: req.csrfToken(),
+            errors: err
+        });
+    } else {
         let p = new Profile({
             firstName: post.tbFirst.trim(),
             midName: post.tbMiddle.trim(),
@@ -132,6 +221,7 @@ router.post("/Register", csrfProtection, function(req, res) {
         });
     }
 });
+*/
 
 function genProSkills(pId){
     let types = new ProType();

@@ -30,4 +30,5 @@ module.exports = class Gender {
     remove(id, cb){
         util.removeById(tableName, id, cb);
     }
-}
+};
+

@@ -1,17 +1,18 @@
 const db = require("../config/db"),
-      Profile = require("./profile.js"),
       bcrypt = require("bcryptjs"),
-      tableName = "Account",
+      tableName = "Admin",
       util = require('../util/commands');
 
 module.exports = class Account {
     
     constructor(account = {}){
         var model = {
+            osis: "",
             email: "",
             dateCreated: "",
             lastLogin: "",
             lastUpdate: "",
+            profileID: 0,
             accountTypeID: 0,
             lastLogin: "",
             lastUpdate: ""
@@ -22,8 +23,8 @@ module.exports = class Account {
 
     save(cb){
         bcrypt.genSalt(10, (err, salt) => {
-            let rand = util.genCode(),
-                pass = `${this.model.osis}${rand}`;
+
+            let pass = this.model.osis;
 
             bcrypt.hash(pass, salt, (err, hash) => {
                 this.model.password = hash;
@@ -54,10 +55,6 @@ module.exports = class Account {
         util.getOne(tableName, 'email', email, cb);
     }
 
-    setAccountHold(data, cb){
-        util.insert('Verified', data, cb);
-    }
-
     comparePassword(userPassword, hash, cb){
         bcrypt.compare(userPassword, hash, (err, isMatch) => {
             if(err) throw err;
@@ -65,21 +62,5 @@ module.exports = class Account {
         });
     }
 
-    setAccountHold(data, cb) {
-        util.insert("Verification", data, cb);
-    }
-
-    verifyAccount(link, cb) {
-        util.selectOne("Verification", null, 'link', link, (err, row) => {
-            if(err) console.error(err);
-            console.log(link, row);
-            if(link === row.link){
-                util.updateById(tableName, row.accountID, {
-                    verified: 1
-                }, err => {
-                    util.remove("Verification", 'accountID', row.accountID, cb);
-                });
-            }
-        });
-    }
+    
 };
