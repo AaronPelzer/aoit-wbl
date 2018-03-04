@@ -11,7 +11,9 @@ module.exports = class Profile {
             dob: 0,
             genderID: 0,
             ethnicityID: 0,
-            pathwayID: 0
+            pathwayID: 0,
+            osis: "",
+            accountID: 0
         };
         
         this.model = util.setProperty(model, person);

@@ -9,6 +9,7 @@ module.exports = class Account {
     constructor(account = {}){
         var model = {
             email: "",
+            password: "",
             dateCreated: "",
             lastLogin: "",
             lastUpdate: "",
@@ -23,7 +24,7 @@ module.exports = class Account {
     save(cb){
         bcrypt.genSalt(10, (err, salt) => {
             let rand = util.genCode(),
-                pass = `${this.model.osis}${rand}`;
+                pass = `${this.model.password}${rand}`;
 
             bcrypt.hash(pass, salt, (err, hash) => {
                 this.model.password = hash;

@@ -5,7 +5,11 @@ var router = require("express")(),
     School = require('../model/school'),
     User = require('../model/profile'),
     Course = require('../model/course'),
-    Technical = require('../model/technical');
+    Technical = require('../model/technical'),
+    passport = require("passport"),
+    LocalStrategy = require("passport-local").Strategy,
+    crypto = require('crypto'),
+    bcrypt = require("bcryptjs");
     
 
     // ADDED
