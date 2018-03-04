@@ -8,12 +8,10 @@ module.exports = class Account {
     
     constructor(account = {}){
         var model = {
-            osis: "",
             email: "",
             dateCreated: "",
             lastLogin: "",
             lastUpdate: "",
-            profileID: 0,
             accountTypeID: 0,
             lastLogin: "",
             lastUpdate: ""
