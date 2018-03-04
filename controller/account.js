@@ -86,7 +86,6 @@ router.post("/Register", csrfProtection, function(req, res) {
             if(err){
                 console.error(err);
             } else {
-
                 let p = new Profile({
                     firstName: post.tbFirst.trim(),
                     midName: post.tbMiddle.trim(),
@@ -108,6 +107,8 @@ router.post("/Register", csrfProtection, function(req, res) {
                         accountID: context.insertId,
                         link: crypto.createHash('md5').update(data).digest("hex")
                     };
+
+                    genProSkills(context.insertId);
 
                     a.setAccountHold(obj, function(err, context){
 
@@ -226,6 +227,7 @@ router.post("/Register", csrfProtection, function(req, res) {
 function genProSkills(pId){
     let types = new ProType();
     types.get((err, data) => {
+        if(err) throw err;
         data.forEach(type => {
             let pro = new Pro({
                 professionalSkillID: type.ID,

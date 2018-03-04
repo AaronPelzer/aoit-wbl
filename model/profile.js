@@ -11,7 +11,8 @@ module.exports = class Profile {
             dob: 0,
             genderID: 0,
             ethnicityID: 0,
-            pathwayID: 0
+            pathwayID: 0,
+            accountID: 0
         };
         
         this.model = util.setProperty(model, person);
@@ -26,7 +27,7 @@ module.exports = class Profile {
     }
 
     getOne(id, cb){
-        util.getOneById(tableName, id, cb);
+        util.selectOne(tableName, null, 'accountID', id, cb);
     }
 
     update(id, items, cb){
@@ -64,6 +65,12 @@ module.exports = class Profile {
             Limit 1
         `, (err, data, fields) => {
             cb(err, data[0], fields);
+        })
+    }
+
+    getProfileID(accID, cb){
+        db.query(`SELECT ID from ${tableName} WHERE accountID='${accID}' LIMIT 1`, (err, data, fields) => {
+            cb(err, data[0].ID, fields);
         })
     }
 };

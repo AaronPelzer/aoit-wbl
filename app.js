@@ -71,7 +71,7 @@ const route = "./controller/";
 
 app.use('/', require(route + 'index.js'));
 app.use('/Account', require(route + 'account.js'));
-app.use('/Administration', require(route + 'admin.js'));
+// app.use('/Administration', require(route + 'admin.js'));
 app.use('/Student', require(route + 'student.js'));
 
 //EVALUATOR

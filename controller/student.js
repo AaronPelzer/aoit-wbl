@@ -38,9 +38,7 @@ function isAuthenticated(req, res, next) {
 
 router.get("/", isAuthenticated, (req, res) => {
     let student = new Student();
-    student.getOne(req.user.profileID, (err, data) => {
-        console.log(req.user);
-        console.log(data);
+    student.getOne(req.user.ID, (err, data) => {
         res.render("student/index", {
             title: "Index",
             student: data
@@ -50,9 +48,7 @@ router.get("/", isAuthenticated, (req, res) => {
 
 router.get('/Profile', isAuthenticated, function(req, res) {
     let student = new Student();
-    console.log(req.user);
-
-    student.getOne(req.user.profileID, (err, data) => {
+    student.getOne(req.user.ID, (err, data) => {
         res.render("student/info", {
             title: "Basic Information",
             info: data
@@ -65,7 +61,7 @@ router.get("/Profile/Edit", isAuthenticated, (req, res) => {
     async.parallel({
         student: (cb) => {
             let student = new Student();
-            student.getOne(req.user.profileID, cb);
+            student.getOne(req.user.ID, cb);
         },
         cluster: (cb) => {
             let cluster = new Cluster();
@@ -120,7 +116,7 @@ router.post("/Info/Edit", isAuthenticated, (req, res) => {
         items.raceOther = p.tbROther;
     }
 
-    student.update(req.user.profileID, items, (err) => {
+    student.update(req.user.ID, items, (err) => {
         res.redirect("/student/info");
     })
 });
@@ -130,33 +126,35 @@ router.post("/Info/Edit", isAuthenticated, (req, res) => {
  * COURSES
  * 
  */
-
 router.get("/Courses", isAuthenticated, function(req, res) {
     let course = new Course();
-    course.get(req.user.profileID, (err, data) => {
-        console.log("HERE");
-        console.log(data);
-        res.render("student/courses", {
-            title: "Student Courses",
-            courses: data
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        if(err) throw err;
+        course.get(id, (err, data) => {
+            res.render("student/courses", {
+                title: "Student Courses",
+                courses: data
+            });
         });
     });
 });
 
 router.post("/Courses/create", isAuthenticated, function(req, res){
     let p = req.body;
-    console.log(p);
-
-    let c = new Course({
-        title: p.tbCourses,
-        year: p.ddlYear,
-        hours: p.tbHours,
-        termID: p.ddlTerm,
-        profileID: req.user.profileID
-    });
-
-    c.save((err, data) => {
-        if(err) throw err;
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        let c = new Course({
+            title: p.tbCourses,
+            year: p.ddlYear,
+            hours: p.tbHours,
+            termID: p.ddlTerm,
+            profileID: id
+        });
+    
+        c.save((err, data) => {
+            if(err) throw err;
+        });
     });
 })
 
@@ -167,64 +165,6 @@ router.post("/Courses/remove", isAuthenticated, (req, res) => {
     });
 });
 
-/*
-router.get("/courses/:id/update", isAuthenticated, (req, res) => {
-    let c = new Course();
-    let payload = {};
-    async.waterfall([
-        (cb) => {
-            c.getOne(req.params.id, (err, data) => {
-                payload.course = data;
-                cb(err, data.ID);
-            });
-        }, (courseID, cb) => {
-            let comment = new Comment();
-            comment.getOne(courseID, (err, data) => {
-                payload.comment = data;
-                cb(err, "done");
-            });
-        }
-    ], (err, results) => {
-        if(err) throw err;
-
-        res.render('student/updateCourse', {
-            title: "Edit course",
-            results: payload
-        })
-    })
-});
-
-router.post("/courses/:id/update", isAuthenticated, function(req, res){
-    let p = req.body,
-        courseItems = {
-            title: p.tbTitle,
-            year: p.tbYear,
-            hours: p.tbHour,
-        };
-
-    async.parallel({
-        course: (cb) => {
-            let course = new Course();
-            course.update(req.params.id, courseItems, (err) => {
-                cb(err);
-            });
-        },
-        comment: (cb) => {
-            let comment = new Comment(),
-                c = new Course();
-
-            c.select(req.params.id, ["commentID"], (err, data) => {
-                comment.update(data[0].commentID, {comment: p.tbComment}, (err) => {
-                    cb(err);
-                })
-            });
-        }
-    }, (err) => {
-        if(err) throw err;
-        res.redirect('/student/courses');
-    })
-})
-
 /**
  * 
  * TECHNICAL SKILLS
@@ -233,37 +173,40 @@ router.post("/courses/:id/update", isAuthenticated, function(req, res){
 
 router.get("/Technical", isAuthenticated, function(req, res) {
     let tech = new TechSkill();
-    tech.get(req.user.profileID, (err, data) => {
-        console.log(data);
-        res.render('student/technical', {
-            title: "Technical",
-            technical: data
-        })
-    });
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        tech.get(id, (err, data) => {
+            res.render('student/technical', {
+                title: "Technical",
+                technical: data
+            })
+        });
+    })
 });
 
 router.post("/Technical/Create", isAuthenticated, (req, res) => {
     let p = req.body;
-    console.log(p);
-    
-    let t = new TechSkill({
-        skill: p.tbTech,
-        profileID: req.user.profileID
-    });
-
-    t.save((err, data) => {
-        console.log(data);
-
-        let a = new TechAssess({
-            grade: p.ddlGrade,
-            studentScore: p.ddlScale,
-            technicalSkillID: data.insertId
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        let t = new TechSkill({
+            skill: p.tbTech,
+            profileID: id
         });
-
-        a.save((err, data) => {
-            if(err) throw err;
+    
+        t.save((err, data) => {
+            console.log(data);
+    
+            let a = new TechAssess({
+                grade: p.ddlGrade,
+                studentScore: p.ddlScale,
+                technicalSkillID: data.insertId
+            });
+    
+            a.save((err, data) => {
+                if(err) throw err;
+            })
         })
-    })
+    });
 });
 
 router.put("/Technical/", isAuthenticated, (req, res) => {
@@ -317,38 +260,17 @@ router.delete("/Technical/", isAuthenticated, (req, res) => {
 
 router.get("/Professional", isAuthenticated, function(req, res) {
     let pro = new ProSkill();
-    pro.get(req.user.profileID, (err, data) => {
-        console.log(data);
-        res.render('student/professional', {
-            title: "Professional",
-            professional: data
-        })
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        pro.get(id, (err, data) => {
+            console.log(id, data);
+            res.render('student/professional', {
+                title: "Professional",
+                professional: data
+            })
+        });
     });
 });
-
-// router.post("/Professional", isAuthenticated, (req, res) => {
-//     let p = req.body;
-//     console.log(p);
-    
-//     let s = new ProSkill({
-//         skill: p.tbPro,
-//         profileID: req.user.profileID
-//     });
-
-//     s.save((err, data) => {
-//         console.log(data);
-
-//         let a = new ProAssess({
-//             grade: p.ddlGrade,
-//             studentScore: p.ddlScale,
-//             professionalID: data.insertId
-//         });
-
-//         a.save((err, data) => {
-//             if(err) throw err;
-//         })
-//     })
-// });
 
 router.put("/Professional/", isAuthenticated, (req, res) => {
     let p = req.body;
@@ -375,7 +297,7 @@ function updateProAssessment(id, score){
     }); 
 }
 
-function addAssessment(grade, score, proId){
+function addProAssessment(grade, score, proId){
     let pro = new ProAssess({
         grade: grade,
         studentScore: score,
@@ -402,42 +324,46 @@ router.delete("/Professional/", isAuthenticated, (req, res) => {
 router.get("/WBL", isAuthenticated, function(req, res) {
     let payload = {};
     let a = new WBL();
-    a.get(req.user.profileID, (err, data) => {
-        payload.activities = data;
-        let types = new WBLType();
-        types.get((err, types) => {
-            payload.types = types;
-            console.log(payload);
-            res.render('student/activities', {
-                title: "Work-based Activities",
-                results: payload
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        a.get(id, (err, data) => {
+            payload.activities = data;
+            let types = new WBLType();
+            types.get((err, types) => {
+                payload.types = types;
+                console.log(payload);
+                res.render('student/activities', {
+                    title: "Work-based Activities",
+                    results: payload
+                })
             })
-        })
+        });
     });
 });
 
 router.post("/WBL/Create", isAuthenticated, function(req, res){
     let p = req.body;
-    console.log(p);
-    var c = new Comment({
-        comment: p.tbComment
-    });
-
-    c.save((err, data) => {
-        console.log(err, data);
-        var wbl = new WBL({
-            date: p.tbDate,
-            hours: p.tbHours,
-            organization: p.tbOrg,
-            wblTypeID: p.ddlWblType,
-            commentID: data.insertId,
-            profileID: req.user.profileID
-        });    
-
-        wbl.save((err) => {
-            if(err) throw err;
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        var c = new Comment({
+            comment: p.tbComment
         });
-    })
+    
+        c.save((err, data) => {
+            var wbl = new WBL({
+                date: p.tbDate,
+                hours: p.tbHours,
+                organization: p.tbOrg,
+                wblTypeID: p.ddlWblType,
+                commentID: data.insertId,
+                profileID: id
+            });    
+    
+            wbl.save((err) => {
+                if(err) throw err;
+            });
+        })
+    });
 });
 
 router.get("/WBL/:id/update", isAuthenticated, (req, res) => {
@@ -451,7 +377,6 @@ router.get("/WBL/:id/update", isAuthenticated, (req, res) => {
             activities.getOne(req.params.id, cb);
         }
     }, function(err, results) {
-        console.log(results);
         res.render('student/updateWbl', {
             title: "WBL",
             results: results
@@ -507,45 +432,50 @@ router.delete("/WBL/", (req, res) => {
 
 router.get("/Certification", isAuthenticated, (req, res) => {
     let certification = new Certification();
-    certification.get(req.user.profileID, (err, data) => {
-        if (err) throw err;
-        console.log(data);
-        res.render('student/certification', {
-            title: "Certification",
-            certification: data
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        certification.get(id, (err, data) => {
+            if (err) throw err;
+            console.log(data);
+            res.render('student/certification', {
+                title: "Certification",
+                certification: data
+            })
         })
     })
 });
 
 router.post("/Certification", isAuthenticated, (req, res) => {
     let p = req.body;
-
-    async.waterfall([
-        (cb) => {
-            let c = new Comment({
-                comment: p.tbComment
-            });
-
-            c.save((err, data) => {
-                cb(err, data.insertId);
-            });
-        }, (commentID, cb) => {
-            let certification = new Certification({
-                name: p.tbName,
-                date: p.tbDate,
-                authority: p.tbAuth,
-                score: p.tbScore,
-                commentID: commentID,
-                profileID: req.user.profileID
-            });    
-
-            certification.save((err) => {
-                cb(err, "done");
-            });
-        }
-    ], (err, result) => {
-        if (err) throw err;
-        res.redirect('/certification');
+    let student = new Student();
+    student.getProfileID(req.user.ID, (err, id) => {
+        async.waterfall([
+            (cb) => {
+                let c = new Comment({
+                    comment: p.tbComment
+                });
+    
+                c.save((err, data) => {
+                    cb(err, data.insertId);
+                });
+            }, (commentID, cb) => {
+                let certification = new Certification({
+                    name: p.tbName,
+                    date: p.tbDate,
+                    authority: p.tbAuth,
+                    score: p.tbScore,
+                    commentID: commentID,
+                    profileID: id
+                });    
+    
+                certification.save((err) => {
+                    cb(err, "done");
+                });
+            }
+        ], (err, result) => {
+            if (err) throw err;
+            res.redirect('/certification');
+        });
     });
 })
 
