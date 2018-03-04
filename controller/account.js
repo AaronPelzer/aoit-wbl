@@ -121,6 +121,7 @@ router.post("/Register", csrfProtection, function(req, res) {
                         req.flash("success_msg", "Please check your email to validate your account");
                 
                         let mail = require('../lib/nodeMailer');
+                        // NEED TO FIX SENDING GENERATED CODE
                             // mail.sendConfirmationLink(a.model.email, p.model.lastName, rand, obj.link);
                             mail.sendConfirmationLink(a.model.email, p.model.lastName, "123", obj.link);
 
