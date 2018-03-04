@@ -9,7 +9,9 @@ const router = require("express")(),
       util = require("../lib/s_scripts.js"),
       passport = require("passport"),
       LocalStrategy = require("passport-local").Strategy,
-      crypto = require('crypto');
+      crypto = require('crypto'),
+      Pro = require('../model/professional'),
+      ProType = require('../model/professionalType');
 
 
 var csrfProtection = csrf({ cookie: true });
@@ -81,11 +83,13 @@ router.post("/Register", csrfProtection, function(req, res) {
                 return console.error(err.msg);
             }
             
+            genProSkills(context.insertId);
+
             let date = new Date(),
                 dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
             let a = new Account({
-                osis: post.tbOsis.trim(),
+                OSIS: post.tbOsis.trim(),
                 email: post.tbEmail.trim() + "@aoiths.org",
                 dateCreated: dateStr,
                 lastLogin: dateStr,
@@ -128,6 +132,22 @@ router.post("/Register", csrfProtection, function(req, res) {
         });
     }
 });
+
+function genProSkills(pId){
+    let types = new ProType();
+    types.get((err, data) => {
+        data.forEach(type => {
+            let pro = new Pro({
+                professionalSkillID: type.ID,
+                profileID: pId
+            });
+
+            pro.save((err, data) => {
+                if(err) throw err;
+            });
+        });
+    });
+}
 
 router.get("/Confirmation", function(req, res) {
 

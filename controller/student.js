@@ -21,7 +21,9 @@ const router = require("express")(),
     Gender = require('../model/gender'),
     WBL = require('../model/wblActivity'),
     WBLType = require('../model/wblType'),
-    Certification = require('../model/certification');
+    Certification = require('../model/certification'),
+    ProSkill = require('../model/professional'),
+    ProAssess = require('../model/professionalAssessment');
 
 
 function isAuthenticated(req, res, next) {
@@ -240,14 +242,6 @@ router.get("/Technical", isAuthenticated, function(req, res) {
     });
 });
 
-router.get('/Info', function(req, res) {
-    console.log("Info");
-
-    res.render("student/info", {
-        title: "Basic Information"
-    });
-});
-
 router.post("/Technical/Create", isAuthenticated, (req, res) => {
     let p = req.body;
     console.log(p);
@@ -272,20 +266,8 @@ router.post("/Technical/Create", isAuthenticated, (req, res) => {
     })
 });
 
-router.get("/Technical/:id/update", isAuthenticated, (req, res) => {
-    let t = new TechSkill();
-    // let p = 
-    // t.selectOne(req.params.id, { 'assessment': 'assessment.ID=technical.assessmentID' }, null, (err, data) => {
-    //     res.render("student/technical.update.ejs", {
-    //         title: "Update Technical Skill",
-    //         results: data
-    //     });
-    // });
-});
-
 router.put("/Technical/", isAuthenticated, (req, res) => {
     let p = req.body;
-    console.log("RESULTTTTTTTTTTTTT", p);
     let t = new TechAssess();
     let assessments = p.arr;
     assessments.forEach((a) => {
@@ -334,10 +316,80 @@ router.delete("/Technical/", isAuthenticated, (req, res) => {
  */
 
 router.get("/Professional", isAuthenticated, function(req, res) {
+    let pro = new ProSkill();
+    pro.get(req.user.profileID, (err, data) => {
+        console.log(data);
+        res.render('student/professional', {
+            title: "Professional",
+            professional: data
+        })
+    });
+});
 
-    res.render("student/professional", {
-        title: "Professional Skills",
-        results: {}
+// router.post("/Professional", isAuthenticated, (req, res) => {
+//     let p = req.body;
+//     console.log(p);
+    
+//     let s = new ProSkill({
+//         skill: p.tbPro,
+//         profileID: req.user.profileID
+//     });
+
+//     s.save((err, data) => {
+//         console.log(data);
+
+//         let a = new ProAssess({
+//             grade: p.ddlGrade,
+//             studentScore: p.ddlScale,
+//             professionalID: data.insertId
+//         });
+
+//         a.save((err, data) => {
+//             if(err) throw err;
+//         })
+//     })
+// });
+
+router.put("/Professional/", isAuthenticated, (req, res) => {
+    let p = req.body;
+    let a = new ProAssess();
+    let assessments = p.arr;
+    assessments.forEach((a) => {
+        let grade = parseInt(a.slice(0,2));
+        let score = parseInt(a.slice(2));
+        a.exists(p.id, grade, (r, id) => {
+            if(!isNaN(score) && r){
+                updateProAssessment(id, score);
+            } else if(!isNaN(score) && !r) {
+                addTechAssessment(grade, score, p.id);
+            }
+        });
+    })
+});
+
+function updateProAssessment(id, score){
+    let pro = new ProAssess();
+    pro.update(id, {studentScore: score}, (err, data) => {
+        if(err) throw err;
+        else console.log("Assessment Updated!");
+    }); 
+}
+
+function addAssessment(grade, score, proId){
+    let pro = new ProAssess({
+        grade: grade,
+        studentScore: score,
+        professionalID: proId
+    });
+    pro.save((err, data) => {
+        if(err) throw err;
+    })
+}
+
+router.delete("/Professional/", isAuthenticated, (req, res) => {
+    let p = new ProSkill();
+    p.remove(req.body.id, (err, data) => {
+        if(err) throw err;
     });
 });
 

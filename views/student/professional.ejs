@@ -1,76 +1,111 @@
 <% include ../header.ejs %>
+<br>
+<h1><%= title %></h1>
+<br>
 
-<form>
-    <div class="row">
-        <table class="table">
+<!-- s -->
+
+<div class="row table-responsive">
+    <table class="table">
+        <thead>
             <tr>
-                <th></th><th>Professional Skills</th><th>Grade</th><th>Scale</th>
+            <th scope="col">#</th>
+            <th scope="col">Skill</th>
+            <th scope="col">9th</th>
+            <th scope="col">10th</th>
+            <th scope="col">11th</th>
+            <th scope="col">12th</th>
             </tr>
-            <% 
-                var c = 0;
-                for(var i = 0; i < results.length; i++) { 
-            %>
+        </thead>
+        <tbody>
+            <% professional.forEach((p, indx) => { %>          
                 <tr>
+                    <th scope="row"><%= indx + 1%></th>
+                    <td><%= p.skill %></td>
                     <td>
-                        <%= c += 1 %>. 
-                    </td>
-                    <td>
-                        <%= results[i].title %> <br/>
-                        <%= results[i].desc %>
-                    </td>
-                    <td>
-                        <select name="ddlGrade" class="form-control" required>
-                            <option></option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
+                        <select data-skill="<%= p.ID %>" data-grade="9" class="form-control" required>
+                            <option>---</option>
+                            <option value="1" <%= p["grade_9"] == "1" ? "selected" : "" %>>1</option>
+                            <option value="2" <%= p["grade_9"] == "2" ? "selected" : "" %>>2</option>
+                            <option value="3" <%= p["grade_9"] == "3" ? "selected" : "" %>>3</option>
+                            <option value="4" <%= p["grade_9"] == "4" ? "selected" : "" %>>4</option>
                         </select>
                     </td>
                     <td>
-                        <select name="ddlScale" class="form-control" required>
-                            <option></option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
+                        <select data-skill="<%= p.ID %>" data-grade="10" class="form-control" required>
+                            <option>---</option>
+                            <option value="1" <%= p["grade_10"] == "1" ? "selected" : "" %>>1</option>
+                            <option value="2" <%= p["grade_10"] == "2" ? "selected" : "" %>>2</option>
+                            <option value="3" <%= p["grade_10"] == "3" ? "selected" : "" %>>3</option>
+                            <option value="4" <%= p["grade_10"] == "4" ? "selected" : "" %>>4</option>
                         </select>
+                    </td>
+                    <td>
+                        <select data-skill="<%= p.ID %>" data-grade="11" class="form-control" required>
+                            <option>---</option>
+                            <option value="1" <%= p["grade_11"] == "1" ? "selected" : "" %>>1</option>
+                            <option value="2" <%= p["grade_11"] == "2" ? "selected" : "" %>>2</option>
+                            <option value="3" <%= p["grade_11"] == "3" ? "selected" : "" %>>3</option>
+                            <option value="4" <%= p["grade_11"] == "4" ? "selected" : "" %>>4</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select data-skill="<%= p.ID %>" data-grade="12" class="form-control" required>
+                            <option>---</option>
+                            <option value="1" <%= p["grade_12"] == "1" ? "selected" : "" %>>1</option>
+                            <option value="2" <%= p["grade_12"] == "2" ? "selected" : "" %>>2</option>
+                            <option value="3" <%= p["grade_12"] == "3" ? "selected" : "" %>>3</option>
+                            <option value="4" <%= p["grade_12"] == "4" ? "selected" : "" %>>4</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="update('<%- p.ID %>')"><span class="oi oi-pencil"></span></button>
+                        <button class="btn btn-danger" onclick="remove('<%- p.ID %>')"><span class="oi oi-trash"></span></button>
                     </td>
                 </tr>
-            <% } %>
+            <% }) %>
+        </tbody>
         </table>
+</div>
 
-        <div class="col-sm-8 col-md-8 col-lg-10">
-        </div>
-        <div class="">
-            <button class="btn btn-default">Back</button>
-            <button class="btn btn-default">Save</button>
-            <button class="btn btn-default">Next</button>
-        </div>
-    </div>
-</form>
-<!--
-    <% for(var i = 0; i < results.length; i++) { %>
-        <div class="row">
-            <div style="border-bottom: solid 1px;" class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                <%= i++ %>. <%= results[i].title %> <br/>
-                <%= results[i].desc %>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
-                <label class="form-control">
-                    Scale
-                    <select name="ddlScale" class="form-control">
-                        <option></option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
-                </label>
-            </div>
-        </div>
-    <% } %>
-    
--->
+<% var a = user %>
+
+<script src="/js/utilities.js"></script>
+<script>
+        
+    addListener(".btnAdd", "click", () => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Student/Profession", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(getValues()));
+        window.location.href = '/Student/Professional';
+    });
+
+    function remove(id) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("DELETE", `/Student/Professional/`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({id: id}));
+        window.location.href = '/Student/Professional';
+    }
+
+    function update(id){
+        let fields = documenp.querySelectorAll(`[data-skill='${id}']`);
+        let payload = {
+            arr: []
+        };
+        fields.forEach((item) => {
+            payload.arr.push(`${item.getAttribute("data-grade")} ${item.value}`)
+        });
+        payload.id = id;
+        console.log(payload);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("PUT", `/Student/Professional`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(payload));
+        window.location.href = '/Student/Professional';
+    }
+</script>
 
 <% include ../footer.ejs %>
