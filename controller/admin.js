@@ -44,13 +44,29 @@ router.get("/Account/SetPass", function(req, res){
 
 // USERS
 router.get("/Manage/Users", csrfProtection, function(req, res){
-    res.render("admin/accounts/index", {
+    res.render("admin/accounts/add", {
         title: "Account Management",
         csrfToken: req.csrfToken()
     });
 });
 
+router.get("/Manage/Users", csrfProtection, function(req, res){
+    
+    res.render("admin/accounts/index", {
+        title: "Account Management",
+        csrfToken: req.csrfToken()
+    });
+    
+});
 
+router.post("/Manage/Users/Add", csrfProtection, function(req, res){
+    /*
+    res.render("admin/accounts/index", {
+        title: "Account Management",
+        csrfToken: req.csrfToken()
+    });
+    */
+});
 
 // PREVIOUS
 router.get("/", function(req, res) {
@@ -65,18 +81,20 @@ router.get("/evaluator", function(req, res) {
     });
 });
 
-router.get("/View/Students/", (req, res) => {
-    res.render("admin/student/index", {
-        title: "Students"
-    })
-})
 
-router.get("/Students", (req, res) => {
+/* API CALL */
+router.get("API/Students", (req, res) => {
     let user = new User();
     console.log(req.query);
     user.getAllStudents(req.query, (err, students, fields) => {
         res.json(students);
     });
+});
+
+router.get("/Students/", (req, res) => {
+    res.render("admin/student/index", {
+        title: "Students"
+    })
 });
 
 router.get("/View/Students/:student", (req, res) => {
@@ -120,6 +138,8 @@ router.put("/Students/:student", (req, res) => {
     });
 });
 
+
+// SCHOOLS
 router.get("/schools", function(req, res) {
     res.render("admin/school/index", {
         title: "School Management"
