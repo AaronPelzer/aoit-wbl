@@ -28,17 +28,39 @@
     </tbody>
   </table>
 
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li> -->
+    <li class="page-item">
+      <a class="page-link" onclick="next()" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
 <script>
-    fetch('/Administrator/Students')
+    
+    fetch('/Administration/Students')
         .then(res => {
             return res.json();
         }).then(data => {
-            populateTable(data);
+            let page = 1;
+            populateTable(data, page);
         });
 
-    function populateTable(arr){
+    function populateTable(arr, page){
         let html = '';
-        arr.forEach((item, indx) => {
+        arr.slice((page - 1) * 20, page * 20).forEach((item, indx) => {
             html += `
                 <tr>
                     <td>${indx + 1}</td>
@@ -58,15 +80,34 @@
         }
     });
 
-    function search(){
-        let query = document.querySelector("#query").value;
-        fetch(`/Administrator/Students?query=${query}`)
+    let currentPage = 1;
+
+    function prevPage(){
+        if(currentPage > 1){
+            currentPage--;
+        }
+    }
+
+    function nextPage(){
+        if(currentPage > 1){
+            currentPage--;
+            getData(`/Administration/Student/?start=${currentPage}`);
+        }
+    }
+
+    function getData(query){
+        fetch(query)
             .then(res => {
                 return res.json();
             }).then(data => {
                 console.log(data);
                 populateTable(data);
             })
+    }
+
+    function search(){
+        let query = document.querySelector("#query").value;
+        getData(`/Administration/Students?query=${query}`);
     }
 </script>
 <% include ../../footer.ejs %>

@@ -56,7 +56,7 @@ router.post("/Register", csrfProtection, function(req, res) {
 
     let err = req.validationErrors();
 
-    console.log(post);
+    // console.log(post);
 
     if (err) {
         res.render("account/register", {
@@ -74,13 +74,16 @@ router.post("/Register", csrfProtection, function(req, res) {
             dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
         let a = new Account({
-            osis: post.tbOsis.trim(),
             email: post.tbEmail.trim() + "@aoiths.org",
+            password: post.tbOsis.trim(),
             dateCreated: dateStr,
             lastLogin: dateStr,
             lastUpdate: dateStr,
             accountTypeID: 5
         });
+
+        console.log("Account");
+        console.log(a);
 
         a.save((err, context, rand) => {
             if(err){
@@ -99,12 +102,15 @@ router.post("/Register", csrfProtection, function(req, res) {
                     accountID: context.insertId
                 });
                         
+                console.log("Profile");
+                console.log(p);
+                console.log(rand);
+
                 p.save((err, context) => {
 
                     var data = a.model.osis +  a.model.email;
 
                     let obj = {
-                        accountID: context.insertId,
                         link: crypto.createHash('md5').update(data).digest("hex")
                     };
 
@@ -118,7 +124,9 @@ router.post("/Register", csrfProtection, function(req, res) {
                         req.flash("success_msg", "Please check your email to validate your account");
                 
                         let mail = require('../lib/nodeMailer');
-                            mail.sendConfirmationLink(a.model.email, p.model.lastName, rand, obj.link);
+                        // NEED TO FIX SENDING GENERATED CODE
+                            // mail.sendConfirmationLink(a.model.email, p.model.lastName, rand, obj.link);
+                            mail.sendConfirmationLink(a.model.email, p.model.lastName, "123", obj.link);
 
                         res.render("account/confirm", {
                             title: "Confirm Account",
