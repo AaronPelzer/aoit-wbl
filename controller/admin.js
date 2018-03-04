@@ -1,15 +1,57 @@
 var router = require("express")(),
+    csrf = require("csurf"),
     // sqlite = require('sqlite3').verbose(),
     Address = require('../model/address'),
     School = require('../model/school'),
     User = require('../model/profile'),
     Course = require('../model/course'),
     Technical = require('../model/technical');
+    
+
+    // ADDED
+let csrfProtection = csrf({ cookie: true });
+
+// ACCOUNTS
+router.get("/Login", csrfProtection, function(req, res) {
+    res.render("admin/accounts/login", {
+        title: "Administration",
+        csrfToken: req.csrfToken()
+    });
+});
+
+router.post("/Login", csrfProtection, passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/Administration/Login",
+    failureFlash: true
+}), function(req, res) {
+    // console.log(req.body);
+    // console.log(req.user);
+    res.redirect("/Administration");
+});
+
+// NEXT -> *
+router.get("/Account/SetPass", function(req, res){
+    res.render("admin/accounts/set", {
+        title: "Set Password For Account"
+    });
+});
 
 
+
+// USERS
+router.get("/Manage/Users", csrfProtection, function(req, res){
+    res.render("admin/accounts/index", {
+        title: "Account Management",
+        csrfToken: req.csrfToken()
+    });
+});
+
+
+
+// PREVIOUS
 router.get("/", function(req, res) {
     res.render("admin/index", {
-        title: "Administration",
+        title: "Administration"
     });
 });
 
