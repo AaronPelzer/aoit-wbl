@@ -13,6 +13,8 @@ router.get("/", function(req, res) {
         }
     */
 
+    console.log(req.user);
+    
     res.render("main/index", {
         title: "Index"
     });

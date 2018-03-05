@@ -1,4 +1,5 @@
 "use strict";
+ "esversion: 6";
 
 const express = require("express"),
     app = express(),

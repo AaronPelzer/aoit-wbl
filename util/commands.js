@@ -38,7 +38,7 @@ var commands = {
     getOne: (table, where, whereVal, cb) => {
         db.query(`SELECT * FROM ${table} WHERE ${where}='${whereVal}' LIMIT 1`, (err, data, fields) => {
             cb(err, data[0], fields);
-        })
+        });
     },
 
     update: (table, where, whereVal, items, cb) => {
@@ -81,6 +81,6 @@ var commands = {
             });
         }
     }
-}
+};
 
 module.exports = commands;

@@ -36,7 +36,10 @@ function isAuthenticated(req, res, next) {
 
 router.get("/", isAuthenticated, (req, res) => {
     let student = new Student();
-    student.getOne(req.user.profileID, (err, data) => {
+
+    console.log(req.user);
+
+    student.getOne(req.user.ID, (err, data) => {
         console.log(req.user);
         console.log(data);
         res.render("student/index", {
