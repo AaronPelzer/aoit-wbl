@@ -48,11 +48,15 @@ module.exports = class Account {
     }
 
     getAccountById(id, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE ID=${id} AND profile.accountID=account.ID`);
+        db.query(`SELECT * FROM ${tableName} WHERE ID=${id}`, (err, data, fields) => {
+            cb(err, data[0], fields);
+        });
     }
 
     getAccountByEmail(email, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE email='${email}' AND profile.accountID=account.ID`);
+        db.query(`SELECT * FROM ${tableName} WHERE email='${email}'`, (err, data, fields) => {
+            cb(err, data[0], fields);
+        });
     }
 
     setAccountHold(data, cb){

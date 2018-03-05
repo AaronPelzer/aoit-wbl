@@ -17,17 +17,31 @@ module.exports = class Professional {
     }
 
     get(pId, cb){
-        db.query(`SELECT Professional.*, ProfessionalAssessment.professionalID, GROUP_CONCAT(ProfessionalAssessment.grade Order By ProfessionalAssessment.grade) As grades, Group_Concat(ProfessionalAssessment.studentScore Order By ProfessionalAssessment.grade) AS scores FROM Professional, ProfessionalAssessment WHERE ProfessionalAssessment.ProfessionalID=Professional.ID AND Professional.profileID=${pId} GROUP BY Professional.ID`, (err, data, fields) => {
+        db.query(`SELECT Professional.*, ProfessionalSkill.skill 
+        FROM ProfessionalSkill, Professional
+        LEFT JOIN (
+        
+        SELECT ProfessionalAssessment.professionalID, GROUP_CONCAT( ProfessionalAssessment.grade
+        ORDER BY ProfessionalAssessment.grade ) AS grades, GROUP_CONCAT( ProfessionalAssessment.studentScore
+        ORDER BY ProfessionalAssessment.grade ) AS scores, ProfessionalSkill.skill
+        FROM Professional, ProfessionalAssessment, ProfessionalSkill
+        WHERE ProfessionalAssessment.ProfessionalID = Professional.ID
+
+        GROUP BY Professional.ID
+        ) AS a on (Professional.ID=a.professionalID)
+        WHERE Professional.profileID =15`, (err, data, fields) => {
             console.log(err, data);
             data.forEach((skill) => {
-                let grades = skill.grades.toString('utf8').split(',');
-                let scores = skill.scores.toString('utf8').split(',');
-                grades.forEach((grade, indx) => {
-                    skill['grade_' +  grade] = scores[indx];
-                });
+                if(skill.grades != null){
+                    let grades = skill.grades.toString('utf8').split(',');
+                    let scores = skill.scores.toString('utf8').split(',');
+                    grades.forEach((grade, indx) => {
+                        skill['grade_' +  grade] = scores[indx];
+                    });
 
-                delete skill['grades'];
-                delete skill['scores'];
+                    delete skill['grades'];
+                    delete skill['scores'];
+                }
             });
         
             cb(err, data, fields);

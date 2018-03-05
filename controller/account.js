@@ -289,7 +289,7 @@ router.get("/Login", csrfProtection, function(req, res) {
 passport.use(new LocalStrategy(function(email, password, done) {
 
     let acc = new Account();
-
+    console.log("here");
     acc.getAccountByEmail(email + "@aoiths.org", function(err, user) {
         console.log("EMAIL");
         if (err) {
@@ -298,9 +298,8 @@ passport.use(new LocalStrategy(function(email, password, done) {
         if (!user) {
             return done(null, false, { message: 'Email Is Not Registered!' });
         }
-
+        
         acc.comparePassword(password, user.password, function(err, isMatch) {
-            console.log("Password");
             if (err) throw err;
             isMatch = true;
             if (isMatch) {

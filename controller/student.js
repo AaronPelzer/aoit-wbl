@@ -176,6 +176,7 @@ router.get("/Technical", isAuthenticated, function(req, res) {
     let student = new Student();
     student.getProfileID(req.user.ID, (err, id) => {
         tech.get(id, (err, data) => {
+            console.log(data);
             res.render('student/technical', {
                 title: "Technical",
                 technical: data

@@ -72,14 +72,6 @@
 
 <script src="/js/utilities.js"></script>
 <script>
-        
-    addListener(".btnAdd", "click", () => {
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/Student/Profession", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(getValues()));
-        window.location.href = '/Student/Professional';
-    });
 
     function remove(id) {
         let xhr = new XMLHttpRequest();
@@ -90,7 +82,7 @@
     }
 
     function update(id){
-        let fields = documenp.querySelectorAll(`[data-skill='${id}']`);
+        let fields = document.querySelectorAll(`[data-skill='${id}']`);
         let payload = {
             arr: []
         };
