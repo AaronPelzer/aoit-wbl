@@ -227,6 +227,8 @@ router.put("/Technical/", isAuthenticated, (req, res) => {
     })
 });
 
+
+
 function updateAssessment(id, score){
     let tech = new TechAssess();
     tech.update(id, {studentScore: score}, (err, data) => {

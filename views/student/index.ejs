@@ -55,30 +55,42 @@
     var data = [
       {
         title: "CTE Coursework",
-        link: "Courses"
+        link: "Courses",
+        sub: "School and Afterschool Coursers",
+        desc: "List of technical courses during term and total amount of hours applied."
       }, {
         title: "Professional Skills",
-        link: "Professional"
+        link: "Professional",
+        sub: "Personal Development Skills  (Soft Skills)",
+        desc: "Job skill development such as time management, communication."
       }, {
         title: "Technical Skills",
-        link: "Technical"
+        link: "Technical",
+        sub: "On-Site applied work (Hard Skills)",
+        desc: "Knowledge and capabilities to perform specialized tasks."
       }, {
         title: "Work-Based Learning Activities",
-        link: "WBL"
+        link: "WBL",
+        sub: "---On-Site applied work (Hard Skills)",
+        desc: "---Knowledge and capabilities to perform specialized tasks."
       }, {
         title: "Industry-Based Assessments",
-        link: "Certification"
+        link: "Certification",
+        sub: "---On-Site applied work (Hard Skills)",
+        desc: "---Knowledge and capabilities to perform specialized tasks."
       }, {
         title: "Resume",
-        link: ""
+        link: "",
+        sub: "---On-Site applied work (Hard Skills)",
+        desc: "---Knowledge and capabilities to perform specialized tasks."
       }
     ]
 
     var html = "";
 
     for(var i = 0; i < data.length; i++){
-      html += `<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" style="margin-top: 20px"><div class="card"><div class="card-body"><h5 class="card-title">${data[i].title}</h5><h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6><p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p></div><div class="card-footer">
-      <small class="text-muted">Last updated 3 mins ago<a class="float-right" href="${data[i].link}" class="card-link">More Information</a></small>
+      html += `<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" style="margin-top: 20px"><div class="card"><div class="card-body"><h5 class="card-title">${data[i].title}</h5><h6 class="card-subtitle mb-2 text-muted">${data[i].sub}</h6><p class="card-text">${data[i].desc}</p></div><div class="card-footer">
+      <small class="text-muted">Last updated <3> mins ago<a class="float-right" href="/Student/${data[i].link}" class="card-link">More Information</a></small>
     </div></div></div>`
     }
 
