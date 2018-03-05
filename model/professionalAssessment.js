@@ -7,7 +7,7 @@ module.exports = class professionalAssessment {
         let model = {
             studentScore: 0,
             grade: 0,
-            professionalSkillID: 0
+            professionalID: 0
         }
 
         this.model = util.setProperty(model, professionalAssessment);
@@ -18,7 +18,7 @@ module.exports = class professionalAssessment {
     }
 
     get(proID, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE professionalSkillID='${proID}'`, cb);
+        db.query(`SELECT * FROM ${tableName} WHERE professionalID='${proID}'`, cb);
     }
 
     getOne(id, cb){
@@ -26,7 +26,7 @@ module.exports = class professionalAssessment {
     }
 
     exists(proID, grade, cb){
-        db.query(`SELECT * FROM ${tableName} WHERE professionalSkillID='${proID}' AND grade='${grade}' LIMIT 1`, (err, data) => {
+        db.query(`SELECT * FROM ${tableName} WHERE professionalID='${proID}' AND grade='${grade}' LIMIT 1`, (err, data) => {
             if(data.length === 0){
                 cb(false, null);
             } else {

@@ -16,22 +16,14 @@ module.exports = class Professional {
         util.insert(tableName, this.model, cb);
     }
 
-    get(pId, cb){
-        db.query(`SELECT Professional.*, ProfessionalSkill.skill 
-        FROM ProfessionalSkill, Professional
-        LEFT JOIN (
-        
-        SELECT ProfessionalAssessment.professionalID, GROUP_CONCAT( ProfessionalAssessment.grade
-        ORDER BY ProfessionalAssessment.grade ) AS grades, GROUP_CONCAT( ProfessionalAssessment.studentScore
-        ORDER BY ProfessionalAssessment.grade ) AS scores, ProfessionalSkill.skill
-        FROM Professional, ProfessionalAssessment, ProfessionalSkill
-        WHERE ProfessionalAssessment.ProfessionalID = Professional.ID
+    // SELECT Professional.*, ProfessionalAssessment.professionalSkillID, GROUP_CONCAT(ProfessionalAssessment.grade Order By ProfessionalAssessment.grade) As grades, Group_Concat(ProfessionalAssessment.studentScore Order By ProfessionalAssessment.grade) AS scores FROM Professional, ProfessionalAssessment WHERE ProfessionalAssessment.ProfessionalSkillID=Professional.ID AND Professional.profileID=${pId} GROUP BY Professional.ID
 
-        GROUP BY Professional.ID
-        ) AS a on (Professional.ID=a.professionalID)
-        WHERE Professional.profileID =15`, (err, data, fields) => {
+    get(pId, cb){
+        db.query(`SELECT Professional.*, ProfessionalAssessment.professionalID, ProfessionalSkill.skill, GROUP_CONCAT(ProfessionalAssessment.grade Order By ProfessionalAssessment.grade) As grades, Group_Concat(ProfessionalAssessment.studentScore Order By ProfessionalAssessment.grade) AS scores FROM Professional, ProfessionalAssessment, ProfessionalSkill WHERE ProfessionalAssessment.ProfessionalID=Professional.ID AND Professional.profileID=15 AND ProfessionalSkill.ID=Professional.ProfessionalSkillID GROUP BY Professional.ID`, (err, data, fields) => {
             console.log(err, data);
             data.forEach((skill) => {
+                console.log("-----------------------");
+                console.log(skill);
                 if(skill.grades != null){
                     let grades = skill.grades.toString('utf8').split(',');
                     let scores = skill.scores.toString('utf8').split(',');

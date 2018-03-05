@@ -114,8 +114,6 @@ router.post("/Register", csrfProtection, function(req, res) {
                         link: crypto.createHash('md5').update(data).digest("hex")
                     };
 
-                    genProSkills(context.insertId);
-
                     a.setAccountHold(obj, function(err, context){
 
                         if(err)
@@ -233,23 +231,6 @@ router.post("/Register", csrfProtection, function(req, res) {
     }
 });
 */
-
-function genProSkills(pId){
-    let types = new ProType();
-    types.get((err, data) => {
-        if(err) throw err;
-        data.forEach(type => {
-            let pro = new Pro({
-                professionalSkillID: type.ID,
-                profileID: pId
-            });
-
-            pro.save((err, data) => {
-                if(err) throw err;
-            });
-        });
-    });
-}
 
 router.get("/Confirmation", function(req, res) {
 

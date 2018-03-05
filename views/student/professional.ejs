@@ -2,8 +2,49 @@
 <br>
 <h1><%= title %></h1>
 <br>
+<div class="row">
+    <div class="col-sm-8 col-md-1 col-lg-1">
 
-<!-- s -->
+    </div>
+    <div class="col-sm-8 col-md-3 col-lg-5">
+        <div class="form-group">
+            <label for="ddlPro">Skill</label>
+            <select name="ddlPro" class="form-control" required>
+                <option>Select Skill</option>
+                <% results.skills.forEach(skill => { %>
+                    <option value="<%= skill.ID %>"><%= skill.skill %></option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-8 col-md-2 col-lg-2">
+        <div class="form-group">
+            <label for="ddlGrade">Grade</label>
+            <select name="ddlGrade" class="form-control" required>
+                <option>Select Grade</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-8 col-md-2 col-lg-1">
+        <div class="form-group">
+            <label for="ddlScale">Scale</label>
+            <select name="ddlScale" class="form-control" required>
+                <option></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-1 col-md-1 col-lg-1" style="padding-top: 30px;">
+        <button class="btn btn-default btnAdd" style="float: right !important;">+</button>
+    </div>
+</div>
 
 <div class="row table-responsive">
     <table class="table">
@@ -18,7 +59,7 @@
             </tr>
         </thead>
         <tbody>
-            <% professional.forEach((p, indx) => { %>          
+            <% results.professional.forEach((p, indx) => { %>          
                 <tr>
                     <th scope="row"><%= indx + 1%></th>
                     <td><%= p.skill %></td>
@@ -72,6 +113,13 @@
 
 <script src="/js/utilities.js"></script>
 <script>
+    addListener(".btnAdd", "click", () => {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Student/Professional", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(getValues()));
+        window.location.href = '/Student/Professional';
+    });
 
     function remove(id) {
         let xhr = new XMLHttpRequest();
