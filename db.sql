@@ -122,35 +122,39 @@ INSERT INTO ideaStatus(status) VALUES("Service Required"),
     ("No Service");
 
 -- Profile Information
-CREATE TABLE IF NOT EXISTS Profile (
-    ID INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    firstName VARCHAR(64) NOT NULL,
-    midName VARCHAR(64) NULL,
-    lastName VARCHAR(64) NOT NULL,
-    dob DATE NOT NULL,
-    gradYear SMALLINT NULL,
-    grade TINYINT NULL,
-    genderOther VARCHAR(32) NULL,
-    raceOther VARCHAR(32) NULL,
-    resume TEXT NULL,
-    clusterID TINYINT NULL,
-    ethnicityID TINYINT NULL,
-    hispanicID TINYINT(2) NULL,
-    schoolID INTEGER NULL,
-    genderID TINYINT NULL,
-    evaluatorID INTEGER NULL,
-    addressID INTEGER NULL,
-    ideaStatusID TINYINT NULL,
-    pathwayID TINYINT NOT NULL,
-    FOREIGN KEY(clusterID) REFERENCES Cluster(ID),
-    FOREIGN KEY(ethnicityID) REFERENCES Ethnicity(ID),
-    FOREIGN KEY(hispanicID) REFERENCES Hispanic(ID),
-    FOREIGN KEY(schoolID) REFERENCES School(ID),
-    FOREIGN KEY(genderID) REFERENCES Gender(ID),
-    FOREIGN KEY(evaluatorID) REFERENCES Evaluator(ID) ON DELETE CASCADE,
-    FOREIGN KEY(addressID) REFERENCES Address(ID) ON DELETE CASCADE,
-    FOREIGN KEY(ideaStatusID) REFERENCES IdeaStatus(ID),
-    FOREIGN KEY(pathwayID) REFERENCES CTEPathway(ID)
+DROP TABLE IF EXISTS `Profile`;
+CREATE TABLE IF NOT EXISTS `Profile` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(64) NOT NULL,
+  `midName` varchar(64) DEFAULT NULL,
+  `lastName` varchar(64) NOT NULL,
+  `dob` date NOT NULL,
+  `gradYear` smallint(6) DEFAULT NULL,
+  `grade` tinyint(4) DEFAULT NULL,
+  `genderOther` varchar(32) DEFAULT NULL,
+  `raceOther` varchar(32) DEFAULT NULL,
+  `resume` text,
+  `clusterID` tinyint(4) DEFAULT NULL,
+  `ethnicityID` tinyint(4) DEFAULT NULL,
+  `hispanicID` tinyint(2) DEFAULT NULL,
+  `schoolID` int(11) DEFAULT NULL,
+  `genderID` tinyint(4) DEFAULT NULL,
+  `evaluatorID` int(11) DEFAULT NULL,
+  `addressID` int(11) DEFAULT NULL,
+  `ideaStatusID` tinyint(4) DEFAULT NULL,
+  `pathwayID` tinyint(4) NOT NULL,
+  `OSIS` varchar(64) NOT NULL,
+  `accountID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `clusterID` (`clusterID`),
+  KEY `ethnicityID` (`ethnicityID`),
+  KEY `hispanicID` (`hispanicID`),
+  KEY `schoolID` (`schoolID`),
+  KEY `genderID` (`genderID`),
+  KEY `evaluatorID` (`evaluatorID`),
+  KEY `addressID` (`addressID`),
+  KEY `ideaStatusID` (`ideaStatusID`),
+  KEY `pathwayID` (`pathwayID`)
 );
 
 -- Account Types
@@ -162,20 +166,18 @@ CREATE TABLE IF NOT EXISTS AccountType (
 INSERT INTO AccountType(type) VALUES("Super Admin"), ("Admin"), ("Teachers"), ("Evaluators"), ("Students");
 
 -- Account Information
-CREATE TABLE IF NOT EXISTS Account (
-    ID INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    OSIS TEXT NOT NULL,
-    email VARCHAR(64) NOT NULL,
-    password TEXT NOT NULL,
-    dateCreated DATE NOT NULL,
-    lastLogin DATE NULL,
-    lastUpdate DATE NULL,
-    verified BOOLEAN NOT NULL DEFAULT 0,
-    profileID INTEGER NOT NULL,
-    accountTypeID TINYINT NOT NULL,
-    FOREIGN KEY (profileID) REFERENCES Profile(ID) ON DELETE CASCADE,
-    FOREIGN KEY (accountTypeID) REFERENCES AccountType(ID) ON DELETE CASCADE
-); 
+CREATE TABLE IF NOT EXISTS `Account` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(64) NOT NULL,
+  `password` text NOT NULL,
+  `dateCreated` date NOT NULL,
+  `lastLogin` date DEFAULT NULL,
+  `lastUpdate` date DEFAULT NULL,
+  `verified` tinyint(1) NOT NULL DEFAULT '0',
+  `accountTypeID` tinyint(4) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `accountTypeID` (`accountTypeID`)
+);
 
 -- Verification
 CREATE TABLE Verification (
