@@ -25,6 +25,16 @@ module.exports = class technicalAssessment {
         db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`, cb);
     }
 
+    exists(techID, grade, cb){
+        db.query(`SELECT * FROM ${tableName} WHERE technicalSkillID='${techID}' AND grade='${grade}' LIMIT 1`, (err, data) => {
+            if(data.length === 0){
+                cb(false, null);
+            } else {
+                cb(true, data[0].ID);
+            }
+        });
+    }
+
     update(id, items, cb){
         db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
     }

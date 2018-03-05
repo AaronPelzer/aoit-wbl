@@ -83,10 +83,11 @@ router.get("/evaluator", function(req, res) {
 
 
 /* API CALL */
-router.get("API/Students", (req, res) => {
+router.get("/API/Students", (req, res) => {
     let user = new User();
     console.log(req.query);
     user.getAllStudents(req.query, (err, students, fields) => {
+        console.log(err, students);
         res.json(students);
     });
 });

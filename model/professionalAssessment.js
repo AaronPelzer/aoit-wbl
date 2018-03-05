@@ -25,6 +25,16 @@ module.exports = class professionalAssessment {
         db.query(`SELECT * FROM ${tableName} WHERE ID='${id}' LIMIT 1`, cb);
     }
 
+    exists(proID, grade, cb){
+        db.query(`SELECT * FROM ${tableName} WHERE professionalSkillID='${proID}' AND grade='${grade}' LIMIT 1`, (err, data) => {
+            if(data.length === 0){
+                cb(false, null);
+            } else {
+                cb(true, data[0].ID);
+            }
+        });
+    }
+
     update(id, items, cb){
         db.query(`UPDATE ${tableName} SET ? WHERE ID='${id}'`, items, cb);
     }

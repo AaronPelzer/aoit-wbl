@@ -28,7 +28,7 @@ module.exports = class Profile {
     }
 
     getOne(id, cb){
-        util.getOneById(tableName, id, cb);
+        util.selectOne(tableName, null, 'accountID', id, cb);
     }
 
     update(id, items, cb){
@@ -43,12 +43,12 @@ module.exports = class Profile {
         query = query.query || '';
         db.query(`
             SELECT 
-                p.ID, p.firstName, p.midName, p.lastName, p.dob, p.grade, e.ethnicity, h.type, path.pathway
+                 p.ID, p.firstName, p.midName, p.lastName, p.dob, p.grade, e.ethnicity, h.type, path.pathway
             FROM Account AS a, ${tableName} AS p 
             LEFT JOIN Ethnicity AS e ON (e.ID=p.ethnicityID)
             LEFT JOIN Hispanic AS h ON (h.ID=p.hispanicID) 
             LEFT JOIN CTEPathway AS path ON (path.ID=p.pathwayID) 
-            WHERE a.profileID=p.ID AND a.accountTypeID=5 AND (p.firstName LIKE '%${query}%' OR p.lastName LIKE '%${query}%' OR p.grade LIKE '%${query}%' OR path.pathway LIKE '%${query}%')
+            WHERE a.ID=p.accountID AND a.accountTypeID=5 AND (p.firstName LIKE '%${query}%' OR p.lastName LIKE '%${query}%' OR p.grade LIKE '%${query}%' OR path.pathway LIKE '%${query}%')
             ORDER BY p.lastName
         `, cb);
     }
@@ -66,6 +66,12 @@ module.exports = class Profile {
             Limit 1
         `, (err, data, fields) => {
             cb(err, data[0], fields);
+        })
+    }
+
+    getProfileID(accID, cb){
+        db.query(`SELECT ID from ${tableName} WHERE accountID='${accID}' LIMIT 1`, (err, data, fields) => {
+            cb(err, data[0].ID, fields);
         })
     }
 };

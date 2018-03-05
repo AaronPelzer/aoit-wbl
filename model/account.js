@@ -48,11 +48,15 @@ module.exports = class Account {
     }
 
     getAccountById(id, cb){
-        util.getOneById(tableName, id, cb);
+        db.query(`SELECT * FROM ${tableName} WHERE ID=${id}`, (err, data, fields) => {
+            cb(err, data[0], fields);
+        });
     }
 
     getAccountByEmail(email, cb){
-        util.getOne(tableName, 'email', email, cb);
+        db.query(`SELECT * FROM ${tableName} WHERE email='${email}'`, (err, data, fields) => {
+            cb(err, data[0], fields);
+        });
     }
 
     setAccountHold(data, cb){

@@ -9,7 +9,9 @@ const router = require("express")(),
       util = require("../lib/s_scripts.js"),
       passport = require("passport"),
       LocalStrategy = require("passport-local").Strategy,
-      crypto = require('crypto');
+      crypto = require('crypto'),
+      Pro = require('../model/professional'),
+      ProType = require('../model/professionalType');
 
 
 var csrfProtection = csrf({ cookie: true });
@@ -87,7 +89,6 @@ router.post("/Register", csrfProtection, function(req, res) {
             if(err){
                 console.error(err);
             } else {
-
                 let p = new Profile({
                     firstName: post.tbFirst.trim(),
                     midName: post.tbMiddle.trim(),
@@ -112,6 +113,8 @@ router.post("/Register", csrfProtection, function(req, res) {
                     let obj = {
                         link: crypto.createHash('md5').update(data).digest("hex")
                     };
+
+                    genProSkills(context.insertId);
 
                     a.setAccountHold(obj, function(err, context){
 
@@ -178,11 +181,13 @@ router.post("/Register", csrfProtection, function(req, res) {
                 return console.error(err.msg);
             }
             
+            genProSkills(context.insertId);
+
             let date = new Date(),
                 dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
             let a = new Account({
-                osis: post.tbOsis.trim(),
+                OSIS: post.tbOsis.trim(),
                 email: post.tbEmail.trim() + "@aoiths.org",
                 dateCreated: dateStr,
                 lastLogin: dateStr,
@@ -227,6 +232,23 @@ router.post("/Register", csrfProtection, function(req, res) {
 });
 */
 
+function genProSkills(pId){
+    let types = new ProType();
+    types.get((err, data) => {
+        if(err) throw err;
+        data.forEach(type => {
+            let pro = new Pro({
+                professionalSkillID: type.ID,
+                profileID: pId
+            });
+
+            pro.save((err, data) => {
+                if(err) throw err;
+            });
+        });
+    });
+}
+
 router.get("/Confirmation", function(req, res) {
 
     res.render("account/confirm", {
@@ -267,7 +289,7 @@ router.get("/Login", csrfProtection, function(req, res) {
 passport.use(new LocalStrategy(function(email, password, done) {
 
     let acc = new Account();
-
+    console.log("here");
     acc.getAccountByEmail(email + "@aoiths.org", function(err, user) {
         console.log("EMAIL");
         if (err) {
@@ -276,9 +298,8 @@ passport.use(new LocalStrategy(function(email, password, done) {
         if (!user) {
             return done(null, false, { message: 'Email Is Not Registered!' });
         }
-
+        
         acc.comparePassword(password, user.password, function(err, isMatch) {
-            console.log("Password");
             if (err) throw err;
             isMatch = true;
             if (isMatch) {

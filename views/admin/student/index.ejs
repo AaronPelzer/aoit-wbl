@@ -28,17 +28,55 @@
     </tbody>
   </table>
 
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li> -->
+    <li class="page-item">
+      <a class="page-link" onclick="next()" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
 <script>
-    fetch('/Administrator/Students')
+    
+    fetch('API/Students')
         .then(res => {
+            console.log(res);
             return res.json();
         }).then(data => {
-            populateTable(data);
+            populateTable(data, 1);
         });
 
-    function populateTable(arr){
+    let currentPage = 1;
+
+    function prevPage(){
+        if(currentPage > 1){
+            currentPage--;
+            populateTable(currentPage);
+        }
+    }
+
+    function nextPage(){
+        if(currentPage < numPages){
+            currentPage++;
+            populateTable(currentPage);
+        }
+    }   
+
+    function populateTable(arr, page){
         let html = '';
-        arr.forEach((item, indx) => {
+        arr.slice((page - 1) * 20, page * 20).forEach((item, indx) => {
             html += `
                 <tr>
                     <td>${indx + 1}</td>
@@ -60,7 +98,7 @@
 
     function search(){
         let query = document.querySelector("#query").value;
-        fetch(`/Administrator/Students?query=${query}`)
+        fetch(`/Administration/Students?query=${query}`)
             .then(res => {
                 return res.json();
             }).then(data => {
