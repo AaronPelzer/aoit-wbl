@@ -139,6 +139,8 @@ router.post("/Register", csrfProtection, function(req, res) {
     }
 });
 
+
+
 /*
 router.post("/Register", csrfProtection, function(req, res) {
     let post = req.body;
@@ -289,7 +291,7 @@ router.get("/Login", csrfProtection, function(req, res) {
 passport.use(new LocalStrategy(function(email, password, done) {
 
     let acc = new Account();
-    console.log("here");
+
     acc.getAccountByEmail(email + "@aoiths.org", function(err, user) {
         console.log("EMAIL");
         if (err) {
@@ -313,7 +315,7 @@ passport.use(new LocalStrategy(function(email, password, done) {
     });
 }));
 
-// SECTION TO SET TO PROFILEID
+// SECTION TO SET TO ACCOUNT.ID
 passport.serializeUser(function(user, done) {
     done(null, user.ID);
 });
@@ -343,6 +345,17 @@ router.get("/Logout", function(req, res) {
 
     req.flash("success_msg", "You are logged out");
     res.redirect("/Account/Login");
+});
+
+
+router.get("/", csrfProtection, function(req, res) {
+
+    console.log("TEST");
+
+    res.render("Account/index", {
+        title: "Update Account Information"
+    });
+
 });
 
 module.exports = router;

@@ -49,13 +49,28 @@
                     </li>
                 <% } else if(user.accountTypeID === 5) { %>
                     <li class="nav-item active">    
-                            <a class="nav-link" href="#">Welcome, <%= user.email %>
-                                <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Student/">Account</a>
+                        <a class="nav-link" href="/Account">Welcome, <%= user.email %>
+                            <span class="sr-only">(current)</span>
+                        </a>
                     </li>
+                    <li class="nav-item">    
+                        <a class="nav-link" href="/Student/Courses">Course Work</a>
+                    </li>
+                    <li class="nav-item">    
+                        <a class="nav-link" href="/Student/Professional">Professional Skills</a>
+                    </li>
+                    <li class="nav-item">    
+                        <a class="nav-link" href="/Student/Technical">Technical Skills</a>
+                    </li>
+                    <li class="nav-item">    
+                        <a class="nav-link" href="/Student/Activities">Technical Skills</a>
+                    </li>
+                    <li class="nav-item">    
+                        <a class="nav-link" href="/Student/Resume">Resume</a>
+                    </li>
+                    <!-- li class="nav-item"> DOUBLE VIA WELCOME <USER>
+                        <a class="nav-link" href="/Student/">Account</a>
+                    </li-->
                     <li class="nav-item">
                         <a class="nav-link" href="/Account/Logout">Logout</a>
                     </li>
